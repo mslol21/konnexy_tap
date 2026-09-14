@@ -26,27 +26,27 @@ export default function DifferentiatorSection() {
   ];
 
   return (
-    <section id="diferencial" className="py-20 lg:py-28 bg-[#20252A] text-white">
+    <section id="diferencial" className="py-14 lg:py-20 bg-[#20252A] text-white">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           
           {/* Esquerda: Texto Editorial */}
           <div className="flex flex-col items-start">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C78D4E] bg-[#2D343B] border border-[#C78D4E]/30 px-3.5 py-1.5 rounded-full inline-block mb-6">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-[#C78D4E] bg-[#2D343B] border border-[#C78D4E]/30 px-3 py-1 rounded-full inline-block mb-4">
               Por que a Otimiza Meu Negócio?
             </span>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight leading-tight mb-6">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight mb-4">
               Mais que um QR Code{" "}
               <span className="text-[#D8A66C]">impresso numa folha de papel.</span>
             </h2>
 
-            <p className="text-[#9BA3AB] text-base sm:text-lg leading-relaxed mb-6">
+            <p className="text-[#9BA3AB] text-sm sm:text-base leading-relaxed mb-4">
               Qualquer empresa pode gerar um QR Code estático e colar na parede. Quando o link mudar — e vai mudar — a imagem vira lixo e o cliente não chega a lugar nenhum.
             </p>
 
-            <p className="text-[#9BA3AB] text-base sm:text-lg leading-relaxed mb-8">
+            <p className="text-[#9BA3AB] text-sm sm:text-base leading-relaxed mb-6">
               A Placa Inteligente da Otimiza Meu Negócio usa um link dinâmico permanente gerenciado por nós. Você recebe a placa configurada, coloca no balcão e nunca mais precisa se preocupar com isso.
             </p>
 

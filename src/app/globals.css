@@ -1,17 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #F7F5F2;
-  --foreground: #20252A;
+  --background: #F5F3EF;
+  --foreground: #242A30;
   --radius: 0.75rem;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
   font-feature-settings: "rlig" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -24,7 +26,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F7F5F2;
+  background: #F5F3EF;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -33,7 +35,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C78D4E;
+  background: #BD7B48;
 }
 
 /* Hide scrollbar utility */
@@ -47,24 +49,24 @@ body {
 
 /* Glassmorphism / subtle surface helpers */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #E8E3DD;
+  border: 1px solid #E5E1D8;
 }
 
 .glass-dark {
-  background: rgba(32, 37, 42, 0.95);
+  background: rgba(24, 28, 33, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(199, 141, 78, 0.25);
+  border: 1px solid rgba(189, 123, 72, 0.3);
 }
 
-/* Warm gold subtle shadow */
+/* Warm copper subtle shadow */
 .gold-glow {
-  box-shadow: 0 10px 30px -10px rgba(199, 141, 78, 0.25);
+  box-shadow: 0 10px 30px -10px rgba(189, 123, 72, 0.25);
 }
 
 .charcoal-shadow {
-  box-shadow: 0 10px 30px -10px rgba(32, 37, 42, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(24, 28, 33, 0.08);
 }

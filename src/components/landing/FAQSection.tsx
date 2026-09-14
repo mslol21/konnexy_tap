@@ -38,19 +38,19 @@ export default function FAQSection() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <section id="duvidas" className="py-20 lg:py-28 bg-[#FFFFFF] border-t border-[#E8E3DD]">
-      <div className="max-w-3xl mx-auto px-6 sm:px-10 lg:px-12">
+    <section id="duvidas" className="py-14 lg:py-20 bg-[#FFFFFF] border-t border-[#E8E3DD]">
+      <div className="max-w-2xl mx-auto px-6 sm:px-10 lg:px-12">
         
         {/* Cabeçalho */}
-        <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F5F2] border border-[#E8E3DD] text-[#C78D4E] text-xs font-bold uppercase tracking-widest mb-4">
-            <HelpCircle className="w-4 h-4" />
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F7F5F2] border border-[#E8E3DD] text-[#C78D4E] text-[11px] font-bold uppercase tracking-widest mb-3">
+            <HelpCircle className="w-3.5 h-3.5" />
             Tire suas dúvidas
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#20252A] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#20252A] tracking-tight">
             Perguntas Frequentes
           </h2>
-          <p className="text-[#6D7277] text-base sm:text-lg mt-4 leading-relaxed">
+          <p className="text-[#6D7277] text-sm sm:text-base mt-2.5 leading-relaxed">
             Tudo o que você precisa saber antes de garantir sua placa.
           </p>
         </div>

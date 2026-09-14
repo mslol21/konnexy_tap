@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+
+const fontSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   title: "Otimiza Meu Negócio | Avaliações e Presença no Google",
@@ -22,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className="min-h-screen bg-[#F7F5F2] text-[#20252A] font-sans selection:bg-[#C78D4E] selection:text-white">
+    <html lang="pt-BR" className={fontSans.className}>
+      <body className={`${fontSans.className} min-h-screen bg-[#F7F5F2] text-[#20252A] font-sans antialiased selection:bg-[#C78D4E] selection:text-white`}>
         {children}
       </body>
     </html>

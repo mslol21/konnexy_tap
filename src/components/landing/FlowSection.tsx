@@ -30,18 +30,18 @@ export default function FlowSection() {
   ];
 
   return (
-    <section id="como-funciona" className="py-20 lg:py-28 bg-[#F7F5F2] border-t border-[#E8E3DD]">
+    <section id="como-funciona" className="py-14 lg:py-20 bg-[#F7F5F2] border-t border-[#E8E3DD]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
         
         {/* Cabeçalho da Seção */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#C78D4E] bg-white border border-[#E8E3DD] px-3.5 py-1.5 rounded-full inline-block mb-4 shadow-sm">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-[#C78D4E] bg-white border border-[#E8E3DD] px-3 py-1 rounded-full inline-block mb-3 shadow-xs">
             Passo a Passo Descomplicado
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#20252A] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#20252A] tracking-tight">
             Simples para você. Fácil para seu cliente.
           </h2>
-          <p className="text-[#6D7277] text-base sm:text-lg mt-4 leading-relaxed">
+          <p className="text-[#6D7277] text-sm sm:text-base mt-2.5 leading-relaxed">
             Todo o processo foi pensado para não gerar atrito no balcão e não tomar tempo da sua equipe.
           </p>
         </div>

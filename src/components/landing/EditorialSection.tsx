@@ -3,24 +3,24 @@ import { Sparkles, ShieldCheck } from "lucide-react";
 
 export default function EditorialSection() {
   return (
-    <section className="py-20 lg:py-28 bg-[#F7F5F2] border-t border-[#E8E3DD]">
-      <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 text-left">
+    <section className="py-14 lg:py-20 bg-[#F7F5F2] border-t border-[#E8E3DD]">
+      <div className="max-w-3xl mx-auto px-6 sm:px-10 lg:px-12 text-left">
         
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8E3DD] shadow-sm mb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E3DD] shadow-xs mb-4">
           <Sparkles className="w-3.5 h-3.5 text-[#C78D4E]" />
-          <span className="text-xs font-bold tracking-wider text-[#30363D] uppercase">
+          <span className="text-[11px] font-bold tracking-wider text-[#30363D] uppercase">
             Visão da Agência
           </span>
         </div>
 
         {/* Título Principal */}
-        <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#20252A] leading-tight tracking-tight mb-8">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#20252A] leading-tight tracking-tight mb-6">
           Sua reputação digital começa no atendimento presencial.
         </h2>
 
         {/* Parágrafos Editoriais */}
-        <div className="space-y-6 text-base sm:text-lg text-[#6D7277] leading-relaxed">
+        <div className="space-y-4 text-sm sm:text-base text-[#6D7277] leading-relaxed">
           <p>
             Todo dia, dezenas de clientes saem satisfeitos do seu estabelecimento. Eles elogiam a comida, o corte de cabelo, a consulta ou o serviço prestado. Mas quando chegam em casa, a rotina consome o dia — e aquele elogio genuíno nunca se transforma em uma avaliação pública no Google.
           </p>

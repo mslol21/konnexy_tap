@@ -16,18 +16,18 @@ export default function ProblemSection() {
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-[#FFFFFF] border-t border-[#E8E3DD]">
+    <section className="py-14 lg:py-20 bg-[#FFFFFF] border-t border-[#E8E3DD]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
         
         {/* Cabeçalho */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#C78D4E] bg-[#F7F5F2] border border-[#E8E3DD] px-3.5 py-1.5 rounded-full inline-block mb-4">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-[#C78D4E] bg-[#F7F5F2] border border-[#E8E3DD] px-3 py-1 rounded-full inline-block mb-3">
             A Raiz da Baixa Conversão
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#20252A] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#20252A] tracking-tight">
             Seu cliente quer avaliar. O problema é o caminho.
           </h2>
-          <p className="text-[#6D7277] text-base sm:text-lg mt-4 leading-relaxed">
+          <p className="text-[#6D7277] text-sm sm:text-base mt-2.5 leading-relaxed">
             A maioria dos clientes satisfeitos não avalia porque o processo tradicional é demorado, cansativo e cheio de obstáculos.
           </p>
         </div>

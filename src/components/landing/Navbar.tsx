@@ -17,7 +17,7 @@ export default function Navbar({ onOpenReserve }: NavbarProps) {
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12 h-20 flex items-center justify-between">
         {/* Logo Oficial */}
         <div className="flex items-center gap-4">
-          <Logo theme="light" size="md" showTagline={true} />
+          <Logo theme="light" size="md" showTagline={false} />
         </div>
 
         {/* Links Desktop */}

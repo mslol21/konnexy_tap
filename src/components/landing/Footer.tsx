@@ -4,7 +4,7 @@ import Logo from "@/components/brand/Logo";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#20252A] text-slate-300 text-sm border-t border-white/10">
+    <footer className="bg-[#181C21] text-slate-300 text-sm border-t border-white/10">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12 py-14">
         
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
@@ -15,7 +15,7 @@ export default function Footer() {
             <p className="text-[#9BA3AB] text-sm sm:text-base leading-relaxed max-w-md">
               Agência especializada em ajudar negócios locais a fortalecer sua presença no Google e transformar atendimento presencial em reputação digital.
             </p>
-            <p className="text-xs text-[#C78D4E] font-semibold italic">
+            <p className="text-xs text-[#BD7B48] font-semibold italic">
               &ldquo;Sua reputação digital começa no atendimento presencial.&rdquo;
             </p>
           </div>
@@ -27,32 +27,32 @@ export default function Footer() {
             </div>
             <ul className="space-y-2.5 text-sm text-[#9BA3AB]">
               <li>
-                <a href="#como-funciona" className="hover:text-[#C78D4E] transition-colors">
+                <a href="#como-funciona" className="hover:text-[#BD7B48] transition-colors">
                   Como funciona
                 </a>
               </li>
               <li>
-                <a href="#beneficios" className="hover:text-[#C78D4E] transition-colors">
+                <a href="#beneficios" className="hover:text-[#BD7B48] transition-colors">
                   Benefícios da placa
                 </a>
               </li>
               <li>
-                <a href="#para-quem-e" className="hover:text-[#C78D4E] transition-colors">
+                <a href="#para-quem-e" className="hover:text-[#BD7B48] transition-colors">
                   Para quem é
                 </a>
               </li>
               <li>
-                <a href="#preco" className="hover:text-[#C78D4E] transition-colors">
+                <a href="#preco" className="hover:text-[#BD7B48] transition-colors">
                   Preço e reserva
                 </a>
               </li>
               <li>
-                <a href="#duvidas" className="hover:text-[#C78D4E] transition-colors">
+                <a href="#duvidas" className="hover:text-[#BD7B48] transition-colors">
                   Dúvidas frequentes
                 </a>
               </li>
               <li>
-                <Link href="/demo" className="hover:text-[#C78D4E] transition-colors text-[#D8A66C] font-medium">
+                <Link href="/demo" className="hover:text-[#BD7B48] transition-colors text-[#D9945F] font-medium">
                   Ver demonstração
                 </Link>
               </li>
@@ -66,12 +66,12 @@ export default function Footer() {
             </div>
             <ul className="space-y-2.5 text-sm text-[#9BA3AB]">
               <li>
-                <Link href="/login" className="hover:text-[#C78D4E] transition-colors">
+                <Link href="/login" className="hover:text-[#BD7B48] transition-colors">
                   Acessar painel
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="hover:text-[#C78D4E] transition-colors">
+                <Link href="/dashboard" className="hover:text-[#BD7B48] transition-colors">
                   Gerenciar placa
                 </Link>
               </li>

@@ -117,9 +117,16 @@ export default function Logo({
 
   const content = (
     <div className={`inline-flex items-center ${sizeConfig.gap} group select-none ${className}`}>
-      {/* Símbolo de alta fidelidade */}
+      {/* Símbolo Oficial Fotorrealista */}
       <div className="shrink-0 flex items-center justify-center">
-        <OtimizaIcon className={sizeConfig.icon} theme={theme} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/icon.png"
+          alt="Otimiza Meu Negócio"
+          className={`${sizeConfig.icon} object-contain`}
+          width={48}
+          height={48}
+        />
       </div>
 
       {/* Tipografia Oficial */}

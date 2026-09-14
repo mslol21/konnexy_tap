@@ -20,7 +20,12 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     siteName: "Otimiza Meu Negócio",
   },
-  themeColor: "#30363D",
+  icons: {
+    icon: "/brand/icon.png",
+    shortcut: "/brand/icon.png",
+    apple: "/brand/icon.png",
+  },
+  themeColor: "#242A30",
 };
 
 export default function RootLayout({

@@ -81,7 +81,6 @@ export default function Logo({
   className = "",
 }: LogoProps) {
   const isDark = theme === "dark";
-  const logoSrc = isDark ? "/brand/logo-dark.png" : "/brand/logo.png";
 
   // Dimensões aumentadas e calibradas com aspect ratio 2.07:1
   const sizeClasses = {
@@ -93,13 +92,25 @@ export default function Logo({
 
   const content = (
     <div className={`inline-flex items-center gap-3 select-none ${className}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={logoSrc}
-        alt="Otimiza Meu Negócio - Agência Especialista em Alavancar Empresas no Google"
-        className={`${sizeClasses} object-contain transition-transform duration-200 group-hover:scale-[1.02]`}
-        loading="eager"
-      />
+      {isDark ? (
+        <div className="p-2 sm:p-2.5 rounded-2xl bg-white/95 backdrop-blur-md shadow-xs border border-white/20 inline-flex items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo.png"
+            alt="Otimiza Meu Negócio"
+            className={`${sizeClasses} object-contain`}
+            loading="eager"
+          />
+        </div>
+      ) : (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src="/brand/logo.png"
+          alt="Otimiza Meu Negócio"
+          className={`${sizeClasses} object-contain transition-transform duration-200 group-hover:scale-[1.02]`}
+          loading="eager"
+        />
+      )}
 
       {badge && (
         <span

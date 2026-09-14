@@ -3,14 +3,14 @@ import Link from "next/link";
 
 export interface LogoProps {
   theme?: "light" | "dark";
-  size?: "sm" | "md" | "lg" | "xl";
-  showTagline?: boolean;
+  size?: "sm" | "md" | "lg";
   badge?: string;
   href?: string;
   className?: string;
+  showTagline?: boolean;
 }
 
-export function KonnexyWaveIcon({ className = "w-6 h-6" }: { className?: string }) {
+export function OtimizaIcon({ className = "w-6 h-6" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 100 100"
@@ -19,41 +19,35 @@ export function KonnexyWaveIcon({ className = "w-6 h-6" }: { className?: string 
       className={className}
     >
       <defs>
-        <linearGradient id="kxWaveGradLocal" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#00D2FF" />
-          <stop offset="100%" stopColor="#0066FF" />
+        <linearGradient id="otmIconGold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#D8A66C" />
+          <stop offset="100%" stopColor="#C78D4E" />
         </linearGradient>
       </defs>
-      {/* Onda Superior */}
+      {/* Base de Localização em Grafite */}
       <path
-        d="M 23 40 A 38 38 0 0 1 77 40"
-        stroke="url(#kxWaveGradLocal)"
+        d="M 50 12 C 34 12 22 24 22 40 C 22 62 48 86 50 88 C 52 86 78 62 78 40 C 78 24 66 12 50 12 Z"
+        stroke="currentColor"
         strokeWidth="7"
-        strokeLinecap="round"
+        strokeLinejoin="round"
         fill="none"
       />
-      {/* Onda Média */}
+      {/* Checkmark e Seta de Crescimento Ascendente em Dourado/Bronze */}
       <path
-        d="M 33 52 A 25 25 0 0 1 67 52"
-        stroke="url(#kxWaveGradLocal)"
-        strokeWidth="7"
+        d="M 36 44 L 46 54 L 64 34"
+        stroke="url(#otmIconGold)"
+        strokeWidth="7.5"
         strokeLinecap="round"
+        strokeLinejoin="round"
         fill="none"
       />
-      {/* Onda Inferior */}
       <path
-        d="M 43 64 A 12 12 0 0 1 57 64"
-        stroke="url(#kxWaveGradLocal)"
-        strokeWidth="6.5"
+        d="M 56 34 L 64 34 L 64 42"
+        stroke="url(#otmIconGold)"
+        strokeWidth="6"
         strokeLinecap="round"
+        strokeLinejoin="round"
         fill="none"
-      />
-      {/* Ponto Central */}
-      <circle
-        cx="50"
-        cy="75"
-        r="4"
-        fill="url(#kxWaveGradLocal)"
       />
     </svg>
   );
@@ -62,88 +56,77 @@ export function KonnexyWaveIcon({ className = "w-6 h-6" }: { className?: string 
 export default function Logo({
   theme = "light",
   size = "md",
-  showTagline = false,
   badge,
   href = "/",
   className = "",
 }: LogoProps) {
-  // Configurações de dimensão (+25% de escala)
   const sizeConfig = {
     sm: {
-      iconBox: "w-9 h-9 rounded-xl",
+      iconBox: "w-8 h-8 rounded-lg",
       icon: "w-5 h-5",
-      title: "text-lg tracking-tight",
-      badge: "text-[10px] px-2 py-0.5",
-      tagline: "text-[8.5px] tracking-[0.2em] -mt-0.5",
+      title: "text-base tracking-tight leading-none",
+      subtitle: "text-[9px] tracking-[0.18em]",
+      badge: "text-[9px] px-2 py-0.5",
     },
     md: {
-      iconBox: "w-12 h-12 rounded-2xl",
-      icon: "w-7 h-7",
-      title: "text-xl sm:text-2xl tracking-tight",
-      badge: "text-xs px-2.5 py-0.5",
-      tagline: "text-[10px] tracking-[0.22em] -mt-0.5",
+      iconBox: "w-10 h-10 rounded-xl",
+      icon: "w-6 h-6",
+      title: "text-lg tracking-tight leading-none",
+      subtitle: "text-[10px] tracking-[0.2em]",
+      badge: "text-[10px] px-2.5 py-0.5",
     },
     lg: {
-      iconBox: "w-16 h-16 rounded-2xl",
-      icon: "w-9 h-9",
-      title: "text-3xl sm:text-4xl tracking-tight",
-      badge: "text-sm px-3 py-1",
-      tagline: "text-xs tracking-[0.25em] mt-0.5",
-    },
-    xl: {
-      iconBox: "w-20 h-20 rounded-3xl",
-      icon: "w-12 h-12",
-      title: "text-4xl sm:text-5xl tracking-tight",
-      badge: "text-base px-3.5 py-1",
-      tagline: "text-sm tracking-[0.28em] mt-1",
+      iconBox: "w-12 h-12 rounded-2xl",
+      icon: "w-7 h-7",
+      title: "text-2xl tracking-tight leading-none",
+      subtitle: "text-xs tracking-[0.22em]",
+      badge: "text-xs px-3 py-1",
     },
   }[size];
 
   const content = (
-    <div className={`flex items-center gap-3 group select-none ${className}`}>
-      {/* Ícone Squircle Escuro com Ondas Ciano/Azul */}
+    <div className={`inline-flex items-center gap-2.5 group select-none ${className}`}>
+      {/* Símbolo com fundo contrastante suave */}
       <div
-        className={`${sizeConfig.iconBox} bg-gradient-to-b from-[#0e1628] to-[#050811] border border-white/10 shadow-md flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200`}
+        className={`${sizeConfig.iconBox} ${
+          theme === "dark"
+            ? "bg-[#20252A] border border-white/10 text-white"
+            : "bg-[#F7F5F2] border border-[#E8E3DD] text-[#30363D]"
+        } flex items-center justify-center shrink-0 shadow-xs group-hover:border-[#C78D4E]/50 transition-colors`}
       >
-        <KonnexyWaveIcon className={sizeConfig.icon} />
+        <OtimizaIcon className={sizeConfig.icon} />
       </div>
 
-      {/* Tipografia da Marca */}
-      <div className="flex flex-col">
+      {/* Tipografia */}
+      <div className="flex flex-col justify-center text-left">
         <div className="flex items-center gap-2">
           <span
             className={`font-black ${sizeConfig.title} ${
-              theme === "dark" ? "text-white" : "text-[#0F172A]"
+              theme === "dark" ? "text-white" : "text-[#20252A]"
             }`}
           >
-            Konnexy
-            <span className="italic bg-gradient-to-r from-[#00D2FF] to-[#0066FF] bg-clip-text text-transparent font-black ml-0.5">
-              Tap
-            </span>
+            OTIMIZA
           </span>
 
           {badge && (
             <span
-              className={`font-extrabold uppercase rounded-full ${sizeConfig.badge} ${
-                badge.toLowerCase() === "reviews"
-                  ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20"
-                  : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+              className={`font-bold uppercase rounded-full ${sizeConfig.badge} ${
+                theme === "dark"
+                  ? "bg-[#C78D4E]/20 text-[#D8A66C] border border-[#C78D4E]/40"
+                  : "bg-[#C78D4E]/10 text-[#C78D4E] border border-[#C78D4E]/30"
               }`}
             >
               {badge}
             </span>
           )}
         </div>
-
-        {showTagline && (
-          <span
-            className={`font-bold uppercase ${sizeConfig.tagline} ${
-              theme === "dark" ? "text-slate-400" : "text-slate-500"
-            }`}
-          >
-            Conexões que geram resultados
-          </span>
-        )}
+        <span
+          className={`font-extrabold uppercase ${sizeConfig.subtitle} ${
+            theme === "dark" ? "text-[#D8A66C]" : "text-[#C78D4E]"
+          } mt-0.5`}
+        >
+          MEU NEGÓCIO
+        </span>
       </div>
     </div>
   );
@@ -158,3 +141,6 @@ export default function Logo({
 
   return content;
 }
+
+// Backward compatibility alias
+export const KonnexyWaveIcon = OtimizaIcon;

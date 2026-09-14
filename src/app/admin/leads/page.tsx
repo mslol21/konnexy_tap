@@ -95,7 +95,7 @@ export default function AdminLeadsPage() {
             Gestão de Reservas & Leads
           </h1>
           <p className="text-xs text-slate-300">
-            Acompanhe lojistas interessados, confirme reservas da placa Konnexy Tap Reviews e converta em vendas.
+            Acompanhe lojistas interessados, confirme reservas da placa da Otimiza Meu Negócio e converta em vendas.
           </p>
         </div>
 

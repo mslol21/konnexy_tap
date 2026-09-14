@@ -64,7 +64,7 @@ export default function SolutionsUpsell() {
             Evolução Contínua
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Soluções Konnexy para o seu crescimento
+            Soluções da Otimiza Meu Negócio para o seu crescimento
           </h2>
           <p className="text-slate-300 text-sm sm:text-base">
             A placa NFC é apenas a porta de entrada. Conforme seu negócio escala, ative serviços digitais complementares sob medida.

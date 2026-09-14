@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ArrowRight, Sparkles, MessageCircle } from "lucide-react";
+import { Menu, X, ArrowRight, Sparkles } from "lucide-react";
 import Logo from "@/components/brand/Logo";
 
 interface NavbarProps {
@@ -13,39 +13,39 @@ export default function Navbar({ onOpenReserve }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#060B17]/95 backdrop-blur-md border-b border-white/10 transition-all">
-      <div className="max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 h-22 flex items-center justify-between">
-        {/* Logo Oficial com Assinatura */}
-        <div className="flex items-center gap-5">
-          <Logo theme="dark" size="md" showTagline={true} badge="Reviews" />
-          <span className="hidden xl:inline-block text-xs sm:text-sm font-medium text-cyan-400/90 border-l border-white/15 pl-4 italic tracking-wide">
-            ✦ Seu negócio conectado
-          </span>
+    <header className="sticky top-0 z-50 w-full bg-[#FFFFFF]/95 backdrop-blur-md border-b border-[#E8E3DD] transition-all">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12 h-20 flex items-center justify-between">
+        {/* Logo Oficial */}
+        <div className="flex items-center gap-4">
+          <Logo theme="light" size="md" showTagline={true} />
         </div>
 
-        {/* Links Desktop (+25% no tamanho das letras) */}
-        <nav className="hidden md:flex items-center gap-8 text-sm lg:text-[15px] font-bold text-slate-200">
-          <a href="#como-funciona" className="hover:text-cyan-400 transition-colors">
+        {/* Links Desktop */}
+        <nav className="hidden md:flex items-center gap-7 text-[15px] font-medium text-[#30363D]">
+          <a href="#como-funciona" className="hover:text-[#C78D4E] transition-colors">
             Como funciona
           </a>
-          <a href="#possibilidades" className="hover:text-cyan-400 transition-colors">
-            Possibilidades
+          <a href="#para-quem-e" className="hover:text-[#C78D4E] transition-colors">
+            Para quem é
           </a>
-          <a href="#beneficios" className="hover:text-cyan-400 transition-colors">
-            A Placa Física
+          <a href="#beneficios" className="hover:text-[#C78D4E] transition-colors">
+            Benefícios
           </a>
-          <a href="#segmentos" className="hover:text-cyan-400 transition-colors">
-            Segmentos
+          <a href="#diferencial" className="hover:text-[#C78D4E] transition-colors">
+            Diferencial
           </a>
-          <a href="#faq" className="hover:text-cyan-400 transition-colors">
+          <a href="#preco" className="hover:text-[#C78D4E] transition-colors">
+            Preço
+          </a>
+          <a href="#duvidas" className="hover:text-[#C78D4E] transition-colors">
             Dúvidas
           </a>
           <Link
             href="/demo"
-            className="text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1.5 font-bold"
+            className="text-[#C78D4E] hover:text-[#D8A66C] transition-colors flex items-center gap-1.5 font-semibold text-xs bg-[#F7F5F2] px-3 py-1.5 rounded-full border border-[#E8E3DD]"
           >
-            <Sparkles className="w-4 h-4 text-cyan-400" />
-            <span>Testar Demo</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Ver Demonstração</span>
           </Link>
         </nav>
 
@@ -53,24 +53,24 @@ export default function Navbar({ onOpenReserve }: NavbarProps) {
         <div className="hidden md:flex items-center gap-4">
           <Link
             href="/login"
-            className="text-sm font-bold text-slate-300 hover:text-white px-3.5 py-2.5 transition-colors"
+            className="text-sm font-semibold text-[#6D7277] hover:text-[#20252A] px-3 py-2 transition-colors"
           >
-            Área do Lojista
+            Área do Cliente
           </Link>
           <button
             onClick={onOpenReserve}
-            className="text-sm lg:text-[15px] font-bold bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-2xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all flex items-center gap-2.5 active:scale-95 border border-emerald-400/30 cursor-pointer"
+            className="text-sm font-semibold bg-[#20252A] hover:bg-[#30363D] text-white px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#30363D] active:scale-95"
           >
-            <MessageCircle className="w-4 h-4 fill-white/20" />
-            <span>Fale pelo WhatsApp</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>Quero minha placa</span>
+            <ArrowRight className="w-4 h-4 text-[#C78D4E]" />
           </button>
         </div>
 
         {/* Botão Mobile */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 text-slate-300 hover:text-white rounded-lg focus:outline-none"
+          className="md:hidden p-2 text-[#30363D] hover:text-[#20252A] rounded-lg focus:outline-none"
+          aria-label="Abrir menu"
         >
           {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -78,69 +78,76 @@ export default function Navbar({ onOpenReserve }: NavbarProps) {
 
       {/* Menu Mobile */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#0A1128] border-b border-white/10 px-4 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200 shadow-2xl">
-          <nav className="flex flex-col space-y-2 text-sm font-medium text-slate-200">
+        <div className="md:hidden bg-[#FFFFFF] border-b border-[#E8E3DD] px-5 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200 shadow-xl">
+          <nav className="flex flex-col space-y-2 text-sm font-medium text-[#30363D]">
             <a
               href="#como-funciona"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-white/5 hover:text-cyan-300"
+              className="px-3 py-2.5 rounded-lg hover:bg-[#F7F5F2] hover:text-[#C78D4E]"
             >
               Como funciona
             </a>
             <a
-              href="#possibilidades"
+              href="#para-quem-e"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-white/5 hover:text-cyan-300"
+              className="px-3 py-2.5 rounded-lg hover:bg-[#F7F5F2] hover:text-[#C78D4E]"
             >
-              Várias Possibilidades
+              Para quem é
             </a>
             <a
               href="#beneficios"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-white/5 hover:text-cyan-300"
+              className="px-3 py-2.5 rounded-lg hover:bg-[#F7F5F2] hover:text-[#C78D4E]"
             >
               Benefícios da Placa
             </a>
             <a
-              href="#segmentos"
+              href="#diferencial"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-white/5 hover:text-cyan-300"
+              className="px-3 py-2.5 rounded-lg hover:bg-[#F7F5F2] hover:text-[#C78D4E]"
             >
-              Segmentos Atendidos
+              Diferencial da Placa
             </a>
             <a
-              href="#faq"
+              href="#preco"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-white/5 hover:text-cyan-300"
+              className="px-3 py-2.5 rounded-lg hover:bg-[#F7F5F2] hover:text-[#C78D4E]"
+            >
+              Preço e Reserva
+            </a>
+            <a
+              href="#duvidas"
+              onClick={() => setMobileOpen(false)}
+              className="px-3 py-2.5 rounded-lg hover:bg-[#F7F5F2] hover:text-[#C78D4E]"
             >
               Dúvidas Frequentes
             </a>
             <Link
               href="/demo"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-white/5 text-cyan-400 font-bold flex items-center gap-1.5"
+              className="px-3 py-2.5 rounded-lg hover:bg-[#F7F5F2] text-[#C78D4E] font-semibold flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Simulação Interativa de Vendas</span>
+              <span>Ver Demonstração</span>
             </Link>
           </nav>
-          <div className="pt-3 border-t border-white/10 flex flex-col gap-2.5">
+          <div className="pt-3 border-t border-[#E8E3DD] flex flex-col gap-2.5">
             <Link
               href="/login"
               onClick={() => setMobileOpen(false)}
-              className="w-full text-center py-2.5 text-xs font-bold text-slate-300 border border-white/15 rounded-xl hover:bg-white/5"
+              className="w-full text-center py-2.5 text-sm font-semibold text-[#30363D] border border-[#E8E3DD] rounded-xl hover:bg-[#F7F5F2]"
             >
-              Área do Lojista
+              Área do Cliente
             </Link>
             <button
               onClick={() => {
                 setMobileOpen(false);
                 if (onOpenReserve) onOpenReserve();
               }}
-              className="w-full text-center py-3 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2"
+              className="w-full text-center py-3 text-sm font-semibold bg-[#20252A] text-white rounded-xl shadow-sm flex items-center justify-center gap-2"
             >
-              <MessageCircle className="w-4 h-4 fill-white/20" />
-              <span>Fale pelo WhatsApp • R$ 79,90</span>
+              <span>Quero minha placa • R$ 79,90</span>
+              <ArrowRight className="w-4 h-4 text-[#C78D4E]" />
             </button>
           </div>
         </div>

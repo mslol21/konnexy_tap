@@ -49,7 +49,7 @@ export default function AdminDashboardPage() {
             <span>Fase 1: Validação do 1º Lote Físico (10 a 100 placas)</span>
           </div>
           <h1 className="text-2xl font-black text-white mt-1">
-            Painel Operacional Konnexy Tap Reviews
+            Painel Operacional — Otimiza Meu Negócio
           </h1>
           <p className="text-xs text-slate-300">
             Monitore reservas, configure novas placas em menos de 1 minuto e acompanhe os toques dos clientes no balcão.

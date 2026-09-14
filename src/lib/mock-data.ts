@@ -139,7 +139,7 @@ export const DEMO_LINKS: BusinessLink[] = [
     business_id: "biz-cafe-ana",
     title: "Falar no WhatsApp",
     type: "whatsapp",
-    url: "https://wa.me/5511987654321?text=Ol%C3%A1!%20Vim%20pela%20placa%20Konnexy%20Tap.",
+    url: "https://wa.me/5511987654321?text=Ol%C3%A1!%20Vim%20pela%20placa%20da%20Otimiza%20Meu%20Neg%C3%B3cio.",
     icon: "MessageCircle",
     order_index: 2,
     is_active: true,

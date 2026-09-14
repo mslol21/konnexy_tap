@@ -201,7 +201,7 @@ export default function QrCodePage() {
                 Placa: {selectedDevice.code}
               </div>
               <div className="text-[10px] text-slate-400">
-                Powered by Konnexy Tap
+                Powered by Otimiza Meu Negócio
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Lock, Mail, Sparkles, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Lock, Mail, CheckCircle2, MapPin } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/brand/Logo";
 
@@ -27,7 +27,6 @@ export default function LoginPage() {
       });
 
       if (error) {
-        // Se as credenciais do Supabase não estiverem ativas ou for login de demonstração
         if (email.includes("demo") || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
           router.push("/dashboard");
           return;
@@ -37,128 +36,157 @@ export default function LoginPage() {
         router.push("/dashboard");
       }
     } catch {
-      // Fallback gracioso para modo de demonstração
       router.push("/dashboard");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDemoAccess = () => {
-    setEmail("demo@konnexytap.com.br");
-    setPassword("demo123456");
-    setLoading(true);
-    setTimeout(() => {
-      router.push("/dashboard");
-    }, 600);
-  };
-
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Luzes de fundo */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-navy-800/40 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        <div className="flex justify-center mb-6">
-          <Logo theme="dark" size="lg" showTagline={true} />
+    <div className="min-h-screen flex bg-[#F7F5F2]">
+      
+      {/* Painel Esquerdo — Identidade e Propósito */}
+      <div className="hidden lg:flex lg:w-1/2 xl:w-5/12 flex-col justify-between p-12 xl:p-16 bg-[#20252A] text-white">
+        
+        {/* Logo */}
+        <div>
+          <Logo theme="dark" size="md" showTagline={false} />
         </div>
 
-        <h2 className="text-center text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Acesse seu painel
-        </h2>
-        <p className="mt-2 text-center text-xs sm:text-sm text-slate-400">
-          Gerencie sua placa NFC, QR Code, links e promoções em tempo real.
-        </p>
+        {/* Texto Central */}
+        <div className="space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2D343B] border border-[#C78D4E]/30 text-[#C78D4E] text-xs font-bold uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C78D4E] animate-pulse" />
+            Área do Cliente
+          </div>
+          <h2 className="text-3xl xl:text-4xl font-extrabold text-white leading-tight tracking-tight">
+            Gerencie suas placas e acompanhe os acessos do seu negócio.
+          </h2>
+          <p className="text-[#9BA3AB] text-base leading-relaxed">
+            Visualize quantas vezes seus clientes acessaram a placa, altere o destino do link e mantenha sua presença no Google sempre atualizada.
+          </p>
+        </div>
+
+        {/* Itens de Confiança */}
+        <div className="space-y-4">
+          {[
+            "Link gerenciado com atualização em tempo real",
+            "Painel de acessos e estatísticas por placa",
+            "Suporte para ajustes no redirecionamento",
+          ].map((item, idx) => (
+            <div key={idx} className="flex items-center gap-3 text-sm text-[#9BA3AB]">
+              <CheckCircle2 className="w-4 h-4 text-[#C78D4E] shrink-0" />
+              <span>{item}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Rodapé */}
+        <div className="pt-6 border-t border-white/10 text-xs text-[#6D7277]">
+          © {new Date().getFullYear()} Otimiza Meu Negócio. Todos os direitos reservados.
+        </div>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        <div className="bg-white py-8 px-6 sm:px-10 shadow-2xl rounded-3xl border border-slate-200">
-          {/* Acesso Rápido de Demonstração */}
-          <div className="mb-6 p-3 rounded-2xl bg-amber-50 border border-amber-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-bold text-navy-950">
-                <Sparkles className="w-4 h-4 text-gold-500" />
-                <span>Testar Demonstração do Balcão</span>
-              </div>
-              <button
-                onClick={handleDemoAccess}
-                type="button"
-                className="px-3 py-1 bg-navy-950 hover:bg-navy-800 text-white rounded-lg text-xs font-bold transition-colors shadow-xs"
-              >
-                Entrar como Café da Ana
-              </button>
-            </div>
+      {/* Painel Direito — Formulário de Login */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 sm:px-10 lg:px-16 xl:px-24">
+        
+        {/* Logo Mobile */}
+        <div className="lg:hidden mb-10 flex flex-col items-center gap-2">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-6 h-6 text-[#C78D4E]" />
+            <span className="text-lg font-extrabold text-[#20252A]">Otimiza Meu Negócio</span>
+          </div>
+        </div>
+
+        <div className="w-full max-w-[400px]">
+          
+          {/* Cabeçalho do Formulário */}
+          <div className="mb-8">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#20252A] tracking-tight">
+              Acesse seu painel
+            </h1>
+            <p className="text-sm text-[#6D7277] mt-2">
+              Gerencie sua placa NFC + QR Code e acompanhe os acessos do seu negócio.
+            </p>
           </div>
 
+          {/* Erro */}
           {errorMsg && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-700">
+            <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
               {errorMsg}
             </div>
           )}
 
-          <form className="space-y-4" onSubmit={handleLogin}>
+          {/* Formulário */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-[#30363D] uppercase tracking-wide mb-1.5">
                 E-mail
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Mail className="w-4 h-4" />
-                </div>
+                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6D7277]" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seu@comercio.com.br"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:border-transparent transition-all"
+                  placeholder="seu@email.com"
+                  className="w-full pl-10 pr-4 py-3 text-sm rounded-xl border border-[#E8E3DD] bg-white focus:outline-none focus:ring-2 focus:ring-[#C78D4E] focus:border-[#C78D4E] text-[#20252A] placeholder-[#6D7277]"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Senha
-                </label>
-                <Link
-                  href="/recuperar-senha"
-                  className="text-xs font-semibold text-navy-800 hover:underline"
-                >
-                  Esqueceu a senha?
-                </Link>
-              </div>
+              <label className="block text-xs font-bold text-[#30363D] uppercase tracking-wide mb-1.5">
+                Senha
+              </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Lock className="w-4 h-4" />
-                </div>
+                <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6D7277]" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 text-sm rounded-xl border border-[#E8E3DD] bg-white focus:outline-none focus:ring-2 focus:ring-[#C78D4E] focus:border-[#C78D4E] text-[#20252A] placeholder-[#6D7277]"
                 />
               </div>
             </div>
 
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3.5 px-4 bg-navy-950 hover:bg-navy-900 disabled:opacity-50 text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
-              >
-                {loading ? "Entrando..." : "Acessar Plataforma"}
-                <ArrowRight className="w-4 h-4 text-gold-400" />
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 px-4 bg-[#20252A] hover:bg-[#30363D] disabled:opacity-50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+            >
+              {loading ? (
+                <span>Acessando...</span>
+              ) : (
+                <>
+                  <span>Entrar no painel</span>
+                  <ArrowRight className="w-4 h-4 text-[#C78D4E]" />
+                </>
+              )}
+            </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-100 text-center text-xs text-slate-600">
-            Ainda não tem sua placa ou conta?{" "}
-            <Link href="/cadastro" className="font-bold text-navy-950 hover:underline">
-              Cadastre seu estabelecimento
+          {/* Links de Suporte */}
+          <div className="mt-6 text-center space-y-2">
+            <div className="text-xs text-[#6D7277]">
+              Ainda não tem acesso?{" "}
+              <Link href="/#preco" className="text-[#C78D4E] hover:text-[#D8A66C] font-semibold transition-colors">
+                Reserve sua placa
+              </Link>
+            </div>
+          </div>
+
+          {/* Rodapé Legal */}
+          <div className="mt-10 pt-6 border-t border-[#E8E3DD]">
+            <Link
+              href="/"
+              className="flex items-center justify-center gap-1.5 text-xs text-[#6D7277] hover:text-[#C78D4E] transition-colors"
+            >
+              ← Voltar para o site
             </Link>
           </div>
         </div>

@@ -4,83 +4,92 @@ import Logo from "@/components/brand/Logo";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#040711] text-slate-300 text-sm border-t border-white/10">
-      <div className="max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-14">
-          {/* Col 1 */}
-          <div className="space-y-4 md:col-span-2">
-            <Logo theme="dark" size="md" showTagline={true} badge="Reviews" />
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-md">
-              Facilitando para clientes avaliarem estabelecimentos comerciais brasileiros no Google com placas físicas inteligentes NFC + QR Code.
+    <footer className="bg-[#20252A] text-slate-300 text-sm border-t border-white/10">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12 py-14">
+        
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
+          
+          {/* Col 1 — Marca e Propósito */}
+          <div className="md:col-span-6 space-y-4">
+            <Logo theme="dark" size="md" showTagline={false} />
+            <p className="text-[#9BA3AB] text-sm sm:text-base leading-relaxed max-w-md">
+              Agência especializada em ajudar negócios locais a fortalecer sua presença no Google e transformar atendimento presencial em reputação digital.
             </p>
-            <p className="text-xs sm:text-sm text-cyan-400 font-bold italic">
-              “Um toque conecta seu cliente ao seu negócio.”
+            <p className="text-xs text-[#C78D4E] font-semibold italic">
+              &ldquo;Sua reputação digital começa no atendimento presencial.&rdquo;
             </p>
           </div>
 
-          {/* Col 2 */}
-          <div className="space-y-3">
-            <div className="text-white font-extrabold text-sm uppercase tracking-wider">
+          {/* Col 2 — Navegação */}
+          <div className="md:col-span-3 space-y-3">
+            <div className="text-white font-bold text-xs uppercase tracking-widest">
               Navegação
             </div>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-sm text-[#9BA3AB]">
               <li>
-                <a href="#como-funciona" className="hover:text-cyan-400 transition-colors">
+                <a href="#como-funciona" className="hover:text-[#C78D4E] transition-colors">
                   Como funciona
                 </a>
               </li>
               <li>
-                <a href="#beneficios" className="hover:text-cyan-400 transition-colors">
+                <a href="#beneficios" className="hover:text-[#C78D4E] transition-colors">
                   Benefícios da placa
                 </a>
               </li>
               <li>
-                <a href="#segmentos" className="hover:text-cyan-400 transition-colors">
-                  Segmentos atendidos
+                <a href="#para-quem-e" className="hover:text-[#C78D4E] transition-colors">
+                  Para quem é
                 </a>
               </li>
               <li>
-                <Link href="/demo" className="hover:text-cyan-400 transition-colors text-cyan-400 font-bold">
-                  Simulação de Vendas
+                <a href="#preco" className="hover:text-[#C78D4E] transition-colors">
+                  Preço e reserva
+                </a>
+              </li>
+              <li>
+                <a href="#duvidas" className="hover:text-[#C78D4E] transition-colors">
+                  Dúvidas frequentes
+                </a>
+              </li>
+              <li>
+                <Link href="/demo" className="hover:text-[#C78D4E] transition-colors text-[#D8A66C] font-medium">
+                  Ver demonstração
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 3 */}
-          <div className="space-y-3">
-            <div className="text-white font-extrabold text-sm uppercase tracking-wider">
-              Área Administrativa
+          {/* Col 3 — Área do Cliente */}
+          <div className="md:col-span-3 space-y-3">
+            <div className="text-white font-bold text-xs uppercase tracking-widest">
+              Área do Cliente
             </div>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-sm text-[#9BA3AB]">
               <li>
-                <Link href="/login" className="hover:text-cyan-400 transition-colors">
-                  Acessar Painel
+                <Link href="/login" className="hover:text-[#C78D4E] transition-colors">
+                  Acessar painel
                 </Link>
               </li>
               <li>
-                <Link href="/admin" className="hover:text-cyan-400 transition-colors text-cyan-400 font-bold">
-                  Operação Admin (Lote 1)
-                </Link>
-              </li>
-              <li>
-                <Link href="/recuperar-senha" className="hover:text-cyan-400 transition-colors">
-                  Recuperar Senha
+                <Link href="/dashboard" className="hover:text-[#C78D4E] transition-colors">
+                  Gerenciar placa
                 </Link>
               </li>
             </ul>
           </div>
+
         </div>
 
-        {/* Linha de rodapé */}
-        <div className="pt-8 border-t border-white/10 text-center space-y-3">
-          <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            <strong>Aviso de Isenção:</strong> Konnexy Tap não é afiliada, associada, autorizada, endossada ou de qualquer forma oficialmente conectada ao Google LLC. Todas as marcas registradas são propriedade de seus respectivos titulares.
+        {/* Rodapé Legal */}
+        <div className="pt-8 border-t border-white/10 space-y-3">
+          <p className="text-xs text-[#6D7277] max-w-3xl mx-auto leading-relaxed text-center">
+            <strong className="text-[#9BA3AB]">Aviso legal:</strong> Otimiza Meu Negócio não tem afiliação, associação, autorização, endosso ou vínculo oficial de qualquer natureza com o Google LLC. &quot;Google&quot; e &quot;Google Maps&quot; são marcas registradas do Google LLC, utilizadas apenas para descrição do serviço. Todas as marcas pertencem aos seus respectivos titulares.
           </p>
-          <div className="text-xs text-slate-400">
-            © {new Date().getFullYear()} Konnexy Tap Reviews. Primeiro lote físico. Todos os direitos reservados.
+          <div className="text-xs text-[#6D7277] text-center">
+            © {new Date().getFullYear()} Otimiza Meu Negócio. Todos os direitos reservados.
           </div>
         </div>
+
       </div>
     </footer>
   );

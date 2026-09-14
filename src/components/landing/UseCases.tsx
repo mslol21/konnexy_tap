@@ -1,60 +1,122 @@
 import React from "react";
 import {
-  Scissors,
-  Sparkles,
-  Stethoscope,
-  Dog,
   Utensils,
-  Coffee,
+  Stethoscope,
+  Scissors,
+  Dumbbell,
   ShoppingBag,
+  Dog,
   Wrench,
-  Car,
+  Pill,
+  Hotel,
+  Briefcase,
+  Store,
+  Sparkles,
 } from "lucide-react";
 
 export default function UseCases() {
   const segments = [
-    { name: "Barbearias", icon: <Scissors className="w-6 h-6 text-cyan-400" />, tip: "Na bancada de atendimento" },
-    { name: "Salões de Beleza", icon: <Sparkles className="w-6 h-6 text-pink-400" />, tip: "No lavatório ou recepção" },
-    { name: "Clínicas & Consultórios", icon: <Stethoscope className="w-6 h-6 text-teal-400" />, tip: "No balcão de saída" },
-    { name: "Petshops & Veterinárias", icon: <Dog className="w-6 h-6 text-emerald-400" />, tip: "No caixa pós banho & tosa" },
-    { name: "Restaurantes & Bares", icon: <Utensils className="w-6 h-6 text-amber-400" />, tip: "Nas mesas ou balcão de pagamento" },
-    { name: "Lanchonetes & Cafés", icon: <Coffee className="w-6 h-6 text-orange-400" />, tip: "Junto à máquina de cartão" },
-    { name: "Lojas & Boutiques", icon: <ShoppingBag className="w-6 h-6 text-purple-400" />, tip: "No balcão de embalagem" },
-    { name: "Oficinas Mecânicas", icon: <Wrench className="w-6 h-6 text-slate-300" />, tip: "Na entrega das chaves do veículo" },
-    { name: "Estética Automotiva", icon: <Car className="w-6 h-6 text-blue-400" />, tip: "No pós-serviço e entrega" },
+    {
+      name: "Restaurantes, bares e cafeterias",
+      tip: "Nas mesas ou junto ao fechamento da conta",
+      icon: <Utensils className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Clínicas, consultórios e odontologia",
+      tip: "No balcão de saída e recepção dos pacientes",
+      icon: <Stethoscope className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Barbearias, salões de beleza e estética",
+      tip: "Na bancada de atendimento ou caixa",
+      icon: <Scissors className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Academias, estúdios e crossfit",
+      tip: "Na catraca de entrada/saída ou recepção",
+      icon: <Dumbbell className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Lojas de roupas, calçados e óticas",
+      tip: "No balcão de embalagem e pagamento",
+      icon: <ShoppingBag className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Pet shops e clínicas veterinárias",
+      tip: "No caixa após o atendimento ou banho e tosa",
+      icon: <Dog className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Oficinas mecânicas e centros automotivos",
+      tip: "Na entrega das chaves do veículo revisado",
+      icon: <Wrench className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Farmácias, drogarias e manipulação",
+      tip: "No balcão de retirada de medicamentos",
+      icon: <Pill className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Hotéis, pousadas e hospedagens",
+      tip: "No balcão do check-out e recepção",
+      icon: <Hotel className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Escritórios contábeis, jurídicos e imobiliárias",
+      tip: "Na sala de reuniões ou recepção de clientes",
+      icon: <Briefcase className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Mercados de bairro, padarias e empórios",
+      tip: "Junto à esteira do caixa ou balcão de pães",
+      icon: <Store className="w-5 h-5 text-[#C78D4E]" />,
+    },
+    {
+      name: "Lavanderias, sapatarias e serviços locais",
+      tip: "No balcão de entrega e conferência do serviço",
+      icon: <Sparkles className="w-5 h-5 text-[#C78D4E]" />,
+    },
   ];
 
   return (
-    <section id="segmentos" className="py-24 bg-[#060B17] text-white relative border-t border-white/5">
-      <div className="max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-          <span className="text-xs sm:text-sm uppercase font-extrabold text-cyan-400 tracking-wider bg-cyan-950/90 border border-cyan-500/30 px-4 py-1.5 rounded-full">
-            Comércios Locais
+    <section id="para-quem-e" className="py-20 lg:py-28 bg-[#FFFFFF] border-t border-[#E8E3DD]">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
+        
+        {/* Cabeçalho */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#C78D4E] bg-[#F7F5F2] border border-[#E8E3DD] px-3.5 py-1.5 rounded-full inline-block mb-4">
+            Segmentos Atendidos
           </span>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight">
-            Ideal para qualquer balcão ou recepção
+          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#20252A] tracking-tight">
+            Feita para negócios que atendem pessoas todos os dias.
           </h2>
-          <p className="text-slate-300 text-base sm:text-xl leading-relaxed">
-            A mesma placa física inteligente com acabamento premium, configurada com o link oficial da sua empresa.
+          <p className="text-[#6D7277] text-base sm:text-lg mt-4 leading-relaxed">
+            Se o seu cliente passa pelo seu balcão, caixa ou recepção, a placa funciona para você.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* 12 Segmentos em Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {segments.map((seg, idx) => (
             <div
               key={idx}
-              className="p-5 sm:p-6 rounded-[28px] bg-gradient-to-b from-[#0C152E] to-[#080E21] border border-white/10 hover:border-cyan-500/40 hover:shadow-xl hover:shadow-cyan-500/10 transition-all flex items-center gap-5 group"
+              className="p-6 rounded-2xl bg-[#F7F5F2] border border-[#E8E3DD] hover:border-[#C78D4E]/50 hover:bg-white hover:shadow-sm transition-all flex items-start gap-4 group"
             >
-              <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <div className="w-11 h-11 rounded-xl bg-white border border-[#E8E3DD] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                 {seg.icon}
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-black text-white tracking-tight">{seg.name}</h3>
-                <p className="text-xs sm:text-sm text-slate-300 mt-1">{seg.tip}</p>
+                <h3 className="text-base font-bold text-[#20252A] leading-snug">
+                  {seg.name}
+                </h3>
+                <p className="text-xs text-[#6D7277] mt-1">
+                  {seg.tip}
+                </p>
               </div>
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

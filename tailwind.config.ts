@@ -11,6 +11,16 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        brand: {
+          bg: "#F7F5F2",
+          surface: "#FFFFFF",
+          charcoal: "#30363D",
+          "charcoal-dark": "#20252A",
+          gold: "#C78D4E",
+          "gold-light": "#D8A66C",
+          muted: "#6D7277",
+          border: "#E8E3DD",
+        },
         navy: {
           50: "#f0f4f9",
           100: "#e0eaf3",

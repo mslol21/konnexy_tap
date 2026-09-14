@@ -55,7 +55,7 @@ export default async function PlateStatusPage({ params, searchParams }: StatusPa
           badge: "Não Identificada",
           badgeColor: "bg-slate-100 text-slate-700 border-slate-200",
           title: "Placa Não Encontrada",
-          desc: `O código informado (${normalizedCode}) não foi localizado no sistema Konnexy Tap Reviews. Verifique o código impresso na placa.`,
+          desc: `O código informado (${normalizedCode}) não foi localizado no sistema da Otimiza Meu Negócio. Verifique o código impresso na placa.`,
         };
     }
   };
@@ -63,11 +63,11 @@ export default async function PlateStatusPage({ params, searchParams }: StatusPa
   const info = getStatusInfo();
 
   return (
-    <main className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6">
-      <div className="w-full max-w-md bg-white text-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-200 text-center space-y-5 animate-in fade-in zoom-in-95 duration-200">
+    <main className="min-h-screen bg-[#F7F5F2] flex flex-col items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-md bg-white text-[#20252A] rounded-3xl p-8 shadow-md border border-[#E8E3DD] text-center space-y-5 animate-in fade-in zoom-in-95 duration-200">
         {/* Logo */}
         <div className="flex justify-center mb-2">
-          <Logo theme="light" size="md" badge="Reviews" showTagline={false} />
+          <Logo theme="light" size="md" showTagline={false} />
         </div>
 
         {/* Ícone e Badge */}
@@ -82,27 +82,27 @@ export default async function PlateStatusPage({ params, searchParams }: StatusPa
 
         {/* Título e Explicação */}
         <div className="space-y-2">
-          <h1 className="text-xl font-extrabold text-navy-950 tracking-tight">
+          <h1 className="text-xl font-extrabold text-[#20252A] tracking-tight">
             {info.title}
           </h1>
-          <p className="text-xs text-slate-600 leading-relaxed max-w-xs mx-auto">
+          <p className="text-xs text-[#6D7277] leading-relaxed max-w-xs mx-auto">
             {info.desc}
           </p>
         </div>
 
         {/* Informação do Código */}
-        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs font-mono font-bold text-slate-700">
+        <div className="p-3 bg-[#F7F5F2] rounded-xl border border-[#E8E3DD] text-xs font-mono font-bold text-[#30363D]">
           Código da Placa: {normalizedCode}
         </div>
 
         {/* Ação */}
-        <div className="pt-2 border-t border-slate-100">
+        <div className="pt-2 border-t border-[#E8E3DD]">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-navy-900 hover:text-navy-700"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C78D4E] hover:text-[#D8A66C]"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Conhecer a Konnexy Tap Reviews</span>
+            <span>Conhecer a Otimiza Meu Negócio</span>
           </Link>
         </div>
       </div>

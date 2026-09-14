@@ -1,190 +1,125 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { Check, Sparkles, ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import { Check, ShieldCheck, ArrowRight, Sparkles } from "lucide-react";
 
-export default function PricingSection() {
+interface PricingSectionProps {
+  onOpenReserve?: () => void;
+}
+
+export default function PricingSection({ onOpenReserve }: PricingSectionProps) {
+  const inclusions = [
+    "1 placa física de acrílico com acabamento premium",
+    "Chip NFC embutido, configurado para sua empresa",
+    "QR Code permanente impresso na placa",
+    "Link gerenciado pela Otimiza Meu Negócio",
+    "Direcionamento para o perfil do Google da sua empresa",
+    "Funciona em iPhone, Android e qualquer celular com câmera",
+    "Entrega configurada — pronta para o balcão",
+    "Suporte para ajustes no redirecionamento do link",
+  ];
+
+  const whatsappLink =
+    "https://wa.me/5500000000000?text=Ol%C3%A1%21+Vi+a+placa+de+avalia%C3%A7%C3%B5es+da+Otimiza+Meu+Neg%C3%B3cio+e+gostaria+de+reservar+uma+unidade+para+minha+empresa.";
+
   return (
-    <section id="precos" className="py-20 bg-white relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
-          <span className="text-xs uppercase font-bold text-navy-800 tracking-wider bg-navy-50 border border-navy-200 px-3 py-1 rounded-full">
-            Investimento Acessível e Transparente
+    <section id="preco" className="py-20 lg:py-28 bg-[#F7F5F2] border-t border-[#E8E3DD]">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
+        
+        {/* Cabeçalho */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#C78D4E] bg-white border border-[#E8E3DD] px-3.5 py-1.5 rounded-full inline-block mb-4 shadow-sm">
+            Investimento Transparente
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-navy-950 tracking-tight">
-            Comece com uma placa física. Sem taxas escondidas.
+          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#20252A] tracking-tight">
+            Um preço. Uma placa. Sem surpresas.
           </h2>
-          <p className="text-slate-600 text-base sm:text-lg">
-            Sua placa NFC continua funcionando para sempre com as funções essenciais gratuitas.
+          <p className="text-[#6D7277] text-base sm:text-lg mt-4 leading-relaxed">
+            Sem planos confusos ou mensalidades escondidas. Você paga uma vez e usa a placa no seu balcão.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch max-w-5xl mx-auto">
-          {/* Card Destaque: Placa Física NFC + Plano Básico Perpétuo */}
-          <div className="lg:col-span-6 rounded-3xl p-8 bg-slate-50 border-2 border-navy-900 shadow-xl flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-navy-900 text-gold-400 text-[11px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
-              Mais Vendido
+        {/* Card de Oferta Central */}
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-3xl p-8 sm:p-10 border-2 border-[#C78D4E] shadow-lg relative overflow-hidden">
+            
+            {/* Badge Topo */}
+            <div className="absolute top-0 right-0 bg-[#C78D4E] text-white text-[11px] font-bold px-5 py-1.5 rounded-bl-2xl uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              Primeiro Lote
             </div>
 
-            <div>
-              <div className="text-sm font-bold uppercase tracking-wider text-navy-800">
-                Produto Físico + Software
-              </div>
-              <h3 className="text-2xl font-black text-navy-950 mt-1">
-                Placa Konnexy Tap NFC
-              </h3>
-              <p className="text-xs text-slate-600 mt-2">
-                Placa física elegante de alta durabilidade com chip NFC embutido e QR Code permanente para balcão ou mesas.
+            {/* Cabeçalho do Card */}
+            <div className="mb-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#6D7277] mb-1">
+                Placa Inteligente de Avaliações
               </p>
-
-              {/* Preço */}
-              <div className="mt-6 mb-6">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl sm:text-5xl font-black text-navy-950">
-                    R$ 79,90
-                  </span>
-                  <span className="text-xs font-bold text-slate-500">
-                    / pagamento único
-                  </span>
-                </div>
-                <div className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-100/90 px-2.5 py-0.5 rounded-md">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  Sem mensalidade obrigatória. Uso gratuito perpétuo.
-                </div>
-              </div>
-
-              {/* O que está incluso */}
-              <div className="space-y-3 pt-4 border-t border-slate-200">
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                  O que acompanha a sua placa:
-                </div>
-
-                <ul className="space-y-2.5 text-xs text-slate-700 font-medium">
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span><strong>1 Placa física NFC</strong> personalizada e codificada</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span><strong>QR Code permanente</strong> impresso na placa</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span><strong>Página digital inteligente</strong> ultrarrápida (mobile-first)</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span><strong>URL permanente</strong> (nunca precisa reprogramar a placa)</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Botão de avaliação oficial do <strong>Google Reviews</strong></span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Botões de <strong>WhatsApp, Instagram e Como Chegar</strong></span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Painel administrativo para alterar links a qualquer momento</span>
-                  </li>
-                </ul>
-              </div>
+              <h3 className="text-2xl font-extrabold text-[#20252A]">
+                NFC + QR Code • Configurada para sua empresa
+              </h3>
             </div>
 
-            <div className="mt-8 pt-4">
-              <Link
-                href="/cadastro"
-                className="w-full py-4 px-6 bg-navy-950 hover:bg-navy-900 text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98"
-              >
-                Garantir minha placa física agora
-                <ArrowRight className="w-4 h-4 text-gold-400" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card Upgrade Futuro: Konnexy Tap PRO */}
-          <div className="lg:col-span-6 rounded-3xl p-8 bg-white border border-slate-200 shadow-md flex flex-col justify-between relative">
-            <div>
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-bold uppercase tracking-wider text-gold-600">
-                  Assinatura Opcional
-                </div>
-                <span className="text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-0.5 rounded-full">
-                  Recurso Avançado
+            {/* Preço */}
+            <div className="mb-6 pb-6 border-b border-[#E8E3DD]">
+              <div className="flex items-baseline gap-3">
+                <span className="text-4xl sm:text-5xl font-extrabold text-[#20252A]">
+                  R$ 79,90
+                </span>
+                <span className="text-sm font-semibold text-[#6D7277] uppercase tracking-wide">
+                  Pagamento único
                 </span>
               </div>
-              <h3 className="text-2xl font-black text-navy-950 mt-1">
-                Konnexy Tap PRO
-              </h3>
-              <p className="text-xs text-slate-600 mt-2">
-                Evolua seu balcão para uma central ativa de fidelização, captação de clientes e promoções dinâmicas.
+              <div className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-[#20252A] bg-[#F7F5F2] border border-[#E8E3DD] px-3 py-1.5 rounded-lg">
+                <ShieldCheck className="w-4 h-4 text-[#C78D4E]" />
+                Sem mensalidade obrigatória
+              </div>
+            </div>
+
+            {/* O que está incluso */}
+            <div className="mb-8">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#30363D] mb-4">
+                O que acompanha a sua placa:
               </p>
-
-              {/* Preço Pro */}
-              <div className="mt-6 mb-6">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl sm:text-5xl font-black text-navy-950">
-                    R$ 29,90
-                  </span>
-                  <span className="text-xs font-bold text-slate-500">
-                    / mês (opcional)
-                  </span>
-                </div>
-                <div className="mt-1 text-xs text-slate-600">
-                  Cancele a qualquer momento sem fidelidade.
-                </div>
-              </div>
-
-              {/* Recursos Pro */}
-              <div className="space-y-3 pt-4 border-t border-slate-100">
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-gold-500" />
-                  Tudo do Gratuito, mais:
-                </div>
-
-                <ul className="space-y-2.5 text-xs text-slate-600 font-medium">
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-gold-600 shrink-0" />
-                    <span><strong>Clube de Clientes VIP</strong> com captura LGPD</span>
+              <ul className="space-y-3">
+                {inclusions.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <Check className="w-4.5 h-4.5 text-[#C78D4E] shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#30363D] leading-relaxed">{item}</span>
                   </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-gold-600 shrink-0" />
-                    <span><strong>Módulo de Campanhas e Cupons</strong> de desconto ativos</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-gold-600 shrink-0" />
-                    <span><strong>Analytics detalhado</strong> (acessos, cliques e conversões)</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-gold-600 shrink-0" />
-                    <span><strong>Exportação de contatos</strong> em CSV para campanhas no WhatsApp</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-gold-600 shrink-0" />
-                    <span><strong>Gestão de múltiplas placas</strong> (Balcão, Mesa 1, Mesa 2, Caixa)</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-gold-600 shrink-0" />
-                    <span><strong>Personalização avançada de cores</strong> e posicionamento livre</span>
-                  </li>
-                </ul>
-              </div>
+                ))}
+              </ul>
             </div>
 
-            <div className="mt-8 pt-4">
-              <Link
-                href="/cadastro"
-                className="w-full py-4 px-6 bg-slate-100 hover:bg-slate-200 text-navy-950 font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2"
+            {/* CTAs */}
+            <div className="flex flex-col gap-3">
+              {onOpenReserve ? (
+                <button
+                  onClick={onOpenReserve}
+                  className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-xl bg-[#20252A] hover:bg-[#30363D] text-white text-base font-bold shadow-md transition-all border border-[#20252A] active:scale-95 cursor-pointer"
+                >
+                  <span>Quero reservar minha placa</span>
+                  <ArrowRight className="w-5 h-5 text-[#C78D4E]" />
+                </button>
+              ) : null}
+
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl bg-[#F7F5F2] hover:bg-white text-[#20252A] text-sm font-semibold border border-[#E8E3DD] transition-all"
               >
-                Conhecer recursos Pro no Painel
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+                <span>Tirar dúvidas pelo WhatsApp</span>
+                <ArrowRight className="w-4 h-4 text-[#6D7277]" />
+              </a>
             </div>
+
+            {/* Nota de Transparência */}
+            <p className="text-[11px] text-[#6D7277] text-center mt-6 leading-relaxed">
+              O produto é físico e será enviado após a confirmação do pedido. O prazo de entrega varia conforme a localização. Não há cobrança de mensalidade para o funcionamento básico da placa.
+            </p>
           </div>
         </div>
+
       </div>
     </section>
   );

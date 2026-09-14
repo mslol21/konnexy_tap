@@ -1,102 +1,86 @@
 import React from "react";
 import {
-  CheckCircle2,
-  Smartphone,
+  Star,
+  MapPin,
   ShieldCheck,
-  RefreshCw,
   Zap,
-  Store,
-  Sparkles,
+  RefreshCw,
+  CheckCircle2,
 } from "lucide-react";
-import { KonnexyWaveIcon } from "@/components/brand/Logo";
 
 export default function BenefitsSection() {
   const benefits = [
     {
-      title: "NFC + QR Code na Mesma Placa",
-      desc: "Dois canais físicos integrados para garantir 100% de compatibilidade em qualquer modelo de smartphone.",
-      icon: <KonnexyWaveIcon className="w-6 h-6" />,
-      color: "text-cyan-400",
+      title: "Mais avaliações reais e espontâneas",
+      desc: "Seus clientes satisfeitos avaliam com muito mais frequência porque o caminho até a tela de avaliação ficou imediato.",
+      icon: <Star className="w-6 h-6 text-[#C78D4E] fill-[#C78D4E]" />,
     },
     {
-      title: "Pronta para o Balcão",
-      desc: "Você recebe a placa física montada e configurada com o link oficial da sua empresa, pronta para usar.",
-      icon: <CheckCircle2 className="w-6 h-6 text-emerald-400" />,
-      color: "text-emerald-400",
+      title: "Mais relevância no Google e Google Maps",
+      desc: "Empresas com fluxo constante de avaliações e comentários tendem a ganhar mais destaque quando pessoas pesquisam na sua região.",
+      icon: <MapPin className="w-6 h-6 text-[#C78D4E]" />,
     },
     {
-      title: "Sem Instalar Aplicativo",
-      desc: "O cliente aproxima o celular e a tela abre direto no navegador nativo do aparelho em 1 segundo.",
-      icon: <Smartphone className="w-6 h-6 text-blue-400" />,
-      color: "text-blue-400",
+      title: "Mais confiança para novos clientes",
+      desc: "Quem encontra sua empresa pela primeira vez pesquisa as avaliações antes de decidir. Uma nota alta e comentários recentes geram decisão imediata.",
+      icon: <ShieldCheck className="w-6 h-6 text-[#C78D4E]" />,
     },
     {
-      title: "Sem Mensalidade Obrigatória",
-      desc: "Investimento único de R$ 79,90 no primeiro lote físico comercial. Sem surpresas ou mensalidades ocultas.",
-      icon: <ShieldCheck className="w-6 h-6 text-teal-400" />,
-      color: "text-teal-400",
+      title: "Zero fricção para quem avalia",
+      desc: "Sem baixar app, sem escanear múltiplos links, sem login extra se o cliente já usa Google no celular. Dois segundos e pronto.",
+      icon: <Zap className="w-6 h-6 text-[#C78D4E]" />,
     },
     {
-      title: "Mude o Destino Facilmente",
-      desc: "Se trocar de endereço, mudar de WhatsApp ou alterar o link do Google, a placa física continua funcionando.",
-      icon: <RefreshCw className="w-6 h-6 text-purple-400" />,
-      color: "text-purple-400",
+      title: "Link permanente gerenciado",
+      desc: "A placa aponta para um endereço que a Otimiza Meu Negócio gerencia. Se o Google mudar o link da sua empresa, nós atualizamos sem você precisar trocar de placa.",
+      icon: <RefreshCw className="w-6 h-6 text-[#C78D4E]" />,
     },
     {
-      title: "Configuração Rápida em 2 Min",
-      desc: "Basta cadastrar ou nos enviar o link do seu estabelecimento que realizamos a vinculação imediata.",
-      icon: <Zap className="w-6 h-6 text-amber-400" />,
-      color: "text-amber-400",
-    },
-    {
-      title: "Design Acrílico Premium",
-      desc: "Display resistente e elegante com acabamento moderno, desenvolvido para valorizar o balcão do seu negócio.",
-      icon: <Store className="w-6 h-6 text-cyan-300" />,
-      color: "text-cyan-300",
-    },
-    {
-      title: "Mais Avaliações e Clientes",
-      desc: "Facilite o gesto de quem já teve uma experiência positiva no seu espaço e impulsione a visibilidade local.",
-      icon: <Sparkles className="w-6 h-6 text-amber-300" />,
-      color: "text-amber-300",
+      title: "Sem custo recorrente obrigatório",
+      desc: "Você compra a placa por R$ 79,90 uma única vez. Não há mensalidade obrigatória para mantê-la funcionando no seu balcão.",
+      icon: <CheckCircle2 className="w-6 h-6 text-[#C78D4E]" />,
     },
   ];
 
   return (
-    <section id="beneficios" className="py-24 bg-[#0A1128] text-white relative border-t border-white/5">
-      <div className="max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-          <span className="text-xs sm:text-sm uppercase font-extrabold text-cyan-400 tracking-wider bg-cyan-950/90 border border-cyan-500/30 px-4 py-1.5 rounded-full">
+    <section id="beneficios" className="py-20 lg:py-28 bg-[#F7F5F2] border-t border-[#E8E3DD]">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
+        
+        {/* Cabeçalho */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#C78D4E] bg-white border border-[#E8E3DD] px-3.5 py-1.5 rounded-full inline-block mb-4 shadow-sm">
             Vantagens Comerciais
           </span>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight">
-            Por que ter a placa no seu balcão?
+          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#20252A] tracking-tight">
+            Por que usar a placa?
           </h2>
-          <p className="text-slate-300 text-base sm:text-xl leading-relaxed">
-            Clientes satisfeitos querem apoiar empresas locais, mas desistem quando o processo é difícil. O Konnexy Tap reduz o caminho para um único toque.
+          <p className="text-[#6D7277] text-base sm:text-lg mt-4 leading-relaxed">
+            Mais do que um objeto bonito no balcão: uma ferramenta ativa de reputação local.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 6 Cards de Benefícios em Grid 3x2 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {benefits.map((b, idx) => (
             <div
               key={idx}
-              className="p-7 rounded-[30px] bg-gradient-to-b from-[#0E1A3C] to-[#0A122C] border border-white/10 hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-200 flex flex-col justify-between group"
+              className="p-8 rounded-3xl bg-white border border-[#E8E3DD] shadow-sm hover:shadow-md hover:border-[#C78D4E]/50 transition-all flex flex-col justify-between group"
             >
               <div>
-                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-5 shadow-inner group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-[#F7F5F2] border border-[#E8E3DD] flex items-center justify-center mb-6 group-hover:scale-105 transition-transform">
                   {b.icon}
                 </div>
-                <h3 className="text-base sm:text-lg font-black text-white mb-2.5">
+                <h3 className="text-lg font-bold text-[#20252A] mb-3 leading-snug">
                   {b.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <p className="text-sm text-[#6D7277] leading-relaxed">
                   {b.desc}
                 </p>
               </div>
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

@@ -1,36 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="otmFaviconGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D8A66C" />
-      <stop offset="100%" stop-color="#C78D4E" />
+    <linearGradient id="fvGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D8A66C"/>
+      <stop offset="60%" stop-color="#C78D4E"/>
+      <stop offset="100%" stop-color="#B8793A"/>
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="28" fill="#20252A" />
-  <rect width="126" height="126" x="1" y="1" rx="27" stroke="rgba(216,166,108,0.25)" stroke-width="2" />
-  
-  <g transform="translate(24, 20) scale(0.8)">
-    <path
-      d="M 50 12 C 34 12 22 24 22 40 C 22 62 48 86 50 88 C 52 86 78 62 78 40 C 78 24 66 12 50 12 Z"
-      stroke="#F7F5F2"
-      stroke-width="7.5"
-      stroke-linejoin="round"
-      fill="none"
-    />
-    <path
-      d="M 36 44 L 46 54 L 64 34"
-      stroke="url(#otmFaviconGold)"
-      stroke-width="8.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      fill="none"
-    />
-    <path
-      d="M 56 34 L 64 34 L 64 42"
-      stroke="url(#otmFaviconGold)"
-      stroke-width="7"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      fill="none"
-    />
-  </g>
+  <!-- Fundo quadrado com cantos arredondados -->
+  <rect width="64" height="64" rx="14" fill="#F7F5F2"/>
+  <!-- Anel externo do pin -->
+  <ellipse cx="30" cy="26" rx="17" ry="17" fill="url(#fvGold)"/>
+  <ellipse cx="30" cy="26" rx="10.5" ry="10.5" fill="#F7F5F2"/>
+  <!-- Ponta inferior do pin -->
+  <path d="M 22 39 L 30 54 L 38 39 Q 30 43 22 39 Z" fill="url(#fvGold)"/>
+  <!-- Seta ascendente em grafite -->
+  <path d="M 20 39 L 43 14" stroke="#20252A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 34 14 L 43 14" stroke="#20252A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 43 14 L 43 23" stroke="#20252A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

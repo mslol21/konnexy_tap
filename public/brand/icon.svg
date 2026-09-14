@@ -1,37 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="otmGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D8A66C" />
-      <stop offset="100%" stop-color="#C78D4E" />
+    <linearGradient id="pinGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D8A66C"/>
+      <stop offset="60%" stop-color="#C78D4E"/>
+      <stop offset="100%" stop-color="#B8793A"/>
     </linearGradient>
   </defs>
-
-  <!-- Base de Localização e Checkmark em Grafite -->
-  <path
-    d="M 50 12 C 34 12 22 24 22 40 C 22 62 48 86 50 88 C 52 86 78 62 78 40 C 78 24 66 12 50 12 Z"
-    stroke="#30363D"
-    stroke-width="7"
-    stroke-linejoin="round"
-    fill="none"
-  />
-
-  <!-- Checkmark / Seta de Crescimento Ascendente em Bronze/Dourado -->
-  <path
-    d="M 36 44 L 46 54 L 64 34"
-    stroke="url(#otmGoldGrad)"
-    stroke-width="7.5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    fill="none"
-  />
-
-  <!-- Seta de Expansão no Topo -->
-  <path
-    d="M 56 34 L 64 34 L 64 42"
-    stroke="url(#otmGoldGrad)"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    fill="none"
-  />
+  <!-- Anel externo do pin — bronze/ouro -->
+  <ellipse cx="54" cy="48" rx="32" ry="32" fill="url(#pinGold)"/>
+  <!-- Recorte interno do anel -->
+  <ellipse cx="54" cy="48" rx="20" ry="20" fill="white"/>
+  <!-- Ponta inferior do pin -->
+  <path d="M 40 72 L 54 100 L 68 72 Q 54 80 40 72 Z" fill="url(#pinGold)"/>
+  <!-- Seta ascendente em grafite escuro -->
+  <path d="M 36 72 L 80 28" stroke="#20252A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 64 28 L 80 28" stroke="#20252A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 80 28 L 80 44" stroke="#20252A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

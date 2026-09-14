@@ -10,44 +10,77 @@ export interface LogoProps {
   showTagline?: boolean;
 }
 
-export function OtimizaIcon({ className = "w-6 h-6" }: { className?: string }) {
+/**
+ * OtimizaIcon — Replicação fiel do símbolo oficial da Otimiza Meu Negócio:
+ * Pin de localização em bronze/ouro + seta ascendente em grafite escuro.
+ */
+export function OtimizaIcon({ className = "w-8 h-8", theme = "light" }: { className?: string; theme?: "light" | "dark" }) {
+  const arrowColor = theme === "dark" ? "#FFFFFF" : "#20252A";
+
   return (
     <svg
-      viewBox="0 0 100 100"
+      viewBox="0 0 120 120"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
       <defs>
-        <linearGradient id="otmIconGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="pinGold" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#D8A66C" />
-          <stop offset="100%" stopColor="#C78D4E" />
+          <stop offset="60%" stopColor="#C78D4E" />
+          <stop offset="100%" stopColor="#B8793A" />
         </linearGradient>
       </defs>
-      {/* Base de Localização em Grafite */}
-      <path
-        d="M 50 12 C 34 12 22 24 22 40 C 22 62 48 86 50 88 C 52 86 78 62 78 40 C 78 24 66 12 50 12 Z"
-        stroke="currentColor"
-        strokeWidth="7"
-        strokeLinejoin="round"
-        fill="none"
+
+      {/* Anel externo do pin — elipse dourada */}
+      <ellipse
+        cx="54"
+        cy="48"
+        rx="32"
+        ry="32"
+        fill="url(#pinGold)"
       />
-      {/* Checkmark e Seta de Crescimento Ascendente em Dourado/Bronze */}
+
+      {/* Buraco interno do anel (recorte) */}
+      <ellipse
+        cx="54"
+        cy="48"
+        rx="20"
+        ry="20"
+        fill="white"
+      />
+
+      {/* Ponta inferior do pin */}
       <path
-        d="M 36 44 L 46 54 L 64 34"
-        stroke="url(#otmIconGold)"
-        strokeWidth="7.5"
+        d="M 40 72 L 54 100 L 68 72 Q 54 80 40 72 Z"
+        fill="url(#pinGold)"
+      />
+
+      {/* Seta ascendente em grafite escuro — corpo diagonal */}
+      <path
+        d="M 36 72 L 80 28"
+        stroke={arrowColor}
+        strokeWidth="9"
         strokeLinecap="round"
         strokeLinejoin="round"
-        fill="none"
       />
+
+      {/* Ponta da seta — horizontal */}
       <path
-        d="M 56 34 L 64 34 L 64 42"
-        stroke="url(#otmIconGold)"
-        strokeWidth="6"
+        d="M 64 28 L 80 28"
+        stroke={arrowColor}
+        strokeWidth="9"
         strokeLinecap="round"
         strokeLinejoin="round"
-        fill="none"
+      />
+
+      {/* Ponta da seta — vertical */}
+      <path
+        d="M 80 28 L 80 44"
+        stroke={arrowColor}
+        strokeWidth="9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -59,49 +92,45 @@ export default function Logo({
   badge,
   href = "/",
   className = "",
+  showTagline = false,
 }: LogoProps) {
   const sizeConfig = {
     sm: {
-      iconBox: "w-8 h-8 rounded-lg",
-      icon: "w-5 h-5",
-      title: "text-base tracking-tight leading-none",
-      subtitle: "text-[9px] tracking-[0.18em]",
-      badge: "text-[9px] px-2 py-0.5",
+      icon: "w-8 h-8",
+      title: "text-sm font-black tracking-tight leading-none",
+      subtitle: "text-[8px] tracking-[0.12em] font-bold",
+      tagline: "text-[7px] tracking-[0.08em]",
+      gap: "gap-2",
     },
     md: {
-      iconBox: "w-10 h-10 rounded-xl",
-      icon: "w-6 h-6",
-      title: "text-lg tracking-tight leading-none",
-      subtitle: "text-[10px] tracking-[0.2em]",
-      badge: "text-[10px] px-2.5 py-0.5",
+      icon: "w-10 h-10",
+      title: "text-lg font-black tracking-tight leading-none",
+      subtitle: "text-[10px] tracking-[0.15em] font-bold",
+      tagline: "text-[8.5px] tracking-[0.1em]",
+      gap: "gap-2.5",
     },
     lg: {
-      iconBox: "w-12 h-12 rounded-2xl",
-      icon: "w-7 h-7",
-      title: "text-2xl tracking-tight leading-none",
-      subtitle: "text-xs tracking-[0.22em]",
-      badge: "text-xs px-3 py-1",
+      icon: "w-14 h-14",
+      title: "text-2xl font-black tracking-tight leading-none",
+      subtitle: "text-xs tracking-[0.18em] font-bold",
+      tagline: "text-[10px] tracking-[0.1em]",
+      gap: "gap-3",
     },
   }[size];
 
   const content = (
-    <div className={`inline-flex items-center gap-2.5 group select-none ${className}`}>
-      {/* Símbolo com fundo contrastante suave */}
-      <div
-        className={`${sizeConfig.iconBox} ${
-          theme === "dark"
-            ? "bg-[#20252A] border border-white/10 text-white"
-            : "bg-[#F7F5F2] border border-[#E8E3DD] text-[#30363D]"
-        } flex items-center justify-center shrink-0 shadow-xs group-hover:border-[#C78D4E]/50 transition-colors`}
-      >
-        <OtimizaIcon className={sizeConfig.icon} />
+    <div className={`inline-flex items-center ${sizeConfig.gap} group select-none ${className}`}>
+      {/* Símbolo */}
+      <div className="shrink-0">
+        <OtimizaIcon className={sizeConfig.icon} theme={theme} />
       </div>
 
       {/* Tipografia */}
       <div className="flex flex-col justify-center text-left">
+        {/* Linha 1: OTIMIZA + badge opcional */}
         <div className="flex items-center gap-2">
           <span
-            className={`font-black ${sizeConfig.title} ${
+            className={`${sizeConfig.title} ${
               theme === "dark" ? "text-white" : "text-[#20252A]"
             }`}
           >
@@ -110,7 +139,7 @@ export default function Logo({
 
           {badge && (
             <span
-              className={`font-bold uppercase rounded-full ${sizeConfig.badge} ${
+              className={`font-bold uppercase rounded-full px-2 py-0.5 text-[9px] ${
                 theme === "dark"
                   ? "bg-[#C78D4E]/20 text-[#D8A66C] border border-[#C78D4E]/40"
                   : "bg-[#C78D4E]/10 text-[#C78D4E] border border-[#C78D4E]/30"
@@ -120,13 +149,26 @@ export default function Logo({
             </span>
           )}
         </div>
+
+        {/* Linha 2: MEU NEGÓCIO em bronze */}
         <span
-          className={`font-extrabold uppercase ${sizeConfig.subtitle} ${
+          className={`${sizeConfig.subtitle} uppercase ${
             theme === "dark" ? "text-[#D8A66C]" : "text-[#C78D4E]"
           } mt-0.5`}
         >
           MEU NEGÓCIO
         </span>
+
+        {/* Linha 3: Tagline opcional */}
+        {showTagline && (
+          <span
+            className={`${sizeConfig.tagline} uppercase mt-1 ${
+              theme === "dark" ? "text-[#9BA3AB]" : "text-[#6D7277]"
+            }`}
+          >
+            Agência Especialista em Alavancar Empresas no Google
+          </span>
+        )}
       </div>
     </div>
   );

@@ -43,10 +43,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#F7F5F2]">
+    <div className="min-h-screen flex bg-[#F5F3EF]">
       
       {/* Painel Esquerdo — Identidade e Propósito */}
-      <div className="hidden lg:flex lg:w-1/2 xl:w-5/12 flex-col justify-between p-12 xl:p-16 bg-[#20252A] text-white">
+      <div className="hidden lg:flex lg:w-1/2 xl:w-5/12 flex-col justify-between p-12 xl:p-16 bg-[#242A30] text-white">
         
         {/* Logo */}
         <div>
@@ -55,8 +55,8 @@ export default function LoginPage() {
 
         {/* Texto Central */}
         <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2D343B] border border-[#C78D4E]/30 text-[#C78D4E] text-xs font-bold uppercase tracking-wider">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C78D4E] animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2D343B] border border-[#BD7B48]/30 text-[#BD7B48] text-xs font-bold uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#BD7B48] animate-pulse" />
             Área do Cliente
           </div>
           <h2 className="text-3xl xl:text-4xl font-extrabold text-white leading-tight tracking-tight">

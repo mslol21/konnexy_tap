@@ -13,36 +13,36 @@ export default function Navbar({ onOpenReserve }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#FFFFFF]/95 backdrop-blur-md border-b border-[#E8E3DD] transition-all">
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12 h-20 flex items-center justify-between">
-        {/* Logo Oficial */}
-        <div className="flex items-center gap-4">
-          <Logo theme="light" size="md" showTagline={false} />
+    <header className="sticky top-0 z-50 w-full bg-[#FFFFFF]/95 backdrop-blur-md border-b border-[#E5E1D8] transition-all">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12 h-20 sm:h-24 flex items-center justify-between">
+        {/* Logo Oficial Ampliada com Escrita 3D Idêntica à Referência */}
+        <div className="flex items-center py-2">
+          <Logo theme="light" size="md" />
         </div>
 
         {/* Links Desktop */}
-        <nav className="hidden md:flex items-center gap-7 text-[15px] font-medium text-[#30363D]">
-          <a href="#como-funciona" className="hover:text-[#C78D4E] transition-colors">
+        <nav className="hidden md:flex items-center gap-6 text-[14px] font-semibold text-[#242A30]">
+          <a href="#como-funciona" className="hover:text-[#BD7B48] transition-colors">
             Como funciona
           </a>
-          <a href="#para-quem-e" className="hover:text-[#C78D4E] transition-colors">
+          <a href="#para-quem-e" className="hover:text-[#BD7B48] transition-colors">
             Para quem é
           </a>
-          <a href="#beneficios" className="hover:text-[#C78D4E] transition-colors">
+          <a href="#beneficios" className="hover:text-[#BD7B48] transition-colors">
             Benefícios
           </a>
-          <a href="#diferencial" className="hover:text-[#C78D4E] transition-colors">
+          <a href="#diferencial" className="hover:text-[#BD7B48] transition-colors">
             Diferencial
           </a>
-          <a href="#preco" className="hover:text-[#C78D4E] transition-colors">
+          <a href="#preco" className="hover:text-[#BD7B48] transition-colors">
             Preço
           </a>
-          <a href="#duvidas" className="hover:text-[#C78D4E] transition-colors">
+          <a href="#duvidas" className="hover:text-[#BD7B48] transition-colors">
             Dúvidas
           </a>
           <Link
             href="/demo"
-            className="text-[#C78D4E] hover:text-[#D8A66C] transition-colors flex items-center gap-1.5 font-semibold text-xs bg-[#F7F5F2] px-3 py-1.5 rounded-full border border-[#E8E3DD]"
+            className="text-[#BD7B48] hover:text-[#D9945F] transition-colors flex items-center gap-1.5 font-bold text-xs bg-[#F5F3EF] px-3 py-1.5 rounded-full border border-[#E5E1D8]"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Ver Demonstração</span>
@@ -50,19 +50,19 @@ export default function Navbar({ onOpenReserve }: NavbarProps) {
         </nav>
 
         {/* Ações Desktop */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
           <Link
             href="/login"
-            className="text-sm font-semibold text-[#6D7277] hover:text-[#20252A] px-3 py-2 transition-colors"
+            className="text-xs font-bold text-[#666E7A] hover:text-[#242A30] px-3 py-2 transition-colors"
           >
             Área do Cliente
           </Link>
           <button
             onClick={onOpenReserve}
-            className="text-sm font-semibold bg-[#20252A] hover:bg-[#30363D] text-white px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#30363D] active:scale-95"
+            className="text-xs font-bold bg-[#242A30] hover:bg-[#363E48] text-white px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center gap-2 cursor-pointer border border-[#242A30] active:scale-95"
           >
             <span>Quero minha placa</span>
-            <ArrowRight className="w-4 h-4 text-[#C78D4E]" />
+            <ArrowRight className="w-4 h-4 text-[#BD7B48]" />
           </button>
         </div>
 

@@ -1,267 +1,203 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Users,
-  Radio,
-  QrCode,
-  CheckCircle2,
-  Clock,
-  TrendingUp,
-  DollarSign,
+  AlertCircle,
   ArrowRight,
-  Sparkles,
-  ShieldCheck,
+  Clock,
+  DollarSign,
+  Loader2,
   Plus,
+  Radio,
+  TrendingUp,
+  Users,
 } from "lucide-react";
-import { DEMO_DEVICES, DEMO_LEADS } from "@/lib/mock-data";
-import { Lead, TapDevice } from "@/lib/types";
+
+interface OverviewPayload {
+  metrics: {
+    totalLeads: number;
+    reserved: number;
+    sold: number;
+    activeDevices: number;
+    pendingDevices: number;
+    accessesToday: number;
+  };
+  recentLeads: Array<{
+    id: string;
+    name: string;
+    business_name: string;
+    whatsapp: string;
+    city?: string | null;
+    status: string;
+    created_at: string;
+    converted_device_id?: string | null;
+  }>;
+  recentDevices: Array<{
+    id: string;
+    code: string;
+    name: string;
+    location: string;
+    status: string;
+    active: boolean;
+    created_at: string;
+    businesses?: { name?: string } | null;
+  }>;
+}
 
 export default function AdminDashboardPage() {
-  const [leads, setLeads] = useState<Lead[]>(DEMO_LEADS);
-  const [devices, setDevices] = useState<TapDevice[]>(DEMO_DEVICES);
+  const [data, setData] = useState<OverviewPayload | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadOverview = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/admin/overview", { cache: "no-store" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setData(null);
+        setError(typeof payload.error === "string" ? payload.error : "Não foi possível carregar o painel.");
+        return;
+      }
+      setData(payload as OverviewPayload);
+    } catch {
+      setData(null);
+      setError("Falha de conexão ao carregar o painel operacional.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch("/api/leads")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.leads) setLeads(data.leads);
-      })
-      .catch(() => {});
+    void loadOverview();
   }, []);
 
-  const totalLeads = leads.length;
-  const reservedCount = leads.filter((l) => l.status === "reserved").length;
-  const soldCount = leads.filter((l) => l.status === "sold").length;
-  const activeDevices = devices.filter((d) => d.status === "active" || d.active).length;
-  const pendingDevices = devices.filter((d) => d.status === "pending").length;
+  const metrics = data?.metrics ?? {
+    totalLeads: 0,
+    reserved: 0,
+    sold: 0,
+    activeDevices: 0,
+    pendingDevices: 0,
+    accessesToday: 0,
+  };
 
-  const totalViewsToday = 37; // Acessos telemetria hoje
+  const cards = [
+    { label: "Reservas", value: metrics.reserved, helper: "Leads reservados", icon: Clock, className: "text-amber-400" },
+    { label: "Vendas", value: metrics.sold, helper: "Leads marcados como vendidos", icon: DollarSign, className: "text-emerald-400" },
+    { label: "Placas ativas", value: metrics.activeDevices, helper: "Redirecionando no balcão", icon: Radio, className: "text-blue-400" },
+    { label: "Pendentes", value: metrics.pendingDevices, helper: "Aguardando ativação", icon: Clock, className: "text-purple-400" },
+    { label: "Total leads", value: metrics.totalLeads, helper: "Reservas registradas", icon: Users, className: "text-slate-300" },
+    { label: "Acessos hoje", value: metrics.accessesToday, helper: "Redirecionamentos reais", icon: TrendingUp, className: "text-gold-400" },
+  ];
 
   return (
     <div className="space-y-6">
-      {/* Header Operacional */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-800/80 p-6 rounded-3xl border border-slate-700 shadow-lg">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-800/80 p-6 rounded-3xl border border-slate-700">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-500/20 text-gold-300 text-xs font-bold border border-gold-400/30">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Fase 1: Validação do 1º Lote Físico (10 a 100 placas)</span>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gold-500/15 text-gold-300 text-xs font-bold border border-gold-400/20">
+            MVP comercial • dados reais
           </div>
-          <h1 className="text-2xl font-black text-white mt-1">
-            Painel Operacional — Otimiza Meu Negócio
-          </h1>
-          <p className="text-xs text-slate-300">
-            Monitore reservas, configure novas placas em menos de 1 minuto e acompanhe os toques dos clientes no balcão.
-          </p>
+          <h1 className="text-2xl font-black text-white mt-2">Painel Operacional — Otimiza Meu Negócio</h1>
+          <p className="text-xs text-slate-300 mt-1">Reservas, placas e acessos exibidos diretamente do Supabase. Sem números demonstrativos.</p>
         </div>
-
-        <div className="flex items-center gap-2.5">
-          <Link
-            href="/admin/placas"
-            className="px-4 py-2.5 bg-gold-500 hover:bg-gold-400 text-navy-950 text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Cadastrar Placa (&lt; 1 min)</span>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/placas" className="px-4 py-2.5 bg-gold-500 hover:bg-gold-400 text-navy-950 text-xs font-black rounded-xl flex items-center gap-1.5">
+            <Plus className="w-4 h-4" /> Cadastrar placa
           </Link>
-          <Link
-            href="/admin/leads"
-            className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
-          >
-            <Users className="w-4 h-4 text-gold-400" />
-            <span>Ver Funil de Leads</span>
+          <Link href="/admin/leads" className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl flex items-center gap-1.5">
+            <Users className="w-4 h-4 text-gold-400" /> Ver leads
           </Link>
         </div>
-      </div>
+      </header>
 
-      {/* Cards de Métricas Operacionais Reais */}
+      {error && (
+        <div role="alert" className="p-4 rounded-2xl border border-amber-500/40 bg-amber-500/10 text-amber-100 text-xs flex items-start gap-2">
+          <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+          <div>
+            <div className="font-bold">Painel ainda não conectado ao banco.</div>
+            <div className="mt-0.5">{error}</div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
-        {/* Reservas */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 shadow-xs">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[10px] font-bold text-amber-400 uppercase">Reservas</span>
-            <Clock className="w-4 h-4 text-amber-400" />
-          </div>
-          <div className="text-2xl font-black text-white">{reservedCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Lote 1 Garantido</div>
-        </div>
-
-        {/* Vendas Fechadas */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 shadow-xs">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[10px] font-bold text-emerald-400 uppercase">Vendas</span>
-            <DollarSign className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="text-2xl font-black text-emerald-400">{soldCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Placas Pagas (R$ 79,90)</div>
-        </div>
-
-        {/* Placas Ativas */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 shadow-xs">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[10px] font-bold text-blue-400 uppercase">Ativas</span>
-            <Radio className="w-4 h-4 text-blue-400" />
-          </div>
-          <div className="text-2xl font-black text-white">{activeDevices}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">No Balcão Rodando</div>
-        </div>
-
-        {/* Placas Aguardando Configuração */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 shadow-xs">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[10px] font-bold text-purple-400 uppercase">Pendentes</span>
-            <Clock className="w-4 h-4 text-purple-400" />
-          </div>
-          <div className="text-2xl font-black text-purple-300">{pendingDevices}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Aguardando Link Google</div>
-        </div>
-
-        {/* Total de Leads */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 shadow-xs">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[10px] font-bold text-slate-300 uppercase">Total Leads</span>
-            <Users className="w-4 h-4 text-slate-300" />
-          </div>
-          <div className="text-2xl font-black text-white">{totalLeads}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Interessados Registrados</div>
-        </div>
-
-        {/* Acessos Hoje */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 shadow-xs">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[10px] font-bold text-gold-400 uppercase">Acessos Hoje</span>
-            <TrendingUp className="w-4 h-4 text-gold-400" />
-          </div>
-          <div className="text-2xl font-black text-white">{totalViewsToday}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Toques para Avaliação</div>
-        </div>
+        {cards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div key={card.label} className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+              <div className="flex items-center justify-between mb-2">
+                <span className={`text-[10px] uppercase font-bold ${card.className}`}>{card.label}</span>
+                <Icon className={`w-4 h-4 ${card.className}`} />
+              </div>
+              <div className="text-2xl font-black text-white">{loading ? "—" : card.value}</div>
+              <div className="text-[10px] text-slate-400 mt-1 leading-tight">{card.helper}</div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Seção Operacional Rápida */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Últimas Reservas Recebidas */}
-        <div className="bg-slate-800/80 p-6 rounded-3xl border border-slate-700 flex flex-col justify-between">
-          <div>
+      {loading ? (
+        <div className="p-12 flex items-center justify-center"><Loader2 className="w-8 h-8 text-gold-400 animate-spin" /></div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <section className="bg-slate-800/80 p-6 rounded-3xl border border-slate-700">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                <Users className="w-4 h-4 text-gold-400" />
-                Últimas Reservas de Placas
-              </h2>
-              <Link
-                href="/admin/leads"
-                className="text-xs font-bold text-gold-400 hover:underline flex items-center gap-1"
-              >
-                <span>Ver Todas</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
+              <h2 className="text-sm font-bold text-white flex items-center gap-2"><Users className="w-4 h-4 text-gold-400" /> Últimos leads</h2>
+              <Link href="/admin/leads" className="text-xs font-bold text-gold-400 hover:text-gold-300 flex items-center gap-1">Ver todos <ArrowRight className="w-3 h-3" /></Link>
             </div>
 
-            <div className="divide-y divide-slate-700/60">
-              {leads.slice(0, 4).map((lead) => (
-                <div key={lead.id} className="py-3 flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-bold text-white flex items-center gap-2">
-                      {lead.business_name}
-                      <span className="text-[10px] text-slate-400 font-normal">
-                        ({lead.name})
-                      </span>
+            {data?.recentLeads.length ? (
+              <div className="divide-y divide-slate-700/70">
+                {data.recentLeads.map((lead) => (
+                  <div key={lead.id} className="py-3 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-white truncate">{lead.business_name}</div>
+                      <div className="text-[11px] text-slate-400 truncate">{lead.name}{lead.city ? ` • ${lead.city}` : ""} • {lead.whatsapp}</div>
                     </div>
-                    <div className="text-[11px] text-slate-400 font-mono mt-0.5">
-                      {lead.city || "Cidade não informada"} • {lead.whatsapp}
-                    </div>
+                    {lead.converted_device_id ? (
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-300">Placa criada</span>
+                    ) : (
+                      <Link href={`/admin/placas?lead_id=${encodeURIComponent(lead.id)}&business_name=${encodeURIComponent(lead.business_name)}&city=${encodeURIComponent(lead.city || "")}`} className="text-[10px] font-black px-2.5 py-1.5 rounded-lg bg-gold-500 text-navy-950 shrink-0">Criar placa</Link>
+                    )}
                   </div>
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                      lead.status === "reserved"
-                        ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                        : lead.status === "sold"
-                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                        : "bg-slate-700 text-slate-300"
-                    }`}
-                  >
-                    {lead.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-10 text-center text-xs text-slate-400">Nenhum lead real registrado ainda.</div>
+            )}
+          </section>
 
-          <div className="pt-4 mt-2 border-t border-slate-700">
-            <Link
-              href="/admin/leads"
-              className="w-full py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
-            >
-              <span>Gerenciar Funil de Vendas</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Placas Físicas & Configuração Express */}
-        <div className="bg-slate-800/80 p-6 rounded-3xl border border-slate-700 flex flex-col justify-between">
-          <div>
+          <section className="bg-slate-800/80 p-6 rounded-3xl border border-slate-700">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                <Radio className="w-4 h-4 text-emerald-400" />
-                Status das Placas Físicas
-              </h2>
-              <Link
-                href="/admin/placas"
-                className="text-xs font-bold text-gold-400 hover:underline flex items-center gap-1"
-              >
-                <span>Configurar Nova</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
+              <h2 className="text-sm font-bold text-white flex items-center gap-2"><Radio className="w-4 h-4 text-emerald-400" /> Últimas placas</h2>
+              <Link href="/admin/placas" className="text-xs font-bold text-gold-400 hover:text-gold-300 flex items-center gap-1">Gerenciar <ArrowRight className="w-3 h-3" /></Link>
             </div>
 
-            <div className="divide-y divide-slate-700/60">
-              {devices.map((device) => (
-                <div key={device.id} className="py-3 flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-bold text-white flex items-center gap-2">
-                      <span className="font-mono text-gold-400">{device.code}</span>
-                      <span>—</span>
-                      <span>{device.name}</span>
+            {data?.recentDevices.length ? (
+              <div className="divide-y divide-slate-700/70">
+                {data.recentDevices.map((device) => (
+                  <div key={device.id} className="py-3 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-white truncate">{device.businesses?.name || device.name}</div>
+                      <div className="text-[11px] text-slate-400"><span className="font-mono text-gold-400">{device.code}</span> • {device.location}</div>
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">
-                      Local: {device.location}
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${device.status === "active" ? "bg-emerald-500/15 text-emerald-300" : "bg-amber-500/15 text-amber-300"}`}>{device.status}</span>
+                      {device.status === "active" && (
+                        <Link href={`/t/${device.code}?src=direct`} target="_blank" className="text-[10px] px-2 py-1 rounded bg-slate-700 text-slate-200">Testar</Link>
+                      )}
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        device.status === "active" || device.active
-                          ? "bg-emerald-500/20 text-emerald-300"
-                          : "bg-amber-500/20 text-amber-300"
-                      }`}
-                    >
-                      {device.status === "active" || device.active ? "Ativa" : "Pendente"}
-                    </span>
-                    <Link
-                      href={`/t/${device.code}`}
-                      target="_blank"
-                      className="text-[11px] text-slate-300 hover:text-white bg-slate-700 px-2 py-1 rounded"
-                    >
-                      Testar
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-4 mt-2 border-t border-slate-700">
-            <Link
-              href="/admin/placas"
-              className="w-full py-2.5 bg-gold-500 hover:bg-gold-400 text-navy-950 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Cadastrar e Codificar Nova Placa NFC</span>
-            </Link>
-          </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-10 text-center text-xs text-slate-400">Nenhuma placa real cadastrada ainda.</div>
+            )}
+          </section>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -12,7 +12,7 @@ import DifferentiatorSection from "@/components/landing/DifferentiatorSection";
 import PricingSection from "@/components/landing/PricingSection";
 import FAQSection from "@/components/landing/FAQSection";
 import Footer from "@/components/landing/Footer";
-import ReserveModal from "@/components/landing/ReserveModal";
+import ReserveModalMvp from "@/components/landing/ReserveModalMvp";
 
 export default function HomePage() {
   const [reserveModalOpen, setReserveModalOpen] = useState(false);
@@ -33,8 +33,7 @@ export default function HomePage() {
       </main>
       <Footer />
 
-      {/* Modal de Reserva de Placas */}
-      <ReserveModal
+      <ReserveModalMvp
         isOpen={reserveModalOpen}
         onClose={() => setReserveModalOpen(false)}
       />

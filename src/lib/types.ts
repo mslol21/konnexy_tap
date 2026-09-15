@@ -93,7 +93,7 @@ export interface TapDevice {
   code: string;
   name: string;
   type: DeviceType;
-  location: string; // Ex: 'Balcão', 'Mesa 1', 'Caixa', 'Recepção'
+  location: string;
   active: boolean;
   status: DeviceStatus;
   destination_url?: string;
@@ -111,7 +111,9 @@ export interface Lead {
   city?: string;
   source: LeadSource;
   status: LeadStatus;
-  notes?: string;
+  notes?: string | null;
+  converted_business_id?: string | null;
+  converted_device_id?: string | null;
   created_at: string;
   updated_at?: string;
 }

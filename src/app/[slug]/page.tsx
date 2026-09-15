@@ -8,64 +8,78 @@ interface SlugPageProps {
   params: Promise<{ slug: string }>;
 }
 
+/**
+ * Página inteligente multi-link é um recurso de Fase 2.
+ * No MVP de validação da placa de avaliações, a rota fica desabilitada por padrão.
+ */
 export default async function SlugPage({ params }: SlugPageProps) {
-  const { slug } = await params;
+  if (process.env.NEXT_PUBLIC_ENABLE_SMART_PAGES !== "true") {
+    notFound();
+  }
 
-  let business = DEMO_BUSINESS;
-  let links = DEMO_LINKS;
-  let campaign = DEMO_CAMPAIGN;
+  const { slug } = await params;
 
   if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
     try {
       const supabase = await createClient();
-      const { data: bData } = await supabase
+      const { data: business } = await supabase
         .from("businesses")
         .select("*")
         .eq("slug", slug)
         .eq("is_active", true)
-        .single();
+        .maybeSingle();
 
-      if (bData) {
-        business = bData;
+      if (!business) {
+        notFound();
+      }
 
-        const { data: linksData } = await supabase
+      const [{ data: links }, { data: campaign }] = await Promise.all([
+        supabase
           .from("business_links")
           .select("*")
           .eq("business_id", business.id)
           .eq("is_active", true)
-          .order("order_index", { ascending: true });
-
-        if (linksData) links = linksData;
-
-        const { data: campData } = await supabase
+          .order("order_index", { ascending: true }),
+        supabase
           .from("campaigns")
           .select("*")
           .eq("business_id", business.id)
           .eq("is_active", true)
           .limit(1)
-          .maybeSingle();
+          .maybeSingle(),
+      ]);
 
-        if (campData) campaign = campData;
-      } else if (slug !== "cafe-da-ana") {
-        notFound();
-      }
+      return (
+        <main className="min-h-screen bg-slate-100 flex flex-col justify-start items-center">
+          <div className="w-full max-w-[440px] min-h-screen bg-white shadow-xl relative">
+            <PhoneView
+              business={business}
+              links={links ?? []}
+              campaign={campaign ?? null}
+              isMockup={false}
+            />
+          </div>
+        </main>
+      );
     } catch {
-      // Fallback
+      notFound();
     }
-  } else if (slug !== "cafe-da-ana") {
-    // Modo demo suporta 'cafe-da-ana'
   }
 
-  return (
-    <main className="min-h-screen bg-slate-100 flex flex-col justify-start items-center">
-      <div className="w-full max-w-[440px] min-h-screen bg-white shadow-xl relative">
-        <PhoneView
-          business={business}
-          links={links}
-          campaign={campaign}
-          isMockup={false}
-        />
-      </div>
-    </main>
-  );
+  if (process.env.NODE_ENV !== "production" && slug === "cafe-da-ana") {
+    return (
+      <main className="min-h-screen bg-slate-100 flex flex-col justify-start items-center">
+        <div className="w-full max-w-[440px] min-h-screen bg-white shadow-xl relative">
+          <PhoneView
+            business={DEMO_BUSINESS}
+            links={DEMO_LINKS}
+            campaign={DEMO_CAMPAIGN}
+            isMockup={false}
+          />
+        </div>
+      </main>
+    );
+  }
+
+  notFound();
 }

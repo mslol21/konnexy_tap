@@ -2,14 +2,13 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Lock, Mail, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/brand/Logo";
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,12 +28,7 @@ export default function LoginPage() {
         return;
       }
 
-      const requestedNext = searchParams.get("next");
-      const safeNext = requestedNext?.startsWith("/") && !requestedNext.startsWith("//")
-        ? requestedNext
-        : "/dashboard";
-
-      router.replace(safeNext);
+      router.replace("/dashboard");
       router.refresh();
     } catch {
       setErrorMsg("Não foi possível entrar agora. Tente novamente em instantes.");

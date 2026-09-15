@@ -19,6 +19,13 @@ const updateLeadSchema = z.object({
   id: z.string().uuid(),
   status: z.enum(["new", "contacted", "interested", "reserved", "sold", "lost"]).optional(),
   notes: z.string().trim().max(2000).optional().nullable(),
+  name: z.string().trim().min(2).max(100).optional(),
+  business_name: z.string().trim().min(2).max(140).optional(),
+  whatsapp: z.string().trim().min(8).max(24).optional(),
+  instagram: z.string().trim().max(120).optional().nullable(),
+  segment: z.string().trim().max(100).optional().nullable(),
+  city: z.string().trim().max(120).optional().nullable(),
+  source: z.enum(["instagram", "whatsapp", "facebook", "presencial", "indicacao", "site", "outro"]).optional(),
 });
 
 function adminDenied(auth: Awaited<ReturnType<typeof requireAdmin>>) {
@@ -32,9 +39,16 @@ function adminDenied(auth: Awaited<ReturnType<typeof requireAdmin>>) {
   return NextResponse.json({ error: message }, { status: auth.status });
 }
 
+function hasPublicSupabaseConfig() {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    if (!hasPublicSupabaseConfig()) {
       return NextResponse.json({ error: "Serviço temporariamente indisponível." }, { status: 503 });
     }
 
@@ -62,8 +76,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Não foi possível registrar a reserva." }, { status: 500 });
     }
 
-    // Não fazemos .select() após o INSERT: visitantes podem inserir uma reserva,
-    // mas não possuem política SELECT na tabela de leads.
     return NextResponse.json({ success: true }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Requisição inválida." }, { status: 400 });
@@ -98,21 +110,31 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const parsed = updateLeadSchema.safeParse(body);
 
-    if (!parsed.success || (parsed.data.status === undefined && parsed.data.notes === undefined)) {
+    if (!parsed.success) {
       return NextResponse.json({ error: "Dados inválidos." }, { status: 400 });
     }
 
-    const updateData: Record<string, string | null> = {};
-    if (parsed.data.status !== undefined) updateData.status = parsed.data.status;
-    if (parsed.data.notes !== undefined) updateData.notes = parsed.data.notes;
+    const { id, ...patch } = parsed.data;
+    const updateData = Object.fromEntries(
+      Object.entries(patch).filter(([, value]) => value !== undefined)
+    );
 
-    const { error } = await auth.supabase.from("leads").update(updateData).eq("id", parsed.data.id);
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ error: "Nenhuma alteração informada." }, { status: 400 });
+    }
+
+    const { data, error } = await auth.supabase
+      .from("leads")
+      .update(updateData)
+      .eq("id", id)
+      .select("*")
+      .single();
 
     if (error) {
       return NextResponse.json({ error: "Não foi possível atualizar o lead." }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, lead: data });
   } catch {
     return NextResponse.json({ error: "Requisição inválida." }, { status: 400 });
   }

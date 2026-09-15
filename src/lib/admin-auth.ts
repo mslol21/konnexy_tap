@@ -9,7 +9,11 @@ export type AdminAuthResult =
  * Deve ser chamado somente em código server-side.
  */
 export async function requireAdmin(): Promise<AdminAuthResult> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  const publicKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !publicKey) {
     return { ok: false, status: 503, reason: "config" };
   }
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { requireAdmin } from "@/lib/admin-auth";
 import { createClient } from "@/lib/supabase/server";
 
 const createLeadSchema = z.object({
@@ -20,33 +21,20 @@ const updateLeadSchema = z.object({
   notes: z.string().trim().max(2000).optional().nullable(),
 });
 
-async function requireAdmin() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    return { ok: false as const, status: 401, supabase };
-  }
-
-  const { data: adminRecord, error: adminError } = await supabase
-    .from("app_admins")
-    .select("user_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (adminError || !adminRecord) {
-    return { ok: false as const, status: 403, supabase };
-  }
-
-  return { ok: true as const, status: 200, supabase };
+function adminDenied(auth: Awaited<ReturnType<typeof requireAdmin>>) {
+  if (auth.ok) return null;
+  const message =
+    auth.reason === "config"
+      ? "Supabase ainda não configurado."
+      : auth.reason === "unauthenticated"
+        ? "Não autenticado."
+        : "Acesso negado.";
+  return NextResponse.json({ error: message }, { status: auth.status });
 }
 
 export async function POST(request: NextRequest) {
   try {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       return NextResponse.json({ error: "Serviço temporariamente indisponível." }, { status: 503 });
     }
 
@@ -58,25 +46,25 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("leads")
-      .insert({
-        ...parsed.data,
-        instagram: parsed.data.instagram || null,
-        segment: parsed.data.segment || null,
-        city: parsed.data.city || null,
-        status: "new",
-        notes: null,
-      })
-      .select("id, created_at")
-      .single();
+    const { error } = await supabase.from("leads").insert({
+      ...parsed.data,
+      instagram: parsed.data.instagram || null,
+      segment: parsed.data.segment || null,
+      city: parsed.data.city || null,
+      status: "new",
+      notes: null,
+      converted_business_id: null,
+      converted_device_id: null,
+    });
 
     if (error) {
       console.error("Falha ao registrar lead", error.message);
       return NextResponse.json({ error: "Não foi possível registrar a reserva." }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, lead: data }, { status: 201 });
+    // Não fazemos .select() após o INSERT: visitantes podem inserir uma reserva,
+    // mas não possuem política SELECT na tabela de leads.
+    return NextResponse.json({ success: true }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Requisição inválida." }, { status: 400 });
   }
@@ -84,9 +72,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   const auth = await requireAdmin();
-  if (!auth.ok) {
-    return NextResponse.json({ error: auth.status === 401 ? "Não autenticado." : "Acesso negado." }, { status: auth.status });
-  }
+  const denied = adminDenied(auth);
+  if (denied) return denied;
+  if (!auth.ok) return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
 
   const { data, error } = await auth.supabase
     .from("leads")
@@ -102,9 +90,9 @@ export async function GET() {
 
 export async function PATCH(request: NextRequest) {
   const auth = await requireAdmin();
-  if (!auth.ok) {
-    return NextResponse.json({ error: auth.status === 401 ? "Não autenticado." : "Acesso negado." }, { status: auth.status });
-  }
+  const denied = adminDenied(auth);
+  if (denied) return denied;
+  if (!auth.ok) return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
 
   try {
     const body = await request.json();
@@ -118,10 +106,7 @@ export async function PATCH(request: NextRequest) {
     if (parsed.data.status !== undefined) updateData.status = parsed.data.status;
     if (parsed.data.notes !== undefined) updateData.notes = parsed.data.notes;
 
-    const { error } = await auth.supabase
-      .from("leads")
-      .update(updateData)
-      .eq("id", parsed.data.id);
+    const { error } = await auth.supabase.from("leads").update(updateData).eq("id", parsed.data.id);
 
     if (error) {
       return NextResponse.json({ error: "Não foi possível atualizar o lead." }, { status: 500 });

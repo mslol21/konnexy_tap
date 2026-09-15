@@ -111,7 +111,7 @@ export interface Lead {
   city?: string;
   source: LeadSource;
   status: LeadStatus;
-  notes?: string;
+  notes?: string | null;
   converted_business_id?: string | null;
   converted_device_id?: string | null;
   created_at: string;

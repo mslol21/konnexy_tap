@@ -92,10 +92,10 @@ export function sanitizeSource(src: string | null | undefined): "nfc" | "qr" | "
 }
 
 /**
- * Gera código público não sequencial no padrão KX-XXXXX.
+ * Gera código público não sequencial no padrão PREFIXO-XXXXX.
  * Usa Web Crypto quando disponível e exclui caracteres ambíguos (0, O, 1, I).
  */
-export function generateDeviceCode(prefix = "KX"): string {
+export function generateDeviceCode(prefix = "OM"): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const bytes = new Uint8Array(5);
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { validateDestinationUrl, sanitizeSource, isValidDeviceCodeFormat } from "@/lib/security";
-import { DEMO_DEVICE, DEMO_DEVICES, DEMO_BUSINESS } from "@/lib/mock-data";
+import { DEMO_DEVICES, DEMO_BUSINESS } from "@/lib/mock-data";
 
 interface RouteProps {
   params: Promise<{ code: string }>;
@@ -18,17 +18,16 @@ export async function GET(request: NextRequest, { params }: RouteProps) {
   }
 
   const code = rawCode.toUpperCase().trim();
-  const rawSrc = url.searchParams.get("src");
-  const source = sanitizeSource(rawSrc);
+  const source = sanitizeSource(url.searchParams.get("src"));
 
-  let device = null;
-  let business = null;
+  let device: any = null;
+  let business: any = null;
+  let serviceClient: ReturnType<typeof createServiceClient> | null = null;
 
-  // 1. Busca no Supabase quando variáveis de ambiente configuradas
   if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
     try {
-      const supabase = await createClient();
-      const { data, error } = await supabase
+      serviceClient = createServiceClient();
+      const { data, error } = await serviceClient
         .from("tap_devices")
         .select("*, businesses(*)")
         .eq("code", code)
@@ -39,29 +38,44 @@ export async function GET(request: NextRequest, { params }: RouteProps) {
         business = data.businesses;
       }
     } catch {
-      // Continua para fallback
+      // Em desenvolvimento sem service role, usa o cliente SSR sujeito a RLS.
+      try {
+        const supabase = await createClient();
+        const { data, error } = await supabase
+          .from("tap_devices")
+          .select("*, businesses(*)")
+          .eq("code", code)
+          .maybeSingle();
+
+        if (!error && data) {
+          device = data;
+          business = data.businesses;
+        }
+      } catch {
+        // Segue para fallback demo somente fora de produção.
+      }
     }
   }
 
-  // 2. Fallback para demonstração / código local
-  if (!device) {
+  if (!device && process.env.NODE_ENV !== "production") {
     const foundDemo = DEMO_DEVICES.find(
-      (d) => d.code.toUpperCase() === code || d.code.replace("KX-", "").toUpperCase() === code.replace("KX-", "")
+      (d) =>
+        d.code.toUpperCase() === code ||
+        d.code.replace("KX-", "").toUpperCase() === code.replace("KX-", "")
     );
+
     if (foundDemo) {
       device = foundDemo;
       business = DEMO_BUSINESS;
     }
   }
 
-  // 3. Placa não encontrada
   if (!device) {
     return NextResponse.redirect(new URL(`/t/${code}/status?reason=not_found`, url), {
       status: 307,
     });
   }
 
-  // 4. Verificação de status da placa (pending, inactive, suspended)
   const status = device.status || (device.active ? "active" : "inactive");
   if (status !== "active") {
     return NextResponse.redirect(new URL(`/t/${code}/status?reason=${status}`, url), {
@@ -69,13 +83,11 @@ export async function GET(request: NextRequest, { params }: RouteProps) {
     });
   }
 
-  // 5. Obtenção do destino Google Reviews
   const rawDestination =
     device.destination_url ||
     business?.google_review_url ||
-    DEMO_BUSINESS.google_review_url;
+    (process.env.NODE_ENV !== "production" ? DEMO_BUSINESS.google_review_url : null);
 
-  // 6. Validação rigorosa de segurança contra Open Redirect
   const validation = validateDestinationUrl(
     rawDestination,
     device.destination_type || "google_review"
@@ -88,42 +100,41 @@ export async function GET(request: NextRequest, { params }: RouteProps) {
     );
   }
 
-  // 7. Deduplicação e registro de telemetria server-side
-  const lastTapCookie = request.cookies.get("kx_last_tap")?.value;
+  const lastTapCookie = request.cookies.get("otimiza_last_tap")?.value;
   const now = Date.now();
   let isRecentDuplicate = false;
 
   if (lastTapCookie) {
     const [lastDeviceId, lastTimestampStr] = lastTapCookie.split("_");
-    const lastTimestamp = parseInt(lastTimestampStr, 10);
-    // Se for o mesmo dispositivo em menos de 10 segundos, não contabiliza duplicata
-    if (lastDeviceId === device.id && !isNaN(lastTimestamp) && now - lastTimestamp < 10000) {
+    const lastTimestamp = Number.parseInt(lastTimestampStr, 10);
+
+    if (
+      lastDeviceId === device.id &&
+      Number.isFinite(lastTimestamp) &&
+      now - lastTimestamp < 10000
+    ) {
       isRecentDuplicate = true;
     }
   }
 
-  if (!isRecentDuplicate) {
+  if (!isRecentDuplicate && serviceClient) {
     const userAgent = request.headers.get("user-agent") || "";
     const referrer = request.headers.get("referer") || "";
 
-    // Registro assíncrono server-side no Supabase
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      createClient()
-        .then((supabase) => {
-          return supabase.from("events").insert({
-            business_id: device.business_id,
-            device_id: device.id,
-            event_type: "review_redirect",
-            user_agent: userAgent.substring(0, 255),
-            referrer: referrer.substring(0, 255),
-            session_id: source,
-          });
-        })
-        .catch(() => {});
+    const { error } = await serviceClient.from("events").insert({
+      business_id: device.business_id,
+      device_id: device.id,
+      event_type: "review_redirect",
+      user_agent: userAgent.substring(0, 255),
+      referrer: referrer.substring(0, 255),
+      session_id: source,
+    });
+
+    if (error) {
+      console.error("Falha ao registrar evento de redirecionamento", error.message);
     }
   }
 
-  // 8. Redirecionamento temporário instantâneo HTTP 307 para o Google Reviews
   const response = NextResponse.redirect(validation.sanitizedUrl, {
     status: 307,
     headers: {
@@ -133,12 +144,12 @@ export async function GET(request: NextRequest, { params }: RouteProps) {
     },
   });
 
-  // Grava cookie para evitar spam de reload (expira em 60 segundos)
-  response.cookies.set("kx_last_tap", `${device.id}_${now}`, {
+  response.cookies.set("otimiza_last_tap", `${device.id}_${now}`, {
     maxAge: 60,
     path: "/",
     httpOnly: true,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
   });
 
   return response;

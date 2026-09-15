@@ -7,7 +7,7 @@ import {
 } from "../src/lib/security";
 
 console.log("==================================================");
-console.log("SUITE DE TESTES: KONNEXY TAP REVIEWS & SEGURANÇA");
+console.log("SUITE DE TESTES: OTIMIZA MEU NEGÓCIO / SEGURANÇA");
 console.log("==================================================");
 
 let passed = 0;
@@ -25,9 +25,6 @@ function test(name: string, fn: () => void) {
   }
 }
 
-// -------------------------------------------------------------
-// 1. TESTES DE VALIDAÇÃO DE URL & OPEN REDIRECT
-// -------------------------------------------------------------
 test("Deve aceitar links legítimos do Google Reviews (search.google.com)", () => {
   const url = "https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4";
   const result = validateDestinationUrl(url, "google_review");
@@ -48,28 +45,26 @@ test("Deve aceitar links do Google Maps (maps.app.goo.gl e maps.google.com)", ()
   assert.strictEqual(validateDestinationUrl(urlShort, "google_review").isValid, true);
 });
 
-test("Deve bloquear esquemas não-HTTPS (HTTP puro)", () => {
-  const url = "http://search.google.com/local/writereview";
-  const result = validateDestinationUrl(url, "google_review");
+test("Deve bloquear esquemas não-HTTPS", () => {
+  const result = validateDestinationUrl("http://search.google.com/local/writereview", "google_review");
   assert.strictEqual(result.isValid, false);
   assert.match(result.error || "", /HTTPS/);
 });
 
-test("Deve bloquear esquemas maliciosos (javascript:, data:, file:)", () => {
+test("Deve bloquear esquemas maliciosos", () => {
   assert.strictEqual(validateDestinationUrl("javascript:alert(document.cookie)").isValid, false);
   assert.strictEqual(validateDestinationUrl("data:text/html,<script>alert(1)</script>").isValid, false);
   assert.strictEqual(validateDestinationUrl("file:///etc/passwd").isValid, false);
   assert.strictEqual(validateDestinationUrl("ftp://files.example.com").isValid, false);
 });
 
-test("Deve bloquear Open Redirect para domínios arbitrários externos", () => {
-  const maliciousUrl = "https://phishing-site-fake-google.com/login";
-  const result = validateDestinationUrl(maliciousUrl, "google_review");
+test("Deve bloquear Open Redirect para domínios arbitrários", () => {
+  const result = validateDestinationUrl("https://phishing-site-fake-google.com/login", "google_review");
   assert.strictEqual(result.isValid, false);
   assert.match(result.error || "", /oficiais/);
 });
 
-test("Deve bloquear localhost e IPs locais privados", () => {
+test("Deve bloquear localhost e IPs privados", () => {
   assert.strictEqual(validateDestinationUrl("https://localhost:3000/steal").isValid, false);
   assert.strictEqual(validateDestinationUrl("https://127.0.0.1/admin").isValid, false);
   assert.strictEqual(validateDestinationUrl("https://192.168.1.1/router").isValid, false);
@@ -77,20 +72,14 @@ test("Deve bloquear localhost e IPs locais privados", () => {
   assert.strictEqual(validateDestinationUrl("https://172.16.0.1/private").isValid, false);
 });
 
-// -------------------------------------------------------------
-// 2. TESTES DE HIGIENIZAÇÃO DE ORIGEM (SRC: NFC / QR)
-// -------------------------------------------------------------
-test("Deve reconhecer 'nfc' como origem válida", () => {
+test("Deve reconhecer NFC e QR como origens válidas", () => {
   assert.strictEqual(sanitizeSource("nfc"), "nfc");
   assert.strictEqual(sanitizeSource("NFC"), "nfc");
-});
-
-test("Deve reconhecer 'qr' como origem válida", () => {
   assert.strictEqual(sanitizeSource("qr"), "qr");
   assert.strictEqual(sanitizeSource("QR"), "qr");
 });
 
-test("Deve converter origens anômalas ou injeções em 'direct'", () => {
+test("Deve converter origens anômalas em direct", () => {
   assert.strictEqual(sanitizeSource(""), "direct");
   assert.strictEqual(sanitizeSource(null), "direct");
   assert.strictEqual(sanitizeSource(undefined), "direct");
@@ -99,77 +88,54 @@ test("Deve converter origens anômalas ou injeções em 'direct'", () => {
   assert.strictEqual(sanitizeSource("../../admin"), "direct");
 });
 
-// -------------------------------------------------------------
-// 3. TESTES DE CÓDIGOS DE PLACA (KX-XXXXX)
-// -------------------------------------------------------------
-test("Deve gerar códigos imprevisíveis no formato KX-XXXXX", () => {
-  const code = generateDeviceCode("KX");
-  assert.strictEqual(/^KX-[A-Z0-9]{5}$/.test(code), true);
+test("Deve gerar códigos imprevisíveis no formato OM-XXXXX", () => {
+  const code = generateDeviceCode();
+  assert.strictEqual(/^OM-[A-Z0-9]{5}$/.test(code), true);
 });
 
-test("Não deve conter caracteres visualmente ambíguos (0, O, 1, I)", () => {
+test("Não deve conter caracteres visualmente ambíguos", () => {
   for (let i = 0; i < 50; i++) {
-    const code = generateDeviceCode("KX");
-    const raw = code.replace("KX-", "");
+    const code = generateDeviceCode();
+    const raw = code.replace("OM-", "");
     assert.strictEqual(/[0O1I]/.test(raw), false, `Código gerado continha caractere proibido: ${code}`);
   }
 });
 
 test("Deve validar o formato aceito de código de placa", () => {
-  assert.strictEqual(isValidDeviceCodeFormat("KX-A7K92"), true);
+  assert.strictEqual(isValidDeviceCodeFormat("OM-A7K92"), true);
   assert.strictEqual(isValidDeviceCodeFormat("A7K92"), true);
   assert.strictEqual(isValidDeviceCodeFormat(""), false);
-  assert.strictEqual(isValidDeviceCodeFormat("KX/../insecure"), false);
+  assert.strictEqual(isValidDeviceCodeFormat("OM/../insecure"), false);
 });
 
-// -------------------------------------------------------------
-// 4. TESTES DE STATUS DA PLACA & SIMULAÇÃO DE REDIRECIONAMENTO
-// -------------------------------------------------------------
-test("Deve aprovar redirecionamento de placa em status 'active'", () => {
+test("Deve aprovar redirecionamento de placa ativa", () => {
   const device = {
-    code: "KX-A7K92",
+    code: "OM-A7K92",
     status: "active",
     destination_url: "https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4",
     destination_type: "google_review" as const,
   };
 
   assert.strictEqual(device.status, "active");
-  const validation = validateDestinationUrl(device.destination_url, device.destination_type);
-  assert.strictEqual(validation.isValid, true);
+  assert.strictEqual(validateDestinationUrl(device.destination_url, device.destination_type).isValid, true);
 });
 
-test("Deve sinalizar status 'pending' para placa aguardando ativação", () => {
-  const device = { code: "KX-C9X02", status: "pending" };
-  assert.strictEqual(device.status, "pending");
+test("Deve sinalizar estados operacionais da placa", () => {
+  assert.strictEqual({ code: "OM-C9X02", status: "pending" }.status, "pending");
+  assert.strictEqual({ code: "OM-OFF01", status: "inactive" }.status, "inactive");
+  assert.strictEqual({ code: "OM-BLOCK", status: "suspended" }.status, "suspended");
 });
 
-test("Deve sinalizar status 'inactive' para placa desativada", () => {
-  const device = { code: "KX-OFF01", status: "inactive" };
-  assert.strictEqual(device.status, "inactive");
-});
-
-test("Deve sinalizar status 'suspended' para placa bloqueada administrativamente", () => {
-  const device = { code: "KX-BLOCK", status: "suspended" };
-  assert.strictEqual(device.status, "suspended");
-});
-
-// -------------------------------------------------------------
-// 5. TESTES DE ISOLAMENTO MULTI-TENANT
-// -------------------------------------------------------------
 test("Usuário A não pode ter acesso aos dados do Estabelecimento B", () => {
   const businessA = { id: "biz-a", owner_id: "user-1" };
   const businessB = { id: "biz-b", owner_id: "user-2" };
   const currentUserId = "user-1";
-
-  const isMember = (b: typeof businessA, uId: string) => b.owner_id === uId;
+  const isMember = (business: typeof businessA, userId: string) => business.owner_id === userId;
 
   assert.strictEqual(isMember(businessA, currentUserId), true);
   assert.strictEqual(isMember(businessB, currentUserId), false);
 });
 
-// -------------------------------------------------------------
-// RESUMO FINAL
-// -------------------------------------------------------------
 console.log("\n==================================================");
 console.log(`TOTAL DE TESTES: ${passed + failed}`);
 console.log(`PASSOU: ${passed}`);

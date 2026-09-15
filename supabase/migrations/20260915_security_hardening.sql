@@ -63,11 +63,21 @@ CREATE POLICY "App admins can create businesses"
         SELECT 1 FROM public.app_admins a WHERE a.user_id = auth.uid()
     ));
 
--- 4. Telemetria: remover inserção arbitrária diretamente pelo cliente.
--- O endpoint /t/[code] deve registrar eventos com a service role no servidor.
+-- 4. Placas não precisam mais ser enumeráveis pelo público.
+-- O redirecionamento /t/[code] resolve o código com service role no servidor.
+DROP POLICY IF EXISTS "Public can read active devices" ON public.tap_devices;
+
+-- 5. Telemetria: remover inserção arbitrária diretamente pelo cliente.
+-- O endpoint /t/[code] registra eventos com a service role no servidor.
 DROP POLICY IF EXISTS "Public can log telemetry events" ON public.events;
 
--- 5. Configurações comerciais da aplicação.
+-- 6. Recursos de Fase 2 ficam fechados no MVP.
+-- Os endpoints/telas podem permanecer no código para roadmap, mas não devem permitir
+-- cadastro público enquanto o produto inicial é apenas a placa de avaliações.
+DROP POLICY IF EXISTS "Public can register to customer club" ON public.customers;
+DROP POLICY IF EXISTS "Public can log consent" ON public.customer_consents;
+
+-- 7. Configurações comerciais da aplicação.
 ALTER TABLE public.app_settings ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Public can read app settings" ON public.app_settings;

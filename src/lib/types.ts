@@ -106,9 +106,9 @@ export interface Lead {
   name: string;
   business_name: string;
   whatsapp: string;
-  instagram?: string;
-  segment?: string;
-  city?: string;
+  instagram?: string | null;
+  segment?: string | null;
+  city?: string | null;
   source: LeadSource;
   status: LeadStatus;
   notes?: string | null;

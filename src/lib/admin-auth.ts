@@ -35,7 +35,3 @@ export async function requireAdmin(): Promise<AdminAuthResult> {
 
   return { ok: true, status: 200, supabase, userId: user.id };
 }
-
-export function adminErrorMessage(reason: AdminAuthResult extends { ok: false } ? never : never) {
-  return reason;
-}

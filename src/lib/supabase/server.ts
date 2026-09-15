@@ -6,12 +6,20 @@ function getSupabaseUrl() {
   return process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-konnexy.supabase.co";
 }
 
+function getPublicSupabaseKey() {
+  return (
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    "placeholder-public-key"
+  );
+}
+
 export async function createClient() {
   const cookieStore = await cookies();
   const supabaseUrl = getSupabaseUrl();
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
+  const supabasePublicKey = getPublicSupabaseKey();
 
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
+  return createServerClient(supabaseUrl, supabasePublicKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

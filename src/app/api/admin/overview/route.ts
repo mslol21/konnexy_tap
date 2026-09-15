@@ -24,27 +24,40 @@ export async function GET() {
   const service = createServiceClient();
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
+  const startOfSevenDays = new Date();
+  startOfSevenDays.setDate(startOfSevenDays.getDate() - 6);
+  startOfSevenDays.setHours(0, 0, 0, 0);
 
   const [
     totalLeadsResult,
+    newLeadsResult,
     reservedResult,
     soldResult,
     activeDevicesResult,
     pendingDevicesResult,
+    inactiveDevicesResult,
     todayEventsResult,
+    sevenDayEventsResult,
     recentLeadsResult,
     recentDevicesResult,
   ] = await Promise.all([
     service.from("leads").select("id", { count: "exact", head: true }),
+    service.from("leads").select("id", { count: "exact", head: true }).eq("status", "new"),
     service.from("leads").select("id", { count: "exact", head: true }).eq("status", "reserved"),
     service.from("leads").select("id", { count: "exact", head: true }).eq("status", "sold"),
     service.from("tap_devices").select("id", { count: "exact", head: true }).eq("status", "active"),
     service.from("tap_devices").select("id", { count: "exact", head: true }).eq("status", "pending"),
+    service.from("tap_devices").select("id", { count: "exact", head: true }).in("status", ["inactive", "suspended"]),
     service
       .from("events")
       .select("id", { count: "exact", head: true })
       .eq("event_type", "review_redirect")
       .gte("created_at", startOfDay.toISOString()),
+    service
+      .from("events")
+      .select("id", { count: "exact", head: true })
+      .eq("event_type", "review_redirect")
+      .gte("created_at", startOfSevenDays.toISOString()),
     service
       .from("leads")
       .select("id,name,business_name,whatsapp,city,status,created_at,converted_device_id")
@@ -59,11 +72,14 @@ export async function GET() {
 
   const errors = [
     totalLeadsResult.error,
+    newLeadsResult.error,
     reservedResult.error,
     soldResult.error,
     activeDevicesResult.error,
     pendingDevicesResult.error,
+    inactiveDevicesResult.error,
     todayEventsResult.error,
+    sevenDayEventsResult.error,
     recentLeadsResult.error,
     recentDevicesResult.error,
   ].filter(Boolean);
@@ -73,14 +89,21 @@ export async function GET() {
     return NextResponse.json({ error: "Não foi possível carregar o painel operacional." }, { status: 500 });
   }
 
+  const totalLeads = totalLeadsResult.count ?? 0;
+  const sold = soldResult.count ?? 0;
+
   return NextResponse.json({
     metrics: {
-      totalLeads: totalLeadsResult.count ?? 0,
+      totalLeads,
+      newLeads: newLeadsResult.count ?? 0,
       reserved: reservedResult.count ?? 0,
-      sold: soldResult.count ?? 0,
+      sold,
+      conversionRate: totalLeads > 0 ? Math.round((sold / totalLeads) * 100) : 0,
       activeDevices: activeDevicesResult.count ?? 0,
       pendingDevices: pendingDevicesResult.count ?? 0,
+      inactiveDevices: inactiveDevicesResult.count ?? 0,
       accessesToday: todayEventsResult.count ?? 0,
+      accesses7d: sevenDayEventsResult.count ?? 0,
     },
     recentLeads: recentLeadsResult.data ?? [],
     recentDevices: recentDevicesResult.data ?? [],

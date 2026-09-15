@@ -38,7 +38,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (pathname.startsWith("/admin")) {
+  const adminOnly = pathname.startsWith("/admin") || pathname.startsWith("/cadastro");
+
+  if (adminOnly) {
     const { data: adminRecord } = await supabase
       .from("app_admins")
       .select("user_id")
@@ -54,5 +56,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*", "/onboarding/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/dashboard/:path*",
+    "/onboarding/:path*",
+    "/cadastro/:path*",
+  ],
 };

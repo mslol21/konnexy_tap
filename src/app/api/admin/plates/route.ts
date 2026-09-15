@@ -25,6 +25,10 @@ const updatePlateSchema = z.object({
   status: z.enum(["pending", "active", "inactive", "suspended"]).optional(),
   destination_url: z.string().trim().url().max(1200).optional(),
   location: z.string().trim().min(2).max(100).optional(),
+  business_name: z.string().trim().min(2).max(140).optional(),
+  category: z.string().trim().min(2).max(100).optional(),
+  city: z.string().trim().max(120).optional().nullable(),
+  state: z.string().trim().length(2).optional().nullable(),
 });
 
 function slugify(value: string) {
@@ -64,17 +68,41 @@ export async function GET() {
   const { data, error } = await service
     .from("tap_devices")
     .select(
-      "id,business_id,code,name,type,location,active,status,destination_url,destination_type,created_at,businesses(name,slug,category,city,state)"
+      "id,business_id,code,name,type,location,active,status,destination_url,destination_type,created_at,businesses(id,name,slug,category,city,state,google_review_url)"
     )
     .order("created_at", { ascending: false })
-    .limit(100);
+    .limit(250);
 
   if (error) {
     console.error("Falha ao listar placas", error.message);
     return NextResponse.json({ error: "Não foi possível carregar as placas." }, { status: 500 });
   }
 
-  return NextResponse.json({ plates: data ?? [] });
+  const deviceIds = (data ?? []).map((item) => item.id);
+  const accessByDevice = new Map<string, number>();
+
+  if (deviceIds.length > 0) {
+    const { data: events, error: eventsError } = await service
+      .from("events")
+      .select("device_id")
+      .in("device_id", deviceIds)
+      .eq("event_type", "review_redirect")
+      .limit(10000);
+
+    if (!eventsError) {
+      for (const event of events ?? []) {
+        if (!event.device_id) continue;
+        accessByDevice.set(event.device_id, (accessByDevice.get(event.device_id) ?? 0) + 1);
+      }
+    }
+  }
+
+  const plates = (data ?? []).map((item) => ({
+    ...item,
+    access_count: accessByDevice.get(item.id) ?? 0,
+  }));
+
+  return NextResponse.json({ plates });
 }
 
 export async function POST(request: NextRequest) {
@@ -141,7 +169,7 @@ export async function POST(request: NextRequest) {
         is_active: true,
         plan_id: "free",
       })
-      .select("id,name,slug,category,city,state")
+      .select("id,name,slug,category,city,state,google_review_url")
       .single();
 
     if (businessError || !business) {
@@ -193,7 +221,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         business,
-        plate: device,
+        plate: { ...device, access_count: 0 },
         urls: {
           nfc: `${appUrl}/t/${device.code}?src=nfc`,
           qr: `${appUrl}/t/${device.code}?src=qr`,
@@ -224,38 +252,83 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Dados inválidos." }, { status: 400 });
     }
 
-    const updateData: Record<string, string | boolean> = {};
-    if (parsed.data.location !== undefined) updateData.location = parsed.data.location;
-    if (parsed.data.status !== undefined) {
-      updateData.status = parsed.data.status;
-      updateData.active = parsed.data.status === "active";
+    const service = createServiceClient();
+    const { data: current, error: currentError } = await service
+      .from("tap_devices")
+      .select("id,business_id")
+      .eq("id", parsed.data.id)
+      .maybeSingle();
+
+    if (currentError || !current) {
+      return NextResponse.json({ error: "Placa não encontrada." }, { status: 404 });
     }
+
+    const deviceUpdate: Record<string, string | boolean> = {};
+    const businessUpdate: Record<string, string | null> = {};
+
+    if (parsed.data.location !== undefined) deviceUpdate.location = parsed.data.location;
+    if (parsed.data.status !== undefined) {
+      deviceUpdate.status = parsed.data.status;
+      deviceUpdate.active = parsed.data.status === "active";
+    }
+    if (parsed.data.business_name !== undefined) {
+      businessUpdate.name = parsed.data.business_name;
+      deviceUpdate.name = `Placa ${parsed.data.business_name}`;
+    }
+    if (parsed.data.category !== undefined) businessUpdate.category = parsed.data.category;
+    if (parsed.data.city !== undefined) businessUpdate.city = parsed.data.city || null;
+    if (parsed.data.state !== undefined) businessUpdate.state = parsed.data.state?.toUpperCase() || null;
+
     if (parsed.data.destination_url !== undefined) {
       const validation = validateDestinationUrl(parsed.data.destination_url, "google_review");
       if (!validation.isValid) {
         return NextResponse.json({ error: validation.error }, { status: 400 });
       }
-      updateData.destination_url = validation.sanitizedUrl;
+      deviceUpdate.destination_url = validation.sanitizedUrl;
+      businessUpdate.google_review_url = validation.sanitizedUrl;
     }
 
-    if (Object.keys(updateData).length === 0) {
+    if (Object.keys(deviceUpdate).length === 0 && Object.keys(businessUpdate).length === 0) {
       return NextResponse.json({ error: "Nenhuma alteração informada." }, { status: 400 });
     }
 
-    const service = createServiceClient();
-    const { data, error } = await service
-      .from("tap_devices")
-      .update(updateData)
-      .eq("id", parsed.data.id)
-      .select("id,code,status,active,location,destination_url")
-      .single();
+    if (Object.keys(businessUpdate).length > 0) {
+      const { error: businessError } = await service
+        .from("businesses")
+        .update(businessUpdate)
+        .eq("id", current.business_id);
 
-    if (error) {
-      return NextResponse.json({ error: "Não foi possível atualizar a placa." }, { status: 500 });
+      if (businessError) {
+        console.error("Falha ao atualizar estabelecimento", businessError.message);
+        return NextResponse.json({ error: "Não foi possível atualizar o estabelecimento." }, { status: 500 });
+      }
     }
 
-    return NextResponse.json({ success: true, plate: data });
-  } catch {
+    if (Object.keys(deviceUpdate).length > 0) {
+      const { error: deviceError } = await service
+        .from("tap_devices")
+        .update(deviceUpdate)
+        .eq("id", parsed.data.id);
+
+      if (deviceError) {
+        console.error("Falha ao atualizar placa", deviceError.message);
+        return NextResponse.json({ error: "Não foi possível atualizar a placa." }, { status: 500 });
+      }
+    }
+
+    const { data: updated, error: updatedError } = await service
+      .from("tap_devices")
+      .select("id,business_id,code,name,type,location,active,status,destination_url,destination_type,created_at,businesses(id,name,slug,category,city,state,google_review_url)")
+      .eq("id", parsed.data.id)
+      .single();
+
+    if (updatedError || !updated) {
+      return NextResponse.json({ error: "Alteração salva, mas não foi possível recarregar a placa." }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true, plate: updated });
+  } catch (error) {
+    console.error("Erro ao atualizar placa", error);
     return NextResponse.json({ error: "Requisição inválida." }, { status: 400 });
   }
 }

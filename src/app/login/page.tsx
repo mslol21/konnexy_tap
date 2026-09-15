@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Lock, Mail, CheckCircle2, MapPin } from "lucide-react";
+import { ArrowRight, Lock, Mail, CheckCircle2, MapPin, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/brand/Logo";
 
@@ -168,13 +168,29 @@ export default function LoginPage() {
                 </>
               )}
             </button>
+
+            {/* Botão de Demonstração Rápida */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail("demo@otimizameunegocio.com.br");
+                  setPassword("123456");
+                  router.push("/dashboard");
+                }}
+                className="w-full py-2.5 px-4 bg-[#F5F3EF] hover:bg-[#EAE6DF] border border-[#E5E1D8] text-[#242A30] font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#BD7B48]" />
+                <span>Acessar Painel como Usuário Demo (1 clique)</span>
+              </button>
+            </div>
           </form>
 
           {/* Links de Suporte */}
           <div className="mt-6 text-center space-y-2">
-            <div className="text-xs text-[#6D7277]">
+            <div className="text-xs text-[#666E7A]">
               Ainda não tem acesso?{" "}
-              <Link href="/#preco" className="text-[#C78D4E] hover:text-[#D8A66C] font-semibold transition-colors">
+              <Link href="/#preco" className="text-[#BD7B48] hover:text-[#D9945F] font-semibold transition-colors">
                 Reserve sua placa
               </Link>
             </div>

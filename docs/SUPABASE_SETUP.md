@@ -4,7 +4,7 @@ Este projeto foi preparado para funcionar sem dados fictícios em produção. En
 
 ## 1. Criar o projeto
 
-Crie um projeto Supabase dedicado ao **Otimiza Meu Negócio**. Não reutilize o banco da Vitriniza ou de outro produto.
+Use um projeto Supabase dedicado ao **Otimiza Meu Negócio**. Não reutilize o banco da Vitriniza ou de outro produto.
 
 Região recomendada para operação no Brasil: `sa-east-1` (São Paulo), quando disponível no plano escolhido.
 
@@ -27,13 +27,19 @@ NEXT_PUBLIC_APP_URL=https://SEU-DOMINIO
 NEXT_PUBLIC_WHATSAPP_NUMBER=55DDDNUMERO
 NEXT_PUBLIC_ENABLE_SMART_PAGES=false
 NEXT_PUBLIC_SUPABASE_URL=https://SEU-PROJETO.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=CHAVE_PUBLICA
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 SUPABASE_SERVICE_ROLE_KEY=CHAVE_PRIVADA_SERVICE_ROLE
 ```
 
+### Publishable key vs anon key legado
+
+Projetos novos do Supabase podem fornecer uma chave moderna `sb_publishable_...`. O projeto agora prefere essa chave em `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+
+A variável antiga `NEXT_PUBLIC_SUPABASE_ANON_KEY` continua aceita apenas como fallback de compatibilidade. Não é necessário configurar as duas.
+
 ### Regra crítica
 
-`SUPABASE_SERVICE_ROLE_KEY` é **server-only**. Nunca use prefixo `NEXT_PUBLIC_`, nunca coloque a chave em componente React e nunca salve a chave real no GitHub.
+`SUPABASE_SERVICE_ROLE_KEY` é **server-only**. Nunca use prefixo `NEXT_PUBLIC_`, nunca coloque a chave em componente React e nunca salve a chave real no GitHub ou em mensagens de chat. Configure-a diretamente no provedor de deploy.
 
 ## 4. Criar o primeiro usuário administrador
 

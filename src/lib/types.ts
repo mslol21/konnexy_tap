@@ -4,7 +4,9 @@ export type DeviceType = "nfc_plate" | "nfc_sticker" | "qr_stand";
 
 export type DeviceStatus = "pending" | "active" | "inactive" | "suspended";
 
-export type DestinationType = "google_review" | "custom";\n\nexport type ExperienceMode = "direct_review" | "smart_page";
+export type DestinationType = "google_review" | "custom";
+
+export type ExperienceMode = "direct_review" | "smart_page";
 
 export type SalesMode = "preorder" | "available" | "sold_out";
 
@@ -44,7 +46,8 @@ export type EventType =
   | "campaign_click"
   | "club_signup"
   | "suggestion_sent"
-  | "custom_link_click"\n  | "feedback_sent";
+  | "custom_link_click"
+  | "feedback_sent";
 
 export interface Profile {
   id: string;

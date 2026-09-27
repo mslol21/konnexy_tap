@@ -4,7 +4,7 @@ export type DeviceType = "nfc_plate" | "nfc_sticker" | "qr_stand";
 
 export type DeviceStatus = "pending" | "active" | "inactive" | "suspended";
 
-export type DestinationType = "google_review" | "custom";
+export type DestinationType = "google_review" | "custom";\n\nexport type ExperienceMode = "direct_review" | "smart_page";
 
 export type SalesMode = "preorder" | "available" | "sold_out";
 
@@ -44,7 +44,7 @@ export type EventType =
   | "campaign_click"
   | "club_signup"
   | "suggestion_sent"
-  | "custom_link_click";
+  | "custom_link_click"\n  | "feedback_sent";
 
 export interface Profile {
   id: string;
@@ -185,4 +185,31 @@ export interface DashboardMetrics {
   clubSignupsToday: number;
   viewsHistory: { date: string; views: number; google: number; whatsapp: number }[];
   conversionRate: number;
+}
+
+
+export interface BusinessExperience {
+  business_id: string;
+  google_enabled: boolean;
+  whatsapp_enabled: boolean;
+  services_enabled: boolean;
+  maps_enabled: boolean;
+  wifi_enabled: boolean;
+  feedback_enabled: boolean;
+  promotions_enabled: boolean;
+  instagram_enabled: boolean;
+  website_enabled: boolean;
+  wifi_ssid?: string | null;
+  wifi_password?: string | null;
+  updated_at: string;
+}
+
+export interface BusinessFeedback {
+  id: string;
+  business_id: string;
+  device_id?: string | null;
+  rating: number;
+  message?: string | null;
+  status: "new" | "seen" | "resolved";
+  created_at: string;
 }

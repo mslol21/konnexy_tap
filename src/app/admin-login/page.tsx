@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Lock, Mail, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/brand/Logo";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +29,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      const next = searchParams.get("next");
+      const next = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("next") : null;
       router.replace(next?.startsWith("/admin") ? next : "/admin");
       router.refresh();
     } catch {

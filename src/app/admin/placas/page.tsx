@@ -46,6 +46,7 @@ interface PlateRecord {
   status: DeviceStatus;
   destination_url?: string | null;
   destination_type: string;
+  experience_mode?: "direct_review" | "smart_page";
   created_at: string;
   access_count?: number;
   businesses?: BusinessSummary | null;
@@ -90,7 +91,7 @@ export default function AdminPlacasPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const [publicBase, setPublicBase] = useState(process.env.NEXT_PUBLIC_APP_URL || "");
+  const [publicBase, setPublicBase] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | DeviceStatus>("all");
   const [editing, setEditing] = useState(false);
@@ -112,6 +113,7 @@ export default function AdminPlacasPage() {
   const [editLocation, setEditLocation] = useState("");
   const [editGoogleUrl, setEditGoogleUrl] = useState("");
   const [editStatus, setEditStatus] = useState<DeviceStatus>("active");
+  const [editExperienceMode, setEditExperienceMode] = useState<"direct_review" | "smart_page">("direct_review");
 
   const loadPlates = useCallback(async () => {
     setLoading(true);
@@ -139,7 +141,7 @@ export default function AdminPlacasPage() {
   }, []);
 
   useEffect(() => {
-    if (!publicBase && typeof window !== "undefined") setPublicBase(window.location.origin);
+    if (typeof window !== "undefined" && publicBase !== window.location.origin) setPublicBase(window.location.origin);
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const queryLeadId = params.get("lead_id");
@@ -255,6 +257,7 @@ export default function AdminPlacasPage() {
     setEditLocation(plate.location);
     setEditGoogleUrl(plate.destination_url || plate.businesses?.google_review_url || "");
     setEditStatus(plate.status);
+    setEditExperienceMode(plate.experience_mode || "direct_review");
     setEditing(true);
     setError(null);
     setSuccess(null);
@@ -284,6 +287,7 @@ export default function AdminPlacasPage() {
           location: editLocation,
           destination_url: validation.sanitizedUrl,
           status: editStatus,
+          experience_mode: editExperienceMode,
         }),
       });
       const payload = await response.json().catch(() => ({}));
@@ -462,7 +466,7 @@ export default function AdminPlacasPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label className="block text-xs font-bold text-slate-300 mb-1">Segmento</label><input required value={editCategory} onChange={(e) => setEditCategory(e.target.value)} className="w-full px-3 py-2.5 text-sm rounded-xl bg-slate-800 border border-slate-700 text-white" /></div><div><label className="block text-xs font-bold text-slate-300 mb-1">Local da placa</label><input required value={editLocation} onChange={(e) => setEditLocation(e.target.value)} className="w-full px-3 py-2.5 text-sm rounded-xl bg-slate-800 border border-slate-700 text-white" /></div></div>
               <div className="grid grid-cols-[1fr_90px] gap-3"><div><label className="block text-xs font-bold text-slate-300 mb-1">Cidade</label><input value={editCity} onChange={(e) => setEditCity(e.target.value)} className="w-full px-3 py-2.5 text-sm rounded-xl bg-slate-800 border border-slate-700 text-white" /></div><div><label className="block text-xs font-bold text-slate-300 mb-1">UF</label><input maxLength={2} value={editState} onChange={(e) => setEditState(e.target.value.toUpperCase())} className="w-full px-3 py-2.5 text-sm rounded-xl bg-slate-800 border border-slate-700 text-white uppercase" /></div></div>
               <div><label className="block text-xs font-bold text-slate-300 mb-1">Link de avaliação Google</label><input type="url" required value={editGoogleUrl} onChange={(e) => setEditGoogleUrl(e.target.value)} className="w-full px-3 py-2.5 text-xs font-mono rounded-xl bg-slate-800 border border-slate-700 text-white" /><p className="text-[10px] text-emerald-300 mt-1">Você pode trocar este link sem alterar a placa física.</p></div>
-              <div><label className="block text-xs font-bold text-slate-300 mb-1">Status</label><select value={editStatus} onChange={(e) => setEditStatus(e.target.value as DeviceStatus)} className="w-full px-3 py-2.5 text-sm rounded-xl bg-slate-800 border border-slate-700 text-white"><option value="active">Ativa</option><option value="pending">Pendente</option><option value="inactive">Inativa</option><option value="suspended">Suspensa</option></select></div>
+              <div><label className="block text-xs font-bold text-slate-300 mb-1">Experiência da placa</label><select value={editExperienceMode} onChange={(e) => setEditExperienceMode(e.target.value as "direct_review" | "smart_page")} className="w-full px-3 py-2.5 text-sm rounded-xl bg-slate-800 border border-slate-700 text-white"><option value="direct_review">Avaliação Google direta</option><option value="smart_page">Página inteligente</option></select><p className="text-[10px] text-slate-400 mt-1">O NFC e o QR permanecem iguais ao trocar o modo.</p></div><div><label className="block text-xs font-bold text-slate-300 mb-1">Status</label><select value={editStatus} onChange={(e) => setEditStatus(e.target.value as DeviceStatus)} className="w-full px-3 py-2.5 text-sm rounded-xl bg-slate-800 border border-slate-700 text-white"><option value="active">Ativa</option><option value="pending">Pendente</option><option value="inactive">Inativa</option><option value="suspended">Suspensa</option></select></div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-700 text-[11px] text-slate-400"><strong className="text-white">Código permanente:</strong> <span className="font-mono text-gold-400">{selectedPlate.code}</span><br />O código e os links NFC/QR não mudam ao editar os dados.</div>
               <div className="grid grid-cols-2 gap-2 pt-2"><button type="button" onClick={() => setEditing(false)} className="py-2.5 rounded-xl bg-slate-700 text-white text-xs font-bold">Cancelar</button><button type="submit" disabled={savingEdit} className="py-2.5 rounded-xl bg-gold-500 text-navy-950 text-xs font-black flex items-center justify-center gap-2 disabled:opacity-50">{savingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}{savingEdit ? "Salvando..." : "Salvar alterações"}</button></div>
             </form>

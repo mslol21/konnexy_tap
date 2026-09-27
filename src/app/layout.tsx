@@ -25,7 +25,8 @@ export const metadata: Metadata = {
     shortcut: "/brand/icon.png",
     apple: "/brand/icon.png",
   },
-  themeColor: "#242A30",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "Otimiza Meu Negócio", statusBarStyle: "black-translucent" },
 };
 
 export default function RootLayout({
@@ -34,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={fontSans.className}>
+    <html lang="pt-BR" className={fontSans.className} suppressHydrationWarning>
       <body className={`${fontSans.className} min-h-screen bg-[#F7F5F2] text-[#20252A] font-sans antialiased selection:bg-[#C78D4E] selection:text-white`}>
         {children}
       </body>

@@ -98,6 +98,7 @@ export interface TapDevice {
   status: DeviceStatus;
   destination_url?: string;
   destination_type: DestinationType;
+  experience_mode?: ExperienceMode;
   created_at: string;
 }
 

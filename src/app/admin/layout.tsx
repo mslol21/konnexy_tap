@@ -50,6 +50,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span>Cadastrar Placas (&lt; 1 min)</span>
             </Link>
             <Link
+              href="/admin/experiencias"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+              <span>Experiências</span>
+            </Link>
+            <Link
               href="/dashboard"
               className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold transition-colors ml-2"
             >

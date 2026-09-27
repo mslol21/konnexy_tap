@@ -29,6 +29,7 @@ const updatePlateSchema = z.object({
   category: z.string().trim().min(2).max(100).optional(),
   city: z.string().trim().max(120).optional().nullable(),
   state: z.string().trim().length(2).optional().nullable(),
+  experience_mode: z.enum(["direct_review", "smart_page"]).optional(),
 });
 
 function slugify(value: string) {
@@ -68,7 +69,7 @@ export async function GET() {
   const { data, error } = await service
     .from("tap_devices")
     .select(
-      "id,business_id,code,name,type,location,active,status,destination_url,destination_type,created_at,businesses(id,name,slug,category,city,state,google_review_url)"
+      "id,business_id,code,name,type,location,active,status,destination_url,destination_type,experience_mode,created_at,businesses(id,name,slug,category,city,state,google_review_url)"
     )
     .order("created_at", { ascending: false })
     .limit(250);
@@ -189,8 +190,9 @@ export async function POST(request: NextRequest) {
         status: parsed.data.status,
         destination_url: validation.sanitizedUrl,
         destination_type: "google_review",
+        experience_mode: "direct_review",
       })
-      .select("id,business_id,code,name,type,location,active,status,destination_url,destination_type,created_at")
+      .select("id,business_id,code,name,type,location,active,status,destination_url,destination_type,experience_mode,created_at")
       .single();
 
     if (deviceError || !device) {
@@ -215,7 +217,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin).replace(/\/$/, "");
+    let appUrl = request.nextUrl.origin.replace(/\/$/, "");
+    try {
+      const configured = process.env.NEXT_PUBLIC_APP_URL;
+      if (configured) {
+        const parsedUrl = new URL(configured);
+        if (parsedUrl.protocol === "https:" || parsedUrl.hostname === "localhost") appUrl = parsedUrl.origin;
+      }
+    } catch {}
 
     return NextResponse.json(
       {
@@ -267,6 +276,7 @@ export async function PATCH(request: NextRequest) {
     const businessUpdate: Record<string, string | null> = {};
 
     if (parsed.data.location !== undefined) deviceUpdate.location = parsed.data.location;
+    if (parsed.data.experience_mode !== undefined) deviceUpdate.experience_mode = parsed.data.experience_mode;
     if (parsed.data.status !== undefined) {
       deviceUpdate.status = parsed.data.status;
       deviceUpdate.active = parsed.data.status === "active";

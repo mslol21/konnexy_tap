@@ -6,7 +6,7 @@ export async function GET() {
   const auth = await requireAdmin();
   if (!auth.ok) return NextResponse.json({ error: "Acesso negado." }, { status: auth.status });
   const supabase = createServiceClient();
-  const { data, error } = await supabase.from("business_experiences").select("*").order("updated_at", { ascending: false });
+  const { data, error } = await supabase.from("business_experiences").select("*, businesses(id,name,slug,category,city,state)").order("updated_at", { ascending: false });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ experiences: data ?? [] });
 }

@@ -121,17 +121,39 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
         return featureByType[link.type] ?? true;
       });
 
+      const primaryColor = business.primary_color || "#20252A";
+      const secondaryColor = business.secondary_color || "#C78D4E";
+
       return (
-        <main className="min-h-screen bg-slate-100 flex flex-col justify-start items-center">
-          <div className="w-full max-w-[440px] min-h-screen bg-white shadow-xl relative">
-            <PhoneView
-              business={business}
-              links={filteredLinks}
-              campaign={experience?.promotions_enabled === false ? null : campaign ?? null}
-              device={device ?? null}
-              experience={experience ?? null}
-              isMockup={false}
-            />
+        <main
+          className="relative min-h-screen overflow-hidden"
+          style={{
+            background: `
+              radial-gradient(circle at 12% 8%, ${secondaryColor}2E 0%, transparent 28%),
+              radial-gradient(circle at 88% 28%, ${primaryColor}18 0%, transparent 30%),
+              radial-gradient(circle at 20% 90%, ${secondaryColor}24 0%, transparent 28%),
+              linear-gradient(180deg, #fffdfb 0%, #f8f3f1 46%, #f4efec 100%)
+            `,
+          }}
+        >
+          <div className="pointer-events-none absolute inset-0 opacity-[0.08] bg-[radial-gradient(#7c6f67_1px,transparent_1px)] [background-size:18px_18px]" />
+          <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full blur-3xl" style={{ backgroundColor: `${secondaryColor}24` }} />
+          <div className="pointer-events-none absolute top-1/3 -right-24 h-96 w-96 rounded-full blur-3xl" style={{ backgroundColor: `${primaryColor}12` }} />
+          <div className="pointer-events-none absolute bottom-[-7rem] left-1/4 h-80 w-80 rounded-full blur-3xl" style={{ backgroundColor: `${secondaryColor}1F` }} />
+
+          <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-start justify-center px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+            <div className="w-full max-w-[520px] rounded-[34px] border border-white/70 bg-white/55 p-2.5 sm:p-3 shadow-[0_28px_90px_rgba(70,45,35,0.14)] backdrop-blur-xl">
+              <div className="overflow-hidden rounded-[28px] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.06)]">
+                <PhoneView
+                  business={business}
+                  links={filteredLinks}
+                  campaign={experience?.promotions_enabled === false ? null : campaign ?? null}
+                  device={device ?? null}
+                  experience={experience ?? null}
+                  isMockup={false}
+                />
+              </div>
+            </div>
           </div>
         </main>
       );
@@ -143,9 +165,24 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
 
   if (process.env.NODE_ENV !== "production" && slug === "cafe-da-ana") {
     return (
-      <main className="min-h-screen bg-slate-100 flex flex-col justify-start items-center">
-        <div className="w-full max-w-[440px] min-h-screen bg-white shadow-xl relative">
-          <PhoneView business={DEMO_BUSINESS} links={DEMO_LINKS} campaign={DEMO_CAMPAIGN} isMockup={false} />
+      <main
+        className="relative min-h-screen overflow-hidden"
+        style={{
+          background: `
+            radial-gradient(circle at 12% 8%, #C78D4E2E 0%, transparent 28%),
+            radial-gradient(circle at 88% 28%, #20252A18 0%, transparent 30%),
+            radial-gradient(circle at 20% 90%, #C78D4E24 0%, transparent 28%),
+            linear-gradient(180deg, #fffdfb 0%, #f8f3f1 46%, #f4efec 100%)
+          `,
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 opacity-[0.08] bg-[radial-gradient(#7c6f67_1px,transparent_1px)] [background-size:18px_18px]" />
+        <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-start justify-center px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+          <div className="w-full max-w-[520px] rounded-[34px] border border-white/70 bg-white/55 p-2.5 sm:p-3 shadow-[0_28px_90px_rgba(70,45,35,0.14)] backdrop-blur-xl">
+            <div className="overflow-hidden rounded-[28px] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.06)]">
+              <PhoneView business={DEMO_BUSINESS} links={DEMO_LINKS} campaign={DEMO_CAMPAIGN} isMockup={false} />
+            </div>
+          </div>
         </div>
       </main>
     );

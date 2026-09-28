@@ -144,11 +144,13 @@ export default function PhoneView({ business, links, campaign, device, experienc
         <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(0,0,0,.02) 0%, ${primaryColor}16 56%, ${backgroundColor} 100%)` }} />
         <div className="absolute -left-12 top-10 h-44 w-44 rounded-full border" style={{ borderColor: hexToRgba(secondaryColor, 0.34) }} />
         <div className="absolute -right-16 top-24 h-52 w-52 rounded-full border" style={{ borderColor: hexToRgba(secondaryColor, 0.22) }} />
-        <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: `linear-gradient(180deg, transparent 0%, ${hexToRgba(backgroundColor, 0.58)} 58%, ${backgroundColor} 100%)` }} />
+        <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: `linear-gradient(180deg, transparent 0%, ${hexToRgba(backgroundColor, 0.38)} 40%, ${backgroundColor} 100%)` }} />
+        <div className="absolute left-[-12%] right-[-12%] bottom-[-44px] h-24 rounded-[50%]" style={{ background: `linear-gradient(180deg, ${hexToRgba(backgroundColor, 0.96)} 0%, ${backgroundColor} 100%)`, boxShadow: `0 -10px 30px ${hexToRgba(secondaryColor, 0.10)}` }} />
+        <div className="absolute left-[-8%] right-[-8%] bottom-[-34px] h-20 rounded-[50%] border-t" style={{ borderColor: hexToRgba(secondaryColor, 0.28) }} />
       </div>
 
       {/* IDENTIDADE */}
-      <div className="relative z-10 -mt-14 px-5 flex flex-col items-center text-center">
+      <div className="relative z-10 -mt-16 px-5 flex flex-col items-center text-center">
         <div
           className="w-[108px] h-[108px] rounded-[32px] bg-white/95 p-1.5 overflow-hidden backdrop-blur-xl"
           style={{
@@ -304,10 +306,17 @@ export default function PhoneView({ business, links, campaign, device, experienc
 
         {/* AGRADECIMENTO */}
         <div className="w-full mt-7 px-4">
-          <div className="relative py-8 px-5 text-center rounded-[28px] overflow-hidden" style={{ background: `linear-gradient(160deg,${hexToRgba(secondaryColor, 0.18)} 0%,${hexToRgba(surfaceColor, 0.94)} 100%)`, border: `1px solid ${hexToRgba(secondaryColor, 0.24)}`, boxShadow: `0 18px 44px ${hexToRgba(primaryColor, 0.10)}` }}>
+          <div className="relative py-8 px-5 text-center rounded-[28px] overflow-hidden" style={{ background: `radial-gradient(circle at 50% 12%, ${hexToRgba(secondaryColor, 0.26)} 0%, transparent 34%), linear-gradient(160deg,${hexToRgba(surfaceColor, 0.96)} 0%,${hexToRgba(secondaryColor, 0.16)} 100%)`, border: `1px solid ${hexToRgba(secondaryColor, 0.28)}`, boxShadow: `0 18px 44px ${hexToRgba(primaryColor, 0.11)}` }}>
             <div className="absolute left-0 top-1/2 h-px w-10" style={{ backgroundColor: `${secondaryColor}45` }} />
             <div className="absolute right-0 top-1/2 h-px w-10" style={{ backgroundColor: `${secondaryColor}45` }} />
-            <div className="mx-auto mb-3 w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}16` }}><Heart className="w-5 h-5" style={{ color: secondaryColor }} /></div>
+            <div className="relative mx-auto mb-4 w-14 h-14">
+              <div className="absolute inset-0 rounded-full blur-xl" style={{ backgroundColor: hexToRgba(secondaryColor, 0.30) }} />
+              <div className="relative w-14 h-14 rounded-full flex items-center justify-center" style={{ background: `linear-gradient(135deg,${hexToRgba(secondaryColor, 0.34)},${hexToRgba(primaryColor, 0.14)})`, border: `1px solid ${hexToRgba(secondaryColor, 0.34)}`, boxShadow: `0 10px 28px ${hexToRgba(primaryColor, 0.14)}` }}>
+                <Heart className="w-7 h-7 fill-current" style={{ color: secondaryColor }} />
+              </div>
+              <span className="absolute -left-7 top-1/2 h-px w-6" style={{ backgroundColor: hexToRgba(secondaryColor, 0.46) }} />
+              <span className="absolute -right-7 top-1/2 h-px w-6" style={{ backgroundColor: hexToRgba(secondaryColor, 0.46) }} />
+            </div>
             <p className="text-[12px] leading-relaxed" style={{ color: `${textColor}90` }}>Agradecemos por fazer parte da história da</p>
             <div className="mt-1 text-[18px] font-black" style={{ color: primaryColor }}>{business.name}.</div>
           </div>

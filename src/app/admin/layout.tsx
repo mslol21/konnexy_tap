@@ -58,7 +58,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span>Acessos NFC/QR</span>
             </Link>
             <Link
-              href="/admin/experiencias"
+              href="/admin/clientes"
               className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1.5"
             >
               <Sparkles className="w-3.5 h-3.5 text-gold-400" />

@@ -86,15 +86,17 @@ export async function GET() {
   if (deviceIds.length > 0) {
     const { data: events, error: eventsError } = await service
       .from("events")
-      .select("device_id")
+      .select("device_id,source")
       .in("device_id", deviceIds)
-      .eq("event_type", "review_redirect")
       .limit(10000);
 
     if (!eventsError) {
       for (const event of events ?? []) {
         if (!event.device_id) continue;
         accessByDevice.set(event.device_id, (accessByDevice.get(event.device_id) ?? 0) + 1);
+        if (event.source === "nfc") nfcByDevice.set(event.device_id, (nfcByDevice.get(event.device_id) ?? 0) + 1);
+        else if (event.source === "qr") qrByDevice.set(event.device_id, (qrByDevice.get(event.device_id) ?? 0) + 1);
+        else directByDevice.set(event.device_id, (directByDevice.get(event.device_id) ?? 0) + 1);
       }
     }
   }
@@ -102,6 +104,9 @@ export async function GET() {
   const plates = (data ?? []).map((item) => ({
     ...item,
     access_count: accessByDevice.get(item.id) ?? 0,
+    nfc_count: nfcByDevice.get(item.id) ?? 0,
+    qr_count: qrByDevice.get(item.id) ?? 0,
+    direct_count: directByDevice.get(item.id) ?? 0,
   }));
 
   return NextResponse.json({ plates });

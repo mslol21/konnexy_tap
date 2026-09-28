@@ -105,6 +105,7 @@ export default function AdminPlacasPage() {
   const [code, setCode] = useState(() => generateDeviceCode("OM"));
   const [googleUrl, setGoogleUrl] = useState("");
   const [status, setStatus] = useState<"pending" | "active">("active");
+  const [experienceMode, setExperienceMode] = useState<"direct_review" | "smart_page">("direct_review");
 
   const [editBusinessName, setEditBusinessName] = useState("");
   const [editCategory, setEditCategory] = useState("");
@@ -220,6 +221,7 @@ export default function AdminPlacasPage() {
           code,
           google_url: validation.sanitizedUrl,
           status,
+          experience_mode: experienceMode,
         }),
       });
       const payload = await response.json().catch(() => ({}));
@@ -240,6 +242,7 @@ export default function AdminPlacasPage() {
       setLocation("Balcão principal");
       setGoogleUrl("");
       setStatus("active");
+      setExperienceMode("direct_review");
       setCode(generateDeviceCode("OM"));
     } catch {
       setError("Falha de conexão ao cadastrar a placa.");
@@ -405,6 +408,7 @@ export default function AdminPlacasPage() {
               <div><label className="block text-xs font-bold text-slate-300 mb-1">Status inicial</label><select value={status} onChange={(e) => setStatus(e.target.value as "pending" | "active")} className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-900 border border-slate-700 text-white"><option value="active">Ativa</option><option value="pending">Pendente</option></select></div>
             </div>
             <div><label className="block text-xs font-bold text-slate-300 mb-1">Local físico</label><input value={location} onChange={(e) => setLocation(e.target.value)} className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-900 border border-slate-700 text-white" /></div>
+            <div><label className="block text-xs font-bold text-slate-300 mb-1">Experiência do cliente *</label><select value={experienceMode} onChange={(e) => setExperienceMode(e.target.value as "direct_review" | "smart_page")} className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-900 border border-slate-700 text-white"><option value="direct_review">Avaliação Google direta</option><option value="smart_page">Página inteligente</option></select><p className="text-[10px] text-slate-400 mt-1">{experienceMode === "smart_page" ? "Cria automaticamente a experiência deste cliente. Depois personalize WhatsApp, Wi-Fi, serviços, localização, feedback e promoções em Experiências." : "NFC e QR levam diretamente para a avaliação do Google."}</p></div>
             <div><label className="block text-xs font-bold text-slate-300 mb-1">Link oficial de avaliação Google *</label><input type="url" required value={googleUrl} onChange={(e) => setGoogleUrl(e.target.value)} placeholder="https://g.page/r/.../review" className="w-full px-3.5 py-2.5 text-xs font-mono rounded-xl bg-slate-900 border border-slate-700 text-white" /><p className="text-[10px] text-slate-400 mt-1">Use o link de “Pedir avaliações” do Perfil da Empresa no Google.</p></div>
             <div className="p-3 rounded-xl bg-slate-900 border border-slate-700 space-y-2"><div className="text-[10px] uppercase font-bold text-slate-400">Links permanentes</div><div className="font-mono text-[11px] text-gold-300 break-all">NFC: {previewNfc}</div><div className="font-mono text-[11px] text-gold-300 break-all">QR: {previewQr}</div></div>
             <button type="submit" disabled={submitting} className="w-full py-3 bg-gold-500 hover:bg-gold-400 disabled:opacity-50 text-navy-950 font-black text-sm rounded-xl flex items-center justify-center gap-2">{submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}{submitting ? "Cadastrando..." : "Cadastrar estabelecimento e placa"}</button>

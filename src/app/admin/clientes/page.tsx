@@ -132,7 +132,13 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
       })});
       const data=await response.json().catch(()=>({}));
       if(!response.ok) throw new Error(typeof data.error==="string"?data.error:"Não foi possível salvar.");
-      setMessage({kind:"ok",text:"Conta, recursos, placa e financeiro atualizados."});
+      const warnings = Array.isArray(data.warnings) ? data.warnings.filter((item: unknown) => typeof item === "string") : [];
+      setMessage({
+        kind:"ok",
+        text:warnings.length
+          ? `Alterações salvas. Atenção: ${warnings.join(" ")}`
+          : "Conta, recursos, placa e financeiro atualizados."
+      });
       onSaved();
     }catch(error){
       setMessage({kind:"error",text:error instanceof Error?error.message:"Não foi possível salvar."});
@@ -214,23 +220,38 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
           </div>
           <div className="space-y-2">
             <Toggle label="WhatsApp" checked={experience.whatsapp_enabled} onChange={(v)=>patchExperience("whatsapp_enabled",v)} />
-            {experience.whatsapp_enabled&&<Input label="Número / link do WhatsApp" value={business.whatsapp} onChange={(v)=>patchBusiness("whatsapp",v)} />}
+            {experience.whatsapp_enabled&&<>
+              <Input label="Número / link do WhatsApp" value={business.whatsapp} onChange={(v)=>patchBusiness("whatsapp",v)} />
+              {!business.whatsapp?.trim()&&<div className="text-[11px] text-amber-300 px-1">Ativado, mas falta o número ou link do WhatsApp.</div>}
+            </>}
           </div>
           <div className="space-y-2">
             <Toggle label="Serviços / cardápio" checked={experience.services_enabled} onChange={(v)=>patchExperience("services_enabled",v)} />
-            {experience.services_enabled&&<div className="grid gap-2 sm:grid-cols-2"><Input label="Nome do botão" value={business.services_label} onChange={(v)=>patchBusiness("services_label",v)} /><Input label="Link" value={business.services_url} onChange={(v)=>patchBusiness("services_url",v)} placeholder="https://..." /></div>}
+            {experience.services_enabled&&<>
+              <div className="grid gap-2 sm:grid-cols-2"><Input label="Nome do botão" value={business.services_label} onChange={(v)=>patchBusiness("services_label",v)} /><Input label="Link" value={business.services_url} onChange={(v)=>patchBusiness("services_url",v)} placeholder="https://..." /></div>
+              {!business.services_url?.trim()&&<div className="text-[11px] text-amber-300 px-1">Ativado, mas ainda não aparece para o cliente: informe o link.</div>}
+            </>}
           </div>
           <div className="space-y-2">
             <Toggle label="Localização" checked={experience.maps_enabled} onChange={(v)=>patchExperience("maps_enabled",v)} />
-            {experience.maps_enabled&&<div className="text-[11px] text-slate-400 px-1 flex gap-1"><MapPin className="w-3.5 h-3.5"/>Usa o link Maps ou o endereço cadastrado acima.</div>}
+            {experience.maps_enabled&&<>
+              <div className="text-[11px] text-slate-400 px-1 flex gap-1"><MapPin className="w-3.5 h-3.5"/>Usa o link Maps ou o endereço cadastrado acima.</div>
+              {!business.maps_url?.trim()&&!business.address?.trim()&&<div className="text-[11px] text-amber-300 px-1">Ativado, mas falta endereço ou link do Google Maps.</div>}
+            </>}
           </div>
           <div className="space-y-2">
             <Toggle label="Instagram" checked={experience.instagram_enabled} onChange={(v)=>patchExperience("instagram_enabled",v)} />
-            {experience.instagram_enabled&&<Input label="Perfil / URL" value={business.instagram} onChange={(v)=>patchBusiness("instagram",v)} />}
+            {experience.instagram_enabled&&<>
+              <Input label="Perfil / URL" value={business.instagram} onChange={(v)=>patchBusiness("instagram",v)} />
+              {!business.instagram?.trim()&&<div className="text-[11px] text-amber-300 px-1">Ativado, mas falta o perfil ou link do Instagram.</div>}
+            </>}
           </div>
           <div className="space-y-2">
             <Toggle label="Site" checked={experience.website_enabled} onChange={(v)=>patchExperience("website_enabled",v)} />
-            {experience.website_enabled&&<Input label="URL do site" value={business.website} onChange={(v)=>patchBusiness("website",v)} />}
+            {experience.website_enabled&&<>
+              <Input label="URL do site" value={business.website} onChange={(v)=>patchBusiness("website",v)} />
+              {!business.website?.trim()&&<div className="text-[11px] text-amber-300 px-1">Ativado, mas ainda não aparece para o cliente: informe a URL.</div>}
+            </>}
           </div>
           <div className="space-y-2">
             <Toggle label="Wi-Fi para clientes" checked={experience.wifi_enabled} onChange={(v)=>patchExperience("wifi_enabled",v)} />

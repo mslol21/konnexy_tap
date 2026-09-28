@@ -30,6 +30,8 @@ type Business = {
   maps_url?: string | null; google_review_url?: string | null; website?: string | null;
   services_url?: string | null; services_label?: string | null;
   logo_url?: string | null; cover_url?: string | null; primary_color?: string | null; secondary_color?: string | null;
+  background_color?: string | null; surface_color?: string | null; text_color?: string | null;
+  theme_preset?: string | null; cover_position?: "top"|"center"|"bottom"|null;
   account_status: "lead"|"onboarding"|"active"|"inactive"|"suspended"|"cancelled";
   internal_notes?: string | null; plan_id: string; is_active: boolean;
 };
@@ -66,6 +68,15 @@ type Account = {
 };
 
 type Summary = { clients:number; active:number; platePending:number; subscribers:number; overdue:number; mrr:number };
+
+const THEME_PALETTES = [
+  { id:"professional_blue", name:"Azul Profissional", primary:"#2563EB", secondary:"#60A5FA", background:"#F8FAFC", surface:"#FFFFFF", text:"#0F172A" },
+  { id:"rose_elegant", name:"Rosé Elegante", primary:"#9F4F68", secondary:"#E8A8B8", background:"#FFF7FA", surface:"#FFFDFE", text:"#4A2C35" },
+  { id:"nude_premium", name:"Nude Premium", primary:"#8A5A50", secondary:"#D8B4A8", background:"#FFF8F5", surface:"#FFFFFF", text:"#3E2C28" },
+  { id:"gold_luxury", name:"Dourado Sofisticado", primary:"#6D5422", secondary:"#C9A44C", background:"#FFFDF7", surface:"#FFFFFF", text:"#312714" },
+  { id:"green_wellness", name:"Verde Bem-estar", primary:"#166534", secondary:"#86EFAC", background:"#F6FFF8", surface:"#FFFFFF", text:"#163020" },
+  { id:"graphite_premium", name:"Grafite Premium", primary:"#1F2937", secondary:"#9CA3AF", background:"#F9FAFB", surface:"#FFFFFF", text:"#111827" },
+] as const;
 
 const defaultExperience = (id:string): Experience => ({
   business_id:id, google_enabled:true, whatsapp_enabled:false, services_enabled:false,
@@ -185,6 +196,15 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
   },[account]);
 
   const patchBusiness=<K extends keyof Business>(key:K,value:Business[K])=>setBusiness((v)=>({...v,[key]:value}));
+  const applyPalette=(palette:(typeof THEME_PALETTES)[number])=>setBusiness((current)=>({
+    ...current,
+    theme_preset:palette.id,
+    primary_color:palette.primary,
+    secondary_color:palette.secondary,
+    background_color:palette.background,
+    surface_color:palette.surface,
+    text_color:palette.text,
+  }));
   const patchExperience=<K extends keyof Experience>(key:K,value:Experience[K])=>setExperience((v)=>({...v,[key]:value}));
   const patchBilling=<K extends keyof Billing>(key:K,value:Billing[K])=>setBilling((v)=>({...v,[key]:value}));
   const patchDevice=<K extends keyof Device>(key:K,value:Device[K])=>setDevice((v)=>v?({...v,[key]:value}):v);
@@ -277,23 +297,64 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
       </section>
 
       <section>
-        <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><Sparkles className="w-4 h-4"/>Personalização visual</div>
+        <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><Sparkles className="w-4 h-4"/>Aparência da página</div>
+
+        <div className="mb-4">
+          <div className="text-[11px] font-bold text-slate-300 mb-2">Paletas prontas</div>
+          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            {THEME_PALETTES.map((palette)=> {
+              const selected=(business.theme_preset || "professional_blue")===palette.id;
+              return <button
+                key={palette.id}
+                type="button"
+                onClick={()=>applyPalette(palette)}
+                className={`rounded-2xl border p-3 text-left transition-all ${selected?"border-gold-400 bg-gold-400/10":"border-slate-700 bg-slate-950 hover:border-slate-500"}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    {[palette.primary,palette.secondary,palette.background].map((color,index)=><span key={color+index} className="h-8 w-8 rounded-full border-2 border-slate-900" style={{backgroundColor:color}} />)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-black text-white truncate">{palette.name}</div>
+                    <div className="text-[10px] text-slate-500">{selected?"Selecionada":"Aplicar paleta"}</div>
+                  </div>
+                </div>
+              </button>;
+            })}
+          </div>
+        </div>
+
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           <ImageUpload businessId={business.id} kind="logo" url={business.logo_url} onChange={(v)=>patchBusiness("logo_url",v)} />
-          <ImageUpload businessId={business.id} kind="cover" url={business.cover_url} onChange={(v)=>patchBusiness("cover_url",v)} />
+          <div className="space-y-3">
+            <ImageUpload businessId={business.id} kind="cover" url={business.cover_url} onChange={(v)=>patchBusiness("cover_url",v)} />
+            <Select label="Posição da capa" value={business.cover_position || "center"} onChange={(v)=>patchBusiness("cover_position",v as Business["cover_position"])}>
+              <option value="top">Mostrar mais o topo</option>
+              <option value="center">Centralizar imagem</option>
+              <option value="bottom">Mostrar mais a parte inferior</option>
+            </Select>
+          </div>
           <div className="space-y-3">
             <Input label="Descrição / slogan" value={business.description} onChange={(v)=>patchBusiness("description",v)} placeholder="Ex: Tudo do nosso negócio em um só toque." />
             <Input label="URL da logo (opcional)" value={business.logo_url} onChange={(v)=>patchBusiness("logo_url",v)} placeholder="https://..." />
             <Input label="URL da capa (opcional)" value={business.cover_url} onChange={(v)=>patchBusiness("cover_url",v)} placeholder="https://..." />
           </div>
-          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor principal</span><div className="mt-1 flex gap-2"><input type="color" value={business.primary_color || "#20252A"} onChange={(e)=>patchBusiness("primary_color",e.target.value)} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.primary_color || "#20252A"} onChange={(e)=>patchBusiness("primary_color",e.target.value)} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
-          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor de destaque</span><div className="mt-1 flex gap-2"><input type="color" value={business.secondary_color || "#C78D4E"} onChange={(e)=>patchBusiness("secondary_color",e.target.value)} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.secondary_color || "#C78D4E"} onChange={(e)=>patchBusiness("secondary_color",e.target.value)} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
+
+          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor principal</span><div className="mt-1 flex gap-2"><input type="color" value={business.primary_color || "#2563EB"} onChange={(e)=>{patchBusiness("primary_color",e.target.value);patchBusiness("theme_preset","custom");}} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.primary_color || "#2563EB"} onChange={(e)=>{patchBusiness("primary_color",e.target.value);patchBusiness("theme_preset","custom");}} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
+          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor de destaque</span><div className="mt-1 flex gap-2"><input type="color" value={business.secondary_color || "#60A5FA"} onChange={(e)=>{patchBusiness("secondary_color",e.target.value);patchBusiness("theme_preset","custom");}} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.secondary_color || "#60A5FA"} onChange={(e)=>{patchBusiness("secondary_color",e.target.value);patchBusiness("theme_preset","custom");}} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
+          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor de fundo</span><div className="mt-1 flex gap-2"><input type="color" value={business.background_color || "#F8FAFC"} onChange={(e)=>{patchBusiness("background_color",e.target.value);patchBusiness("theme_preset","custom");}} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.background_color || "#F8FAFC"} onChange={(e)=>{patchBusiness("background_color",e.target.value);patchBusiness("theme_preset","custom");}} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
+          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor dos cards</span><div className="mt-1 flex gap-2"><input type="color" value={business.surface_color || "#FFFFFF"} onChange={(e)=>{patchBusiness("surface_color",e.target.value);patchBusiness("theme_preset","custom");}} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.surface_color || "#FFFFFF"} onChange={(e)=>{patchBusiness("surface_color",e.target.value);patchBusiness("theme_preset","custom");}} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
+          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor do texto</span><div className="mt-1 flex gap-2"><input type="color" value={business.text_color || "#0F172A"} onChange={(e)=>{patchBusiness("text_color",e.target.value);patchBusiness("theme_preset","custom");}} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.text_color || "#0F172A"} onChange={(e)=>{patchBusiness("text_color",e.target.value);patchBusiness("theme_preset","custom");}} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
+
           <div className="sm:col-span-2 xl:col-span-1 rounded-2xl border border-slate-700 bg-slate-950 p-3">
-            <div className="text-[11px] font-bold text-slate-300 mb-2">Prévia das cores</div>
-            <div className="rounded-xl p-3" style={{background: business.primary_color || "#20252A"}}>
-              <div className="text-white text-sm font-black truncate">{business.name}</div>
-              <div className="text-xs mt-1" style={{color: business.secondary_color || "#C78D4E"}}>{business.category}</div>
-              <div className="mt-3 rounded-lg bg-white/95 px-3 py-2 text-xs font-bold" style={{color: business.primary_color || "#20252A", border: `1px solid ${business.secondary_color || "#C78D4E"}`}}>Botão da página inteligente</div>
+            <div className="text-[11px] font-bold text-slate-300 mb-2">Prévia rápida</div>
+            <div className="rounded-2xl overflow-hidden border border-white/10" style={{background:business.background_color || "#F8FAFC"}}>
+              <div className="h-14" style={{background:`linear-gradient(135deg,${business.primary_color || "#2563EB"},${business.secondary_color || "#60A5FA"})`}} />
+              <div className="p-3" style={{color:business.text_color || "#0F172A"}}>
+                <div className="text-sm font-black truncate">{business.name}</div>
+                <div className="text-[10px] mt-0.5" style={{color:business.secondary_color || "#60A5FA"}}>{business.category}</div>
+                <div className="mt-3 rounded-xl px-3 py-2 text-xs font-bold border" style={{background:business.surface_color || "#FFFFFF",borderColor:`${business.secondary_color || "#60A5FA"}55`}}>Botão da página inteligente</div>
+              </div>
             </div>
           </div>
         </div>

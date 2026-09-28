@@ -3,10 +3,65 @@ import { notFound } from "next/navigation";
 import PhoneView from "@/components/public-page/PhoneView";
 import { DEMO_BUSINESS, DEMO_LINKS, DEMO_CAMPAIGN } from "@/lib/mock-data";
 import { createServiceClient } from "@/lib/supabase/server";
+import type { BusinessLink } from "@/lib/types";
 
 interface SlugPageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ device?: string }>;
+}
+
+function normalUrl(value?: string | null) {
+  const raw = value?.trim();
+  if (!raw) return null;
+  try {
+    return new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`).toString();
+  } catch {
+    return null;
+  }
+}
+
+function whatsappUrl(value?: string | null) {
+  const raw = value?.trim();
+  if (!raw) return null;
+  if (/^https?:\/\//i.test(raw)) return normalUrl(raw);
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length < 10) return null;
+  return `https://wa.me/${digits.startsWith("55") ? digits : `55${digits}`}`;
+}
+
+function instagramUrl(value?: string | null) {
+  const raw = value?.trim();
+  if (!raw) return null;
+  if (/^https?:\/\//i.test(raw)) return normalUrl(raw);
+  const handle = raw.replace(/^@/, "").replace(/\s/g, "");
+  return handle ? `https://instagram.com/${handle}` : null;
+}
+
+function mapsUrl(business: Record<string, unknown>) {
+  const explicit = typeof business.maps_url === "string" ? normalUrl(business.maps_url) : null;
+  if (explicit) return explicit;
+  const query = [business.address, business.city, business.state].filter((value) => typeof value === "string" && value.trim()).join(", ");
+  return query ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}` : null;
+}
+
+function makeLink(
+  businessId: string,
+  type: BusinessLink["type"],
+  title: string,
+  url: string | null,
+  orderIndex: number
+): BusinessLink | null {
+  if (!url) return null;
+  return {
+    id: `derived-${businessId}-${type}`,
+    business_id: businessId,
+    title,
+    type,
+    url,
+    order_index: orderIndex,
+    is_active: true,
+    created_at: new Date(0).toISOString(),
+  };
 }
 
 export default async function SlugPage({ params, searchParams }: SlugPageProps) {
@@ -28,15 +83,39 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
           : Promise.resolve({ data: null }),
       ]);
 
-      const filteredLinks = (links ?? []).filter((link: any) => {
+      const existing = (links ?? []) as BusinessLink[];
+      const existingTypes = new Set(existing.map((link) => link.type));
+      const derived: Array<BusinessLink | null> = [
+        !existingTypes.has("google_review") && (experience?.google_enabled ?? true)
+          ? makeLink(business.id, "google_review", "Avaliar no Google", normalUrl(business.google_review_url), 10)
+          : null,
+        !existingTypes.has("whatsapp") && experience?.whatsapp_enabled
+          ? makeLink(business.id, "whatsapp", "Falar no WhatsApp", whatsappUrl(business.whatsapp), 20)
+          : null,
+        !existingTypes.has("menu") && !existingTypes.has("catalog") && experience?.services_enabled
+          ? makeLink(business.id, "menu", business.services_label || "Serviços / cardápio", normalUrl(business.services_url), 30)
+          : null,
+        !existingTypes.has("maps") && experience?.maps_enabled
+          ? makeLink(business.id, "maps", "Como chegar", mapsUrl(business), 40)
+          : null,
+        !existingTypes.has("instagram") && experience?.instagram_enabled
+          ? makeLink(business.id, "instagram", "Instagram", instagramUrl(business.instagram), 50)
+          : null,
+        !existingTypes.has("website") && experience?.website_enabled
+          ? makeLink(business.id, "website", "Visitar site", normalUrl(business.website), 60)
+          : null,
+      ];
+
+      const combinedLinks = [...existing, ...derived.filter((link): link is BusinessLink => Boolean(link))];
+      const filteredLinks = combinedLinks.filter((link) => {
         const featureByType: Record<string, boolean> = {
           google_review: experience?.google_enabled ?? true,
-          whatsapp: experience?.whatsapp_enabled ?? true,
-          menu: experience?.services_enabled ?? true,
-          catalog: experience?.services_enabled ?? true,
-          maps: experience?.maps_enabled ?? true,
-          instagram: experience?.instagram_enabled ?? true,
-          website: experience?.website_enabled ?? true,
+          whatsapp: experience?.whatsapp_enabled ?? false,
+          menu: experience?.services_enabled ?? false,
+          catalog: experience?.services_enabled ?? false,
+          maps: experience?.maps_enabled ?? false,
+          instagram: experience?.instagram_enabled ?? false,
+          website: experience?.website_enabled ?? false,
           suggestion: experience?.feedback_enabled ?? true,
         };
         return featureByType[link.type] ?? true;
@@ -56,7 +135,8 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
           </div>
         </main>
       );
-    } catch {
+    } catch (error) {
+      console.error("Falha ao carregar página pública", error);
       notFound();
     }
   }

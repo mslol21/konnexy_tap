@@ -74,6 +74,19 @@ export default function PhoneView({ business, links, campaign, device, experienc
       default: return <ExternalLink className="w-5 h-5 text-slate-600" />;
     }
   };
+  const getLinkDescription = (type: string) => {
+    switch (type) {
+      case "google_review": return "Deixe sua avaliação e nos ajude!";
+      case "whatsapp": return "Fale diretamente com a nossa equipe.";
+      case "menu": return "Veja nossos serviços e opções disponíveis.";
+      case "catalog": return "Conheça nossos produtos e novidades.";
+      case "maps": return "Veja nossa localização no mapa.";
+      case "instagram": return "Acompanhe novidades e conteúdos.";
+      case "website": return "Acesse nosso site oficial.";
+      case "suggestion": return "Sua opinião é muito importante.";
+      default: return "Acesse esta opção.";
+    }
+  };
 
   const activeLinks = links.filter((l) => l.is_active).sort((a, b) => a.order_index - b.order_index);
   const wifiEnabled = experience?.wifi_enabled && experience?.wifi_ssid;
@@ -130,27 +143,22 @@ export default function PhoneView({ business, links, campaign, device, experienc
         <section
           className="w-full mt-6 rounded-[30px] p-4 text-left"
           style={{
-            background: `linear-gradient(180deg, ${surfaceColor}F5 0%, ${secondaryColor}0C 100%)`,
+            background: `linear-gradient(180deg, ${surfaceColor}F8 0%, ${secondaryColor}0A 100%)`,
             border: `1px solid ${secondaryColor}2F`,
             boxShadow: `0 18px 50px ${primaryColor}12`,
           }}
         >
-          <div className="flex items-center gap-3 pb-4" style={{ borderBottom: `1px solid ${secondaryColor}24` }}>
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${secondaryColor}16`, color: primaryColor }}>
-              <MapPin className="w-5 h-5" />
+          <div className="flex items-center justify-between gap-3 mb-3 px-1">
+            <div>
+              <div className="text-sm font-black" style={{ color: textColor }}>Acesse rapidamente</div>
+              <div className="text-[10px] mt-0.5" style={{ color: `${textColor}78` }}>Escolha uma opção abaixo.</div>
             </div>
-            <div className="min-w-0">
-              <h2 className="text-lg font-black leading-tight" style={{ color: textColor }}>Atendimento</h2>
-              <p className="text-[11px] mt-0.5" style={{ color: `${textColor}8F` }}>Estamos te esperando!</p>
+            <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}16`, color: secondaryColor }}>
+              <Sparkles className="w-4 h-4" />
             </div>
           </div>
 
-          <div className="pt-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Heart className="w-4 h-4" style={{ color: secondaryColor }} />
-              <span className="text-sm font-black" style={{ color: textColor }}>Fale conosco</span>
-            </div>
-
+          <div>
             <div className="space-y-2.5">
               {activeLinks.map((link) => {
                 const isWhatsapp = link.type === "whatsapp";
@@ -174,7 +182,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
                       >
                         {getIcon(link.type)}
                       </div>
-                      <div className="text-xs font-black truncate" style={{ color: isWhatsapp ? "#FFFFFF" : textColor }}>{link.title}</div>
+                      <div className="min-w-0"><div className="text-xs font-black truncate" style={{ color: isWhatsapp ? "#FFFFFF" : textColor }}>{link.title}</div><div className="text-[10px] mt-0.5 truncate" style={{ color: isWhatsapp ? "rgba(255,255,255,.82)" : `${textColor}78` }}>{getLinkDescription(link.type)}</div></div>
                     </div>
                     <ExternalLink className="w-4 h-4 shrink-0" style={{ color: isWhatsapp ? "#FFFFFF" : secondaryColor }} />
                   </button>
@@ -193,7 +201,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
                     </div>
                     <div>
                       <div className="text-xs font-black" style={{ color: textColor }}>Wi-Fi para clientes</div>
-                      <div className="text-[10px]" style={{ color: `${primaryColor}80` }}>Veja a rede e copie a senha</div>
+                      <div className="text-[10px]" style={{ color: `${textColor}78` }}>Veja a rede disponível e copie a senha.</div>
                     </div>
                   </div>
                   <ExternalLink className="w-4 h-4" style={{ color: secondaryColor }} />
@@ -214,7 +222,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
                     </div>
                     <div>
                       <div className="text-xs font-black" style={{ color: textColor }}>Enviar feedback</div>
-                      <div className="text-[10px]" style={{ color: `${primaryColor}80` }}>Canal privado com o estabelecimento</div>
+                      <div className="text-[10px]" style={{ color: `${textColor}78` }}>Sua opinião é muito importante.</div>
                     </div>
                   </div>
                   <ExternalLink className="w-4 h-4" style={{ color: secondaryColor }} />
@@ -255,8 +263,24 @@ export default function PhoneView({ business, links, campaign, device, experienc
           </div>
         )}
 
-        <div className="mt-8 pt-4 w-full text-[10px]" style={{ borderTop: `1px solid ${secondaryColor}28`, color: `${primaryColor}80` }}>
-          Powered by <strong style={{ color: primaryColor }}>Otimiza Meu Negócio</strong> • Ponto digital inteligente
+        <div className="w-full mt-7">
+          <div
+            className="rounded-[26px] px-5 py-6 text-center"
+            style={{
+              background: `linear-gradient(180deg, ${secondaryColor}0F 0%, ${surfaceColor}F5 100%)`,
+              border: `1px solid ${secondaryColor}24`,
+            }}
+          >
+            <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: secondaryColor }} />
+            <p className="text-sm font-semibold leading-relaxed" style={{ color: textColor }}>
+              Agradecemos por fazer parte da história da
+            </p>
+            <div className="text-base font-black mt-1" style={{ color: primaryColor }}>{business.name}.</div>
+          </div>
+
+          <div className="mt-4 pt-4 w-full text-[10px]" style={{ borderTop: `1px solid ${secondaryColor}28`, color: `${textColor}6E` }}>
+            Powered by <strong style={{ color: primaryColor }}>Otimiza Meu Negócio</strong> • Ponto digital inteligente
+          </div>
         </div>
       </div>
 

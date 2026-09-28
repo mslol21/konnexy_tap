@@ -68,7 +68,7 @@ export default async function MerchantDashboardPage() {
       .order("created_at", { ascending: true }),
     supabase
       .from("events")
-      .select("created_at, session_id")
+      .select("created_at, source")
       .eq("business_id", businessId)
       .eq("event_type", "review_redirect")
       .gte("created_at", daysAgoIso(30))
@@ -100,8 +100,8 @@ export default async function MerchantDashboardPage() {
   const last30Days = events.filter((event) => new Date(event.created_at).getTime() >= thirtyDaysStart).length;
   const total = totalResult.count ?? 0;
 
-  const nfc = events.filter((event) => event.session_id === "nfc").length;
-  const qr = events.filter((event) => event.session_id === "qr").length;
+  const nfc = events.filter((event) => event.source === "nfc").length;
+  const qr = events.filter((event) => event.source === "qr").length;
   const identified = nfc + qr;
   const nfcPercentage = identified > 0 ? Math.round((nfc / identified) * 100) : 0;
   const qrPercentage = identified > 0 ? 100 - nfcPercentage : 0;
@@ -120,7 +120,7 @@ export default async function MerchantDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <section className="bg-white p-6 rounded-3xl border border-[#E8E3DD] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <section className="bg-white p-4 sm:p-6 rounded-3xl border border-[#E8E3DD] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-[#6D7277] uppercase tracking-wider">
             <span className={`w-2.5 h-2.5 rounded-full ${activeDevices.length ? "bg-emerald-500" : "bg-amber-500"}`} />
@@ -192,7 +192,7 @@ export default async function MerchantDashboardPage() {
           <p className="text-xs text-[#6D7277]">São acessos ao link; não representam avaliações publicadas.</p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[
             ["Hoje", today],
             ["Últimos 7 dias", last7Days],

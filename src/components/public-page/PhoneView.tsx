@@ -82,79 +82,95 @@ export default function PhoneView({ business, links, campaign, device, experienc
 
   return (
     <div
-      className="w-full max-w-[420px] mx-auto min-h-full relative overflow-hidden pb-12"
+      className="w-full max-w-[420px] mx-auto min-h-full relative overflow-hidden pb-10"
       style={{
-        background: `
-          radial-gradient(circle at 12% 16%, ${secondaryColor}30 0%, transparent 30%),
-          radial-gradient(circle at 88% 48%, ${primaryColor}18 0%, transparent 34%),
-          radial-gradient(circle at 20% 92%, ${secondaryColor}20 0%, transparent 26%),
-          linear-gradient(180deg, ${secondaryColor}18 0%, #fffaf8 34%, ${secondaryColor}14 72%, #fffdfb 100%)
-        `,
+        background: `linear-gradient(180deg, #fffdfb 0%, ${secondaryColor}0D 52%, #fffdfb 100%)`,
       }}
     >
-      <div className="pointer-events-none absolute inset-0 opacity-[0.10] bg-[radial-gradient(#7c6f67_1px,transparent_1px)] [background-size:18px_18px]" />
-      <div className="pointer-events-none absolute -top-16 -left-16 h-52 w-52 rounded-full blur-3xl" style={{ backgroundColor: `${secondaryColor}2A` }} />
-      <div className="pointer-events-none absolute top-1/3 -right-20 h-64 w-64 rounded-full blur-3xl" style={{ backgroundColor: `${primaryColor}16` }} />
       <div className="relative h-36 w-full overflow-hidden" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>
-        {business.cover_url ? <img src={business.cover_url} alt="Capa do estabelecimento" className="w-full h-full object-cover opacity-60" /> : <div className="w-full h-full opacity-30 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent opacity-80" />
+        {business.cover_url ? (
+          <img src={business.cover_url} alt="Capa do estabelecimento" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full opacity-30 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />
+        )}
+        <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, transparent 0%, #fffdfb 100%)`, opacity: 0.72 }} />
       </div>
 
-      <div className="px-5 -mt-16 relative z-10 flex flex-col items-center text-center">
-        <div className="relative w-24 h-24 rounded-2xl p-1 bg-white shadow-xl overflow-hidden mb-3" style={{ border: `2px solid ${secondaryColor}` }}>
-          {business.logo_url ? <img src={business.logo_url} alt={business.name} className="w-full h-full object-cover rounded-xl" /> : <div className="w-full h-full text-white flex items-center justify-center font-bold text-2xl rounded-xl" style={{ backgroundColor: primaryColor }}>{business.name.substring(0, 2).toUpperCase()}</div>}
+      <div className="px-5 -mt-14 relative z-10 flex flex-col items-center text-center">
+        <div className="relative w-24 h-24 rounded-3xl p-1 bg-white shadow-[0_12px_30px_rgba(0,0,0,0.10)] overflow-hidden mb-3" style={{ border: `2px solid ${secondaryColor}66` }}>
+          {business.logo_url ? (
+            <img src={business.logo_url} alt={business.name} className="w-full h-full object-cover rounded-[20px]" />
+          ) : (
+            <div className="w-full h-full text-white flex items-center justify-center font-black text-2xl rounded-[20px]" style={{ backgroundColor: primaryColor }}>
+              {business.name.substring(0, 2).toUpperCase()}
+            </div>
+          )}
         </div>
-        <h1 className="text-xl font-black" style={{ color: primaryColor }}>{business.name}</h1>
-        <p className="text-xs font-medium tracking-wide uppercase mt-0.5" style={{ color: secondaryColor }}>{business.category}</p>
-        <p className="text-xs mt-2 max-w-[320px] leading-relaxed" style={{ color: `${primaryColor}B8` }}>{business.description || "Tudo do nosso negócio em um só toque."}</p>
-        {device && <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold backdrop-blur-md" style={{ backgroundColor: `${secondaryColor}18`, color: primaryColor, border: `1px solid ${secondaryColor}55` }}><span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: secondaryColor }} />Conectado pela placa • {device.location}</div>}
+
+        <h1 className="text-[22px] font-black tracking-tight" style={{ color: primaryColor }}>{business.name}</h1>
+        <p className="text-[11px] font-semibold tracking-[0.14em] uppercase mt-0.5" style={{ color: secondaryColor }}>{business.category}</p>
+        <p className="text-xs mt-2 max-w-[320px] leading-relaxed" style={{ color: `${primaryColor}B5` }}>
+          {business.description || "Tudo do nosso negócio em um só toque."}
+        </p>
+
+        {device && (
+          <div
+            className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-semibold"
+            style={{ backgroundColor: `${secondaryColor}12`, color: primaryColor, border: `1px solid ${secondaryColor}3D` }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: secondaryColor }} />
+            Conectado pela placa • {device.location}
+          </div>
+        )}
 
         <section
-          className="w-full mt-5 rounded-[28px] p-4 text-left backdrop-blur-xl shadow-[0_18px_45px_rgba(0,0,0,0.14)]"
+          className="w-full mt-6 rounded-[30px] p-4 text-left"
           style={{
-            background: `linear-gradient(145deg, ${primaryColor}F2 0%, ${primaryColor}DF 52%, ${secondaryColor}A8 145%)`,
-            border: `1px solid ${secondaryColor}66`,
+            background: `linear-gradient(180deg, rgba(255,255,255,0.96) 0%, ${secondaryColor}0C 100%)`,
+            border: `1px solid ${secondaryColor}2F`,
+            boxShadow: `0 18px 50px ${primaryColor}12`,
           }}
         >
-          <div className="flex items-start gap-3">
-            <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${secondaryColor}26`, color: secondaryColor }}>
+          <div className="flex items-center gap-3 pb-4" style={{ borderBottom: `1px solid ${secondaryColor}24` }}>
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${secondaryColor}16`, color: primaryColor }}>
               <MapPin className="w-5 h-5" />
             </div>
-            <div>
-              <h2 className="text-lg font-black text-white leading-tight">Atendimento</h2>
-              <p className="text-[11px] text-white/70 mt-0.5">Estamos te esperando!</p>
+            <div className="min-w-0">
+              <h2 className="text-lg font-black leading-tight" style={{ color: primaryColor }}>Atendimento</h2>
+              <p className="text-[11px] mt-0.5" style={{ color: `${primaryColor}8F` }}>Estamos te esperando!</p>
             </div>
           </div>
 
-          <div className="mt-4 border-t pt-4" style={{ borderColor: `${secondaryColor}35` }}>
+          <div className="pt-4">
             <div className="flex items-center gap-2 mb-3">
               <Heart className="w-4 h-4" style={{ color: secondaryColor }} />
-              <span className="text-sm font-bold text-white">Fale conosco</span>
+              <span className="text-sm font-black" style={{ color: primaryColor }}>Fale conosco</span>
             </div>
 
             <div className="space-y-2.5">
               {activeLinks.map((link) => {
                 const isWhatsapp = link.type === "whatsapp";
-                const isGoogle = link.type === "google_review";
                 return (
                   <button
                     key={link.id}
                     onClick={() => handleLinkAction(link)}
-                    className="w-full p-3 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.98]"
+                    className="w-full p-3.5 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.985]"
                     style={{
-                      backgroundColor: isWhatsapp ? "#16A34A" : isGoogle ? `${secondaryColor}20` : "rgba(255,255,255,0.035)",
-                      borderColor: isWhatsapp ? "#22C55E" : `${secondaryColor}55`,
-                      color: "#FFFFFF",
+                      background: isWhatsapp
+                        ? "linear-gradient(135deg,#22C55E,#16A34A)"
+                        : `linear-gradient(180deg,#ffffff 0%, ${secondaryColor}08 100%)`,
+                      borderColor: isWhatsapp ? "#22C55E" : `${secondaryColor}2E`,
+                      boxShadow: isWhatsapp ? "0 8px 22px rgba(34,197,94,0.18)" : `0 6px 18px ${primaryColor}0D`,
                     }}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: isWhatsapp ? "rgba(255,255,255,0.14)" : `${secondaryColor}1F` }}
+                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                        style={{ backgroundColor: isWhatsapp ? "rgba(255,255,255,0.16)" : `${secondaryColor}14` }}
                       >
                         {getIcon(link.type)}
                       </div>
-                      <div className="text-xs font-bold text-white truncate">{link.title}</div>
+                      <div className="text-xs font-black truncate" style={{ color: isWhatsapp ? "#FFFFFF" : primaryColor }}>{link.title}</div>
                     </div>
                     <ExternalLink className="w-4 h-4 shrink-0" style={{ color: isWhatsapp ? "#FFFFFF" : secondaryColor }} />
                   </button>
@@ -164,16 +180,16 @@ export default function PhoneView({ business, links, campaign, device, experienc
               {wifiEnabled && (
                 <button
                   onClick={() => setShowWifiModal(true)}
-                  className="w-full p-3 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.98]"
-                  style={{ backgroundColor: "rgba(255,255,255,0.035)", borderColor: `${secondaryColor}55` }}
+                  className="w-full p-3.5 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.985]"
+                  style={{ background: `linear-gradient(180deg,#ffffff 0%, ${secondaryColor}08 100%)`, borderColor: `${secondaryColor}2E` }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}1F` }}>
-                      <Wifi className="w-5 h-5" style={{ color: secondaryColor }} />
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}14` }}>
+                      <Wifi className="w-5 h-5" style={{ color: primaryColor }} />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white">Wi-Fi para clientes</div>
-                      <div className="text-[10px] text-white/55">Veja a rede e copie a senha</div>
+                      <div className="text-xs font-black" style={{ color: primaryColor }}>Wi-Fi para clientes</div>
+                      <div className="text-[10px]" style={{ color: `${primaryColor}80` }}>Veja a rede e copie a senha</div>
                     </div>
                   </div>
                   <ExternalLink className="w-4 h-4" style={{ color: secondaryColor }} />
@@ -182,26 +198,19 @@ export default function PhoneView({ business, links, campaign, device, experienc
             </div>
 
             {(experience?.feedback_enabled ?? true) && !activeLinks.some((l) => l.type === "suggestion") && (
-              <div className="mt-4 pt-4 border-t" style={{ borderColor: `${secondaryColor}35` }}>
-                <div className="flex items-center gap-2 mb-3">
-                  <Heart className="w-4 h-4" style={{ color: secondaryColor }} />
-                  <div>
-                    <div className="text-sm font-bold text-white">Sua opinião importa</div>
-                    <div className="text-[10px] text-white/55">Ajude este negócio a melhorar.</div>
-                  </div>
-                </div>
+              <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${secondaryColor}24` }}>
                 <button
                   onClick={() => setShowFeedbackModal(true)}
-                  className="w-full p-3 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.98]"
-                  style={{ backgroundColor: "rgba(255,255,255,0.92)", borderColor: `${secondaryColor}55` }}
+                  className="w-full p-3.5 rounded-2xl flex items-center justify-between border text-left active:scale-[0.985]"
+                  style={{ background: `${secondaryColor}0C`, borderColor: `${secondaryColor}30` }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}1A` }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}16` }}>
                       <Send className="w-5 h-5" style={{ color: primaryColor }} />
                     </div>
                     <div>
-                      <div className="text-xs font-bold" style={{ color: primaryColor }}>Enviar feedback</div>
-                      <div className="text-[10px] text-slate-500">Canal privado com o estabelecimento</div>
+                      <div className="text-xs font-black" style={{ color: primaryColor }}>Enviar feedback</div>
+                      <div className="text-[10px]" style={{ color: `${primaryColor}80` }}>Canal privado com o estabelecimento</div>
                     </div>
                   </div>
                   <ExternalLink className="w-4 h-4" style={{ color: secondaryColor }} />
@@ -212,40 +221,92 @@ export default function PhoneView({ business, links, campaign, device, experienc
         </section>
 
         {campaign && campaign.is_active && (
-          <div className="w-full mt-5 p-4 rounded-2xl text-white shadow-lg text-left backdrop-blur-xl" style={{ background: `linear-gradient(135deg, ${primaryColor}F0, ${secondaryColor}B8)`, border: `1px solid ${secondaryColor}66`, boxShadow: `0 18px 40px ${primaryColor}22` }}>
-            <div className="text-[10px] font-bold uppercase flex items-center gap-1" style={{ color: secondaryColor }}><Tag className="w-3 h-3" /> Oferta especial</div>
-            <div className="text-sm font-bold mt-2">{campaign.title}</div>
-            <p className="text-xs text-slate-300 mt-1">{campaign.description}</p>
-            <div className="mt-3 flex items-baseline gap-2">{campaign.original_price && <span className="text-xs line-through text-slate-400">{formatCurrency(campaign.original_price)}</span>}<span className="text-lg font-black">{formatCurrency(campaign.current_price)}</span></div>
-            {campaign.button_url && <button onClick={() => !isMockup && window.open(campaign.button_url, "_blank", "noopener,noreferrer")} className="mt-3 w-full py-2 px-3 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5" style={{ backgroundColor: secondaryColor, color: primaryColor }}><Sparkles className="w-3.5 h-3.5" />{campaign.button_text || "Quero aproveitar"}</button>}
+          <div
+            className="w-full mt-5 p-4 rounded-[26px] text-left"
+            style={{
+              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 140%)`,
+              color: "#FFFFFF",
+              boxShadow: `0 16px 36px ${primaryColor}20`,
+            }}
+          >
+            <div className="text-[10px] font-bold uppercase flex items-center gap-1" style={{ color: "#FFFFFFCC" }}>
+              <Tag className="w-3 h-3" /> Oferta especial
+            </div>
+            <div className="text-sm font-black mt-2">{campaign.title}</div>
+            <p className="text-xs mt-1 text-white/75">{campaign.description}</p>
+            <div className="mt-3 flex items-baseline gap-2">
+              {campaign.original_price && <span className="text-xs line-through text-white/55">{formatCurrency(campaign.original_price)}</span>}
+              <span className="text-lg font-black">{formatCurrency(campaign.current_price)}</span>
+            </div>
+            {campaign.button_url && (
+              <button
+                onClick={() => !isMockup && window.open(campaign.button_url, "_blank", "noopener,noreferrer")}
+                className="mt-3 w-full py-2.5 px-3 font-black text-xs rounded-xl flex items-center justify-center gap-1.5"
+                style={{ backgroundColor: "#FFFFFF", color: primaryColor }}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                {campaign.button_text || "Quero aproveitar"}
+              </button>
+            )}
           </div>
         )}
 
-        <div className="mt-8 pt-4 w-full text-[10px]" style={{ borderTop: `1px solid ${secondaryColor}35`, color: `${primaryColor}99` }}>Powered by <strong style={{ color: primaryColor }}>Otimiza Meu Negócio</strong> • Ponto digital inteligente</div>
+        <div className="mt-8 pt-4 w-full text-[10px]" style={{ borderTop: `1px solid ${secondaryColor}28`, color: `${primaryColor}80` }}>
+          Powered by <strong style={{ color: primaryColor }}>Otimiza Meu Negócio</strong> • Ponto digital inteligente
+        </div>
       </div>
 
       {showWifiModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
-          <div className="w-full max-w-sm rounded-2xl shadow-2xl p-5 relative text-left" style={{ background: `linear-gradient(180deg, #ffffff 0%, ${secondaryColor}14 100%)`, border: `1px solid ${secondaryColor}55` }}>
+          <div className="w-full max-w-sm rounded-2xl shadow-2xl p-5 relative text-left bg-white" style={{ border: `1px solid ${secondaryColor}3D` }}>
             <button onClick={() => setShowWifiModal(false)} className="absolute top-3 right-3 p-1 rounded-full text-slate-600 hover:bg-slate-100"><X className="w-5 h-5" /></button>
-            <Wifi className="w-8 h-8 text-sky-700 mb-3" /><h3 className="font-bold text-slate-950">Wi-Fi para clientes</h3>
-            <div className="mt-4 p-3 rounded-xl bg-slate-50 border"><div className="text-[10px] uppercase text-slate-500">Rede</div><div className="font-bold text-sm text-slate-900">{experience?.wifi_ssid}</div></div>
-            {experience?.wifi_password && <div className="mt-2 p-3 rounded-xl bg-slate-50 border flex items-center justify-between gap-3"><div><div className="text-[10px] uppercase text-slate-500">Senha</div><div className="font-mono font-bold text-sm text-slate-900">{experience.wifi_password}</div></div><button onClick={() => navigator.clipboard.writeText(experience.wifi_password || "")} className="p-2 rounded-lg bg-slate-900 text-white"><Copy className="w-4 h-4" /></button></div>}
+            <Wifi className="w-8 h-8 mb-3" style={{ color: primaryColor }} />
+            <h3 className="font-black" style={{ color: primaryColor }}>Wi-Fi para clientes</h3>
+            <div className="mt-4 p-3 rounded-xl border" style={{ backgroundColor: `${secondaryColor}0A`, borderColor: `${secondaryColor}2A` }}>
+              <div className="text-[10px] uppercase text-slate-500">Rede</div>
+              <div className="font-bold text-sm" style={{ color: primaryColor }}>{experience?.wifi_ssid}</div>
+            </div>
+            {experience?.wifi_password && (
+              <div className="mt-2 p-3 rounded-xl border flex items-center justify-between gap-3" style={{ backgroundColor: `${secondaryColor}0A`, borderColor: `${secondaryColor}2A` }}>
+                <div>
+                  <div className="text-[10px] uppercase text-slate-500">Senha</div>
+                  <div className="font-mono font-bold text-sm" style={{ color: primaryColor }}>{experience.wifi_password}</div>
+                </div>
+                <button onClick={() => navigator.clipboard.writeText(experience.wifi_password || "")} className="p-2 rounded-lg text-white" style={{ backgroundColor: primaryColor }}><Copy className="w-4 h-4" /></button>
+              </div>
+            )}
           </div>
         </div>
       )}
 
       {showFeedbackModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-5 relative text-left">
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-5 relative text-left" style={{ border: `1px solid ${secondaryColor}3D` }}>
             <button onClick={() => setShowFeedbackModal(false)} className="absolute top-3 right-3 p-1 rounded-full text-slate-600 hover:bg-slate-100"><X className="w-5 h-5" /></button>
-            {feedbackSubmitted ? <div className="py-6 text-center"><CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" /><h3 className="font-bold mt-2">Feedback enviado!</h3><p className="text-xs text-slate-600 mt-1">Obrigado por ajudar este negócio a melhorar.</p></div> : (
+            {feedbackSubmitted ? (
+              <div className="py-6 text-center">
+                <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
+                <h3 className="font-black mt-2" style={{ color: primaryColor }}>Feedback enviado!</h3>
+                <p className="text-xs text-slate-600 mt-1">Obrigado por ajudar este negócio a melhorar.</p>
+              </div>
+            ) : (
               <form onSubmit={handleFeedbackSubmit} className="space-y-4">
-                <div><h3 className="font-bold text-slate-950">Como foi sua experiência?</h3><p className="text-[11px] text-slate-500">Este feedback é privado e independente da avaliação no Google.</p></div>
-                <div className="flex gap-1">{[1,2,3,4,5].map((value) => <button key={value} type="button" onClick={() => setFeedbackRating(value)} aria-label={`${value} estrelas`}><Star className={`w-7 h-7 ${value <= feedbackRating ? "text-amber-500 fill-amber-400" : "text-slate-300"}`} /></button>)}</div>
+                <div>
+                  <h3 className="font-black" style={{ color: primaryColor }}>Como foi sua experiência?</h3>
+                  <p className="text-[11px] text-slate-500">Este feedback é privado e independente da avaliação no Google.</p>
+                </div>
+                <div className="flex gap-1">
+                  {[1,2,3,4,5].map((value) => (
+                    <button key={value} type="button" onClick={() => setFeedbackRating(value)} aria-label={`${value} estrelas`}>
+                      <Star className={`w-7 h-7 ${value <= feedbackRating ? "text-amber-500 fill-amber-400" : "text-slate-300"}`} />
+                    </button>
+                  ))}
+                </div>
                 <textarea rows={4} maxLength={1500} placeholder="Conte o que foi bom ou o que pode melhorar (opcional)" value={feedbackMessage} onChange={(e) => setFeedbackMessage(e.target.value)} className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 text-slate-900" />
                 {feedbackError && <p className="text-xs text-red-600">{feedbackError}</p>}
-                <button type="submit" disabled={sending} className="w-full py-2.5 text-white text-xs font-bold rounded-xl disabled:opacity-50" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>{sending ? "Enviando..." : "Enviar feedback"}</button>
+                <button type="submit" disabled={sending} className="w-full py-2.5 text-white text-xs font-black rounded-xl disabled:opacity-50" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>
+                  {sending ? "Enviando..." : "Enviar feedback"}
+                </button>
               </form>
             )}
           </div>

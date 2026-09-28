@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   AlertCircle,
   BadgeDollarSign,
@@ -325,14 +326,14 @@ export default function AdminClientesPage() {
     </header>
 
     <section className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-      {[
-        ["Clientes",summary.clients,Users],
-        ["Ativos",summary.active,CheckCircle2],
-        ["Placas pendentes",summary.platePending,CreditCard],
-        ["Mensalistas",summary.subscribers,BadgeDollarSign],
-        ["Mensalidades atrasadas",summary.overdue,AlertCircle],
-        ["MRR",money(summary.mrr),BadgeDollarSign],
-      ].map(([label,value,Icon])=><div key={String(label)} className="rounded-2xl border border-slate-700 bg-slate-800 p-4"><Icon className="w-4 h-4 text-gold-400"/><div className="mt-2 text-xl font-black text-white">{String(value)}</div><div className="mt-1 text-[10px] uppercase font-bold text-slate-400">{String(label)}</div></div>)}
+      {([
+        {label:"Clientes",value:String(summary.clients),icon:Users},
+        {label:"Ativos",value:String(summary.active),icon:CheckCircle2},
+        {label:"Placas pendentes",value:String(summary.platePending),icon:CreditCard},
+        {label:"Mensalistas",value:String(summary.subscribers),icon:BadgeDollarSign},
+        {label:"Mensalidades atrasadas",value:String(summary.overdue),icon:AlertCircle},
+        {label:"MRR",value:money(summary.mrr),icon:BadgeDollarSign},
+      ] satisfies Array<{label:string;value:string;icon:LucideIcon}>).map(({label,value,icon:Icon})=><div key={label} className="rounded-2xl border border-slate-700 bg-slate-800 p-4"><Icon className="w-4 h-4 text-gold-400"/><div className="mt-2 text-xl font-black text-white">{value}</div><div className="mt-1 text-[10px] uppercase font-bold text-slate-400">{label}</div></div>)}
     </section>
 
     {error&&<div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-200">{error}</div>}

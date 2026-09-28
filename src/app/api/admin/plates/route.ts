@@ -17,6 +17,7 @@ const createPlateSchema = z.object({
   google_url: z.string().trim().url().max(1200),
   code: z.string().trim().max(16).optional().nullable(),
   status: z.enum(["pending", "active"]).default("active"),
+  experience_mode: z.enum(["direct_review", "smart_page"]).default("direct_review"),
   lead_id: z.string().uuid().optional().nullable(),
 });
 
@@ -190,7 +191,7 @@ export async function POST(request: NextRequest) {
         status: parsed.data.status,
         destination_url: validation.sanitizedUrl,
         destination_type: "google_review",
-        experience_mode: "direct_review",
+        experience_mode: parsed.data.experience_mode,
       })
       .select("id,business_id,code,name,type,location,active,status,destination_url,destination_type,experience_mode,created_at")
       .single();
@@ -199,6 +200,17 @@ export async function POST(request: NextRequest) {
       console.error("Falha ao criar placa", deviceError?.message);
       await service.from("businesses").delete().eq("id", business.id);
       return NextResponse.json({ error: "Não foi possível cadastrar a placa." }, { status: 500 });
+    }
+
+    const { error: experienceError } = await service
+      .from("business_experiences")
+      .upsert({ business_id: business.id }, { onConflict: "business_id" });
+
+    if (experienceError) {
+      console.error("Falha ao preparar experiência do estabelecimento", experienceError.message);
+      await service.from("tap_devices").delete().eq("id", device.id);
+      await service.from("businesses").delete().eq("id", business.id);
+      return NextResponse.json({ error: "Não foi possível preparar os recursos inteligentes do cliente." }, { status: 500 });
     }
 
     if (parsed.data.lead_id) {
@@ -328,7 +340,7 @@ export async function PATCH(request: NextRequest) {
 
     const { data: updated, error: updatedError } = await service
       .from("tap_devices")
-      .select("id,business_id,code,name,type,location,active,status,destination_url,destination_type,created_at,businesses(id,name,slug,category,city,state,google_review_url)")
+      .select("id,business_id,code,name,type,location,active,status,destination_url,destination_type,experience_mode,created_at,businesses(id,name,slug,category,city,state,google_review_url)")
       .eq("id", parsed.data.id)
       .single();
 

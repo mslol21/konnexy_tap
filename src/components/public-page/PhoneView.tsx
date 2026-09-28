@@ -5,6 +5,16 @@ import { Star, MessageCircle, UtensilsCrossed, MapPin, Instagram, Send, External
 import { Business, BusinessLink, Campaign, TapDevice } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
+function hexToRgba(hex: string, alpha: number) {
+  const raw = hex.replace("#", "");
+  if (!/^[0-9A-Fa-f]{6}$/.test(raw)) return `rgba(0,0,0,${alpha})`;
+  const value = Number.parseInt(raw, 16);
+  const r = (value >> 16) & 255;
+  const g = (value >> 8) & 255;
+  const b = value & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 interface ExperienceConfig {
   google_enabled?: boolean;
   whatsapp_enabled?: boolean;
@@ -96,22 +106,28 @@ export default function PhoneView({ business, links, campaign, device, experienc
   const surfaceColor = business.surface_color || "#FFFFFF";
   const textColor = business.text_color || primaryColor;
   const coverPosition = business.cover_position || "center";
+  const primarySoft = hexToRgba(primaryColor, 0.16);
+  const secondarySoft = hexToRgba(secondaryColor, 0.22);
+  const secondaryGlow = hexToRgba(secondaryColor, 0.34);
+  const primaryShadow = hexToRgba(primaryColor, 0.18);
 
   return (
     <div
       className="w-full max-w-[420px] mx-auto min-h-full relative overflow-hidden pb-8"
       style={{
         background: `
-          radial-gradient(circle at 12% 12%, ${secondaryColor}2A 0%, transparent 24%),
-          radial-gradient(circle at 88% 24%, ${primaryColor}18 0%, transparent 26%),
-          radial-gradient(circle at 20% 78%, ${secondaryColor}20 0%, transparent 24%),
-          linear-gradient(180deg, ${backgroundColor} 0%, #ffffff 38%, ${backgroundColor} 100%)
+          radial-gradient(circle at 14% 10%, ${secondaryGlow} 0%, transparent 25%),
+          radial-gradient(circle at 90% 28%, ${primarySoft} 0%, transparent 30%),
+          radial-gradient(circle at 22% 76%, ${secondarySoft} 0%, transparent 24%),
+          linear-gradient(180deg, ${backgroundColor} 0%, ${hexToRgba(secondaryColor, 0.12)} 42%, ${backgroundColor} 100%)
         `,
       }}
     >
-      <div className="pointer-events-none absolute inset-0 opacity-[0.07] bg-[radial-gradient(#000_0.8px,transparent_0.8px)] [background-size:18px_18px]" />
-      <div className="pointer-events-none absolute -top-20 -left-16 h-56 w-56 rounded-full blur-3xl" style={{ backgroundColor: `${secondaryColor}26` }} />
-      <div className="pointer-events-none absolute top-[34%] -right-20 h-64 w-64 rounded-full blur-3xl" style={{ backgroundColor: `${primaryColor}16` }} />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.055] bg-[radial-gradient(#000_0.8px,transparent_0.8px)] [background-size:18px_18px]" />
+      <div className="pointer-events-none absolute -top-20 -left-16 h-60 w-60 rounded-full blur-3xl" style={{ backgroundColor: secondaryGlow }} />
+      <div className="pointer-events-none absolute top-[30%] -right-24 h-72 w-72 rounded-full blur-3xl" style={{ backgroundColor: primarySoft }} />
+      <div className="pointer-events-none absolute top-[38%] left-[-22%] w-[150%] h-28 rotate-[-8deg] rounded-[50%] border" style={{ borderColor: hexToRgba(secondaryColor, 0.28) }} />
+      <div className="pointer-events-none absolute top-[41%] left-[-18%] w-[140%] h-32 rotate-[7deg] rounded-[50%] border" style={{ borderColor: hexToRgba(primaryColor, 0.12) }} />
       {/* HERO / CAPA */}
       <div className="relative h-[224px] w-full overflow-hidden">
         <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }} />
@@ -126,8 +142,9 @@ export default function PhoneView({ business, links, campaign, device, experienc
           <div className="absolute inset-0 opacity-30 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:18px_18px]" />
         )}
         <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(0,0,0,.02) 0%, ${primaryColor}16 56%, ${backgroundColor} 100%)` }} />
-        <div className="absolute -left-12 top-10 h-44 w-44 rounded-full border opacity-40" style={{ borderColor: `${secondaryColor}70` }} />
-        <div className="absolute -right-16 top-24 h-52 w-52 rounded-full border opacity-30" style={{ borderColor: `${secondaryColor}55` }} />
+        <div className="absolute -left-12 top-10 h-44 w-44 rounded-full border" style={{ borderColor: hexToRgba(secondaryColor, 0.34) }} />
+        <div className="absolute -right-16 top-24 h-52 w-52 rounded-full border" style={{ borderColor: hexToRgba(secondaryColor, 0.22) }} />
+        <div className="absolute left-[-10%] right-[-10%] bottom-6 h-24 rotate-[-4deg] rounded-[50%] border" style={{ borderColor: hexToRgba(secondaryColor, 0.26), backgroundColor: hexToRgba(secondaryColor, 0.06) }} />
         <div className="absolute bottom-[-42px] left-[-12%] right-[-12%] h-24 rounded-[50%]" style={{ backgroundColor }} />
       </div>
 
@@ -137,7 +154,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
           className="w-[108px] h-[108px] rounded-[32px] bg-white/95 p-1.5 overflow-hidden backdrop-blur-xl"
           style={{
             border: `1px solid ${secondaryColor}55`,
-            boxShadow: `0 18px 42px ${primaryColor}22, 0 0 0 6px ${backgroundColor}CC`,
+            boxShadow: `0 18px 42px ${primaryShadow}, 0 0 0 7px ${hexToRgba(backgroundColor, 0.90)}, 0 0 28px ${secondarySoft}`,
           }}
         >
           {business.logo_url ? (
@@ -180,9 +197,9 @@ export default function PhoneView({ business, links, campaign, device, experienc
         <section
           className="w-full mt-7 p-3.5 rounded-[32px] backdrop-blur-xl"
           style={{
-            background: `linear-gradient(180deg,${surfaceColor}EE 0%,${secondaryColor}12 100%)`,
-            border: `1px solid ${secondaryColor}30`,
-            boxShadow: `0 24px 70px ${primaryColor}16, inset 0 1px 0 rgba(255,255,255,.7)`,
+            background: `linear-gradient(160deg,${hexToRgba(surfaceColor, 0.96)} 0%,${hexToRgba(secondaryColor, 0.16)} 100%)`,
+            border: `1px solid ${hexToRgba(secondaryColor, 0.30)}`,
+            boxShadow: `0 24px 70px ${primaryShadow}, inset 0 1px 0 rgba(255,255,255,.82)`,
           }}
         >
           <div className="space-y-2.5">
@@ -202,7 +219,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
                   <div className="flex items-center gap-3 min-w-0">
                     <div
                       className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: isWhatsapp ? "rgba(255,255,255,.16)" : `${secondaryColor}12` }}
+                      style={{ backgroundColor: isWhatsapp ? "rgba(255,255,255,.18)" : hexToRgba(secondaryColor, 0.14), boxShadow: isWhatsapp ? "inset 0 0 0 1px rgba(255,255,255,.10)" : `inset 0 0 0 1px ${hexToRgba(secondaryColor, 0.12)}` }}
                     >
                       {getIcon(link.type)}
                     </div>
@@ -211,7 +228,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
                       <div className="text-[11px] mt-1 leading-snug truncate" style={{ color: isWhatsapp ? "rgba(255,255,255,.82)" : `${textColor}78` }}>{getLinkDescription(link.type)}</div>
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: isWhatsapp ? "rgba(255,255,255,.12)" : `${secondaryColor}0D` }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: isWhatsapp ? "rgba(255,255,255,.14)" : hexToRgba(secondaryColor, 0.12), boxShadow: `0 6px 18px ${hexToRgba(primaryColor, 0.08)}` }}>
                     <ExternalLink className="w-4 h-4" style={{ color: isWhatsapp ? "#FFFFFF" : secondaryColor }} />
                   </div>
                 </button>
@@ -288,7 +305,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
 
         {/* AGRADECIMENTO */}
         <div className="w-full mt-7 px-4">
-          <div className="relative py-8 px-5 text-center rounded-[28px] overflow-hidden" style={{ background: `linear-gradient(180deg,${secondaryColor}10 0%,${surfaceColor}E8 100%)`, border: `1px solid ${secondaryColor}22` }}>
+          <div className="relative py-8 px-5 text-center rounded-[28px] overflow-hidden" style={{ background: `linear-gradient(160deg,${hexToRgba(secondaryColor, 0.18)} 0%,${hexToRgba(surfaceColor, 0.94)} 100%)`, border: `1px solid ${hexToRgba(secondaryColor, 0.24)}`, boxShadow: `0 18px 44px ${hexToRgba(primaryColor, 0.10)}` }}>
             <div className="absolute left-0 top-1/2 h-px w-10" style={{ backgroundColor: `${secondaryColor}45` }} />
             <div className="absolute right-0 top-1/2 h-px w-10" style={{ backgroundColor: `${secondaryColor}45` }} />
             <div className="mx-auto mb-3 w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}16` }}><Heart className="w-5 h-5" style={{ color: secondaryColor }} /></div>

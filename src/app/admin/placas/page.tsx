@@ -374,13 +374,13 @@ export default function AdminPlacasPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-800/80 p-6 rounded-3xl border border-slate-700">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-800/80 p-4 sm:p-6 rounded-3xl border border-slate-700">
         <div>
           <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Central de operação</span>
           <h1 className="text-2xl font-black text-white mt-1">Gestão de placas</h1>
           <p className="text-xs text-slate-300 mt-1 max-w-2xl">Cadastre, localize, edite, pause, teste e gere o QR das placas sem precisar alterar o banco manualmente.</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-gold-400">{loading ? "Carregando..." : `${plates.length} placa${plates.length === 1 ? "" : "s"}`}</div>
           <button onClick={() => void loadPlates()} className="p-2.5 rounded-xl bg-slate-700 text-white hover:bg-slate-600" title="Atualizar"><RefreshCw className="w-4 h-4" /></button>
         </div>
@@ -391,7 +391,7 @@ export default function AdminPlacasPage() {
       {success && <div className="p-4 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-100 text-xs flex items-center gap-2"><Check className="w-4 h-4" /><span>{success}</span></div>}
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-        <section className="xl:col-span-5 bg-slate-800/80 p-6 rounded-3xl border border-slate-700">
+        <section className="xl:col-span-5 bg-slate-800/80 p-4 sm:p-6 rounded-3xl border border-slate-700">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-sm font-bold text-white flex items-center gap-2"><Plus className="w-4 h-4 text-gold-400" /> Nova placa</h2>
             <button type="button" onClick={() => setCode(generateDeviceCode("OM"))} className="text-[11px] text-gold-400 hover:text-gold-300 flex items-center gap-1"><RefreshCw className="w-3 h-3" /> Novo código</button>
@@ -415,7 +415,7 @@ export default function AdminPlacasPage() {
           </form>
         </section>
 
-        <section className="xl:col-span-7 bg-slate-800/80 p-6 rounded-3xl border border-slate-700 min-h-[420px]">
+        <section className="xl:col-span-7 bg-slate-800/80 p-4 sm:p-6 rounded-3xl border border-slate-700 min-h-[420px]">
           {selectedPlate && selectedUrls ? (
             <div className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">

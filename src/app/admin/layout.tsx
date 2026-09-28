@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   QrCode,
   Sparkles,
+  RadioTower,
 } from "lucide-react";
 import Logo from "@/components/brand/Logo";
 
@@ -48,6 +49,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <QrCode className="w-3.5 h-3.5 text-emerald-400" />
               <span>Cadastrar Placas (&lt; 1 min)</span>
+            </Link>
+            <Link
+              href="/admin/acessos"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+            >
+              <RadioTower className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Acessos NFC/QR</span>
             </Link>
             <Link
               href="/admin/experiencias"

@@ -157,7 +157,7 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
   };
 
   return <details className="group rounded-3xl border border-slate-700 bg-slate-800/80 overflow-hidden">
-    <summary className="cursor-pointer list-none p-5 flex items-start justify-between gap-4">
+    <summary className="cursor-pointer list-none p-4 sm:p-5 flex items-start justify-between gap-3 sm:gap-4">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="font-black text-white truncate">{business.name}</h2>
@@ -169,14 +169,14 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
       <ChevronDown className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-180 shrink-0" />
     </summary>
 
-    <div className="border-t border-slate-700 p-5 space-y-6">
+    <div className="border-t border-slate-700 p-4 sm:p-5 space-y-6">
       {message&&<div className={`rounded-xl border px-3 py-2 text-xs flex gap-2 ${message.kind==="ok"?"border-emerald-500/30 bg-emerald-500/10 text-emerald-200":"border-rose-500/30 bg-rose-500/10 text-rose-200"}`}>
         {message.kind==="ok"?<CheckCircle2 className="w-4 h-4 shrink-0"/>:<AlertCircle className="w-4 h-4 shrink-0"/>}{message.text}
       </div>}
 
       <section>
         <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><Users className="w-4 h-4"/>Conta / responsável</div>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           <Input label="Responsável" value={business.contact_name} onChange={(v)=>patchBusiness("contact_name",v)} />
           <Input label="E-mail" type="email" value={business.contact_email} onChange={(v)=>patchBusiness("contact_email",v)} />
           <Input label="Telefone do responsável" value={business.contact_phone} onChange={(v)=>patchBusiness("contact_phone",v)} />
@@ -190,7 +190,7 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
 
       <section>
         <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><Store className="w-4 h-4"/>Dados do negócio</div>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           <Input label="Nome do estabelecimento" value={business.name} onChange={(v)=>patchBusiness("name",v)} />
           <Input label="Categoria" value={business.category} onChange={(v)=>patchBusiness("category",v)} />
           <Input label="Telefone" value={business.phone} onChange={(v)=>patchBusiness("phone",v)} />
@@ -207,7 +207,7 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
 
       <section>
         <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><Smartphone className="w-4 h-4"/>Recursos da página inteligente</div>
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid gap-3 md:grid-cols-2">
           <div className="space-y-2">
             <Toggle label="Avaliação Google" checked={experience.google_enabled} onChange={(v)=>patchExperience("google_enabled",v)} />
             {experience.google_enabled&&<Input label="Link oficial de avaliação" value={business.google_review_url} onChange={(v)=>patchBusiness("google_review_url",v)} placeholder="https://g.page/.../review" />}
@@ -245,7 +245,7 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
 
       <section>
         <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><Smartphone className="w-4 h-4"/>Placa NFC / QR</div>
-        {device?<div className="grid gap-3 md:grid-cols-4">
+        {device?<div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <Input label="Código" value={device.code} onChange={()=>{}} />
           <Input label="Local" value={device.location} onChange={(v)=>patchDevice("location",v)} />
           <Select label="Status da placa" value={device.status} onChange={(v)=>patchDevice("status",v as Device["status"])}>
@@ -260,7 +260,7 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
 
       <section>
         <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><CreditCard className="w-4 h-4"/>Financeiro</div>
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <Input label="Valor da placa" type="number" value={billing.plate_price} onChange={(v)=>patchBilling("plate_price",Number(v))} />
           <Select label="Pagamento da placa" value={billing.plate_payment_status} onChange={(v)=>patchBilling("plate_payment_status",v as Billing["plate_payment_status"])}>
             <option value="pending">Pendente</option><option value="paid">Pago</option><option value="overdue">Atrasado</option><option value="cancelled">Cancelado</option><option value="refunded">Reembolsado</option>

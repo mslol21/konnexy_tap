@@ -81,7 +81,20 @@ export default function PhoneView({ business, links, campaign, device, experienc
   const secondaryColor = business.secondary_color || "#C78D4E";
 
   return (
-    <div className="w-full max-w-[420px] mx-auto min-h-full relative pb-12" style={{ background: `linear-gradient(180deg, #ffffff 0%, ${secondaryColor}10 58%, #ffffff 100%)` }}>
+    <div
+      className="w-full max-w-[420px] mx-auto min-h-full relative overflow-hidden pb-12"
+      style={{
+        background: `
+          radial-gradient(circle at 12% 16%, ${secondaryColor}30 0%, transparent 30%),
+          radial-gradient(circle at 88% 48%, ${primaryColor}18 0%, transparent 34%),
+          radial-gradient(circle at 20% 92%, ${secondaryColor}20 0%, transparent 26%),
+          linear-gradient(180deg, ${secondaryColor}18 0%, #fffaf8 34%, ${secondaryColor}14 72%, #fffdfb 100%)
+        `,
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-[0.10] bg-[radial-gradient(#7c6f67_1px,transparent_1px)] [background-size:18px_18px]" />
+      <div className="pointer-events-none absolute -top-16 -left-16 h-52 w-52 rounded-full blur-3xl" style={{ backgroundColor: `${secondaryColor}2A` }} />
+      <div className="pointer-events-none absolute top-1/3 -right-20 h-64 w-64 rounded-full blur-3xl" style={{ backgroundColor: `${primaryColor}16` }} />
       <div className="relative h-36 w-full overflow-hidden" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>
         {business.cover_url ? <img src={business.cover_url} alt="Capa do estabelecimento" className="w-full h-full object-cover opacity-60" /> : <div className="w-full h-full opacity-30 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent opacity-80" />
@@ -91,15 +104,15 @@ export default function PhoneView({ business, links, campaign, device, experienc
         <div className="relative w-24 h-24 rounded-2xl p-1 bg-white shadow-xl overflow-hidden mb-3" style={{ border: `2px solid ${secondaryColor}` }}>
           {business.logo_url ? <img src={business.logo_url} alt={business.name} className="w-full h-full object-cover rounded-xl" /> : <div className="w-full h-full text-white flex items-center justify-center font-bold text-2xl rounded-xl" style={{ backgroundColor: primaryColor }}>{business.name.substring(0, 2).toUpperCase()}</div>}
         </div>
-        <h1 className="text-xl font-bold text-slate-950">{business.name}</h1>
+        <h1 className="text-xl font-black" style={{ color: primaryColor }}>{business.name}</h1>
         <p className="text-xs font-medium tracking-wide uppercase mt-0.5" style={{ color: secondaryColor }}>{business.category}</p>
-        <p className="text-xs text-slate-600 mt-2 max-w-[320px] leading-relaxed">{business.description || "Tudo do nosso negócio em um só toque."}</p>
-        {device && <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />Conectado pela placa • {device.location}</div>}
+        <p className="text-xs mt-2 max-w-[320px] leading-relaxed" style={{ color: `${primaryColor}B8` }}>{business.description || "Tudo do nosso negócio em um só toque."}</p>
+        {device && <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold backdrop-blur-md" style={{ backgroundColor: `${secondaryColor}18`, color: primaryColor, border: `1px solid ${secondaryColor}55` }}><span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: secondaryColor }} />Conectado pela placa • {device.location}</div>}
 
         <section
-          className="w-full mt-5 rounded-[28px] p-4 text-left shadow-[0_18px_45px_rgba(0,0,0,0.16)]"
+          className="w-full mt-5 rounded-[28px] p-4 text-left backdrop-blur-xl shadow-[0_18px_45px_rgba(0,0,0,0.14)]"
           style={{
-            background: `linear-gradient(145deg, ${primaryColor} 0%, ${primaryColor}EE 58%, #171717 100%)`,
+            background: `linear-gradient(145deg, ${primaryColor}F2 0%, ${primaryColor}DF 52%, ${secondaryColor}A8 145%)`,
             border: `1px solid ${secondaryColor}66`,
           }}
         >
@@ -199,7 +212,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
         </section>
 
         {campaign && campaign.is_active && (
-          <div className="w-full mt-5 p-4 rounded-2xl text-white shadow-lg text-left" style={{ background: `linear-gradient(135deg, ${primaryColor}, #111827)`, border: `1px solid ${secondaryColor}55` }}>
+          <div className="w-full mt-5 p-4 rounded-2xl text-white shadow-lg text-left backdrop-blur-xl" style={{ background: `linear-gradient(135deg, ${primaryColor}F0, ${secondaryColor}B8)`, border: `1px solid ${secondaryColor}66`, boxShadow: `0 18px 40px ${primaryColor}22` }}>
             <div className="text-[10px] font-bold uppercase flex items-center gap-1" style={{ color: secondaryColor }}><Tag className="w-3 h-3" /> Oferta especial</div>
             <div className="text-sm font-bold mt-2">{campaign.title}</div>
             <p className="text-xs text-slate-300 mt-1">{campaign.description}</p>
@@ -208,12 +221,12 @@ export default function PhoneView({ business, links, campaign, device, experienc
           </div>
         )}
 
-        <div className="mt-8 pt-4 border-t border-slate-200 w-full text-[10px] text-slate-500">Powered by <strong style={{ color: primaryColor }}>Otimiza Meu Negócio</strong> • Ponto digital inteligente</div>
+        <div className="mt-8 pt-4 w-full text-[10px]" style={{ borderTop: `1px solid ${secondaryColor}35`, color: `${primaryColor}99` }}>Powered by <strong style={{ color: primaryColor }}>Otimiza Meu Negócio</strong> • Ponto digital inteligente</div>
       </div>
 
       {showWifiModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-5 relative text-left">
+          <div className="w-full max-w-sm rounded-2xl shadow-2xl p-5 relative text-left" style={{ background: `linear-gradient(180deg, #ffffff 0%, ${secondaryColor}14 100%)`, border: `1px solid ${secondaryColor}55` }}>
             <button onClick={() => setShowWifiModal(false)} className="absolute top-3 right-3 p-1 rounded-full text-slate-600 hover:bg-slate-100"><X className="w-5 h-5" /></button>
             <Wifi className="w-8 h-8 text-sky-700 mb-3" /><h3 className="font-bold text-slate-950">Wi-Fi para clientes</h3>
             <div className="mt-4 p-3 rounded-xl bg-slate-50 border"><div className="text-[10px] uppercase text-slate-500">Rede</div><div className="font-bold text-sm text-slate-900">{experience?.wifi_ssid}</div></div>
@@ -232,7 +245,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
                 <div className="flex gap-1">{[1,2,3,4,5].map((value) => <button key={value} type="button" onClick={() => setFeedbackRating(value)} aria-label={`${value} estrelas`}><Star className={`w-7 h-7 ${value <= feedbackRating ? "text-amber-500 fill-amber-400" : "text-slate-300"}`} /></button>)}</div>
                 <textarea rows={4} maxLength={1500} placeholder="Conte o que foi bom ou o que pode melhorar (opcional)" value={feedbackMessage} onChange={(e) => setFeedbackMessage(e.target.value)} className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 text-slate-900" />
                 {feedbackError && <p className="text-xs text-red-600">{feedbackError}</p>}
-                <button type="submit" disabled={sending} className="w-full py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl disabled:opacity-50">{sending ? "Enviando..." : "Enviar feedback"}</button>
+                <button type="submit" disabled={sending} className="w-full py-2.5 text-white text-xs font-bold rounded-xl disabled:opacity-50" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>{sending ? "Enviando..." : "Enviar feedback"}</button>
               </form>
             )}
           </div>

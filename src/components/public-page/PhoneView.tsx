@@ -79,21 +79,25 @@ export default function PhoneView({ business, links, campaign, device, experienc
   const wifiEnabled = experience?.wifi_enabled && experience?.wifi_ssid;
   const primaryColor = business.primary_color || "#20252A";
   const secondaryColor = business.secondary_color || "#C78D4E";
+  const backgroundColor = business.background_color || "#F8FAFC";
+  const surfaceColor = business.surface_color || "#FFFFFF";
+  const textColor = business.text_color || primaryColor;
+  const coverPosition = business.cover_position || "center";
 
   return (
     <div
       className="w-full max-w-[420px] mx-auto min-h-full relative overflow-hidden pb-10"
       style={{
-        background: `linear-gradient(180deg, #fffdfb 0%, ${secondaryColor}0D 52%, #fffdfb 100%)`,
+        background: `linear-gradient(180deg, ${backgroundColor} 0%, ${secondaryColor}0D 52%, ${backgroundColor} 100%)`,
       }}
     >
       <div className="relative h-36 w-full overflow-hidden" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>
         {business.cover_url ? (
-          <img src={business.cover_url} alt="Capa do estabelecimento" className="w-full h-full object-cover" />
+          <img src={business.cover_url} alt="Capa do estabelecimento" className="w-full h-full object-cover" style={{ objectPosition: coverPosition === "top" ? "center top" : coverPosition === "bottom" ? "center bottom" : "center center" }} />
         ) : (
           <div className="w-full h-full opacity-30 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />
         )}
-        <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, transparent 0%, #fffdfb 100%)`, opacity: 0.72 }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, transparent 0%, ${backgroundColor} 100%)`, opacity: 0.72 }} />
       </div>
 
       <div className="px-5 -mt-14 relative z-10 flex flex-col items-center text-center">
@@ -107,9 +111,9 @@ export default function PhoneView({ business, links, campaign, device, experienc
           )}
         </div>
 
-        <h1 className="text-[22px] font-black tracking-tight" style={{ color: primaryColor }}>{business.name}</h1>
+        <h1 className="text-[22px] font-black tracking-tight" style={{ color: textColor }}>{business.name}</h1>
         <p className="text-[11px] font-semibold tracking-[0.14em] uppercase mt-0.5" style={{ color: secondaryColor }}>{business.category}</p>
-        <p className="text-xs mt-2 max-w-[320px] leading-relaxed" style={{ color: `${primaryColor}B5` }}>
+        <p className="text-xs mt-2 max-w-[320px] leading-relaxed" style={{ color: `${textColor}B5` }}>
           {business.description || "Tudo do nosso negócio em um só toque."}
         </p>
 
@@ -126,7 +130,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
         <section
           className="w-full mt-6 rounded-[30px] p-4 text-left"
           style={{
-            background: `linear-gradient(180deg, rgba(255,255,255,0.96) 0%, ${secondaryColor}0C 100%)`,
+            background: `linear-gradient(180deg, ${surfaceColor}F5 0%, ${secondaryColor}0C 100%)`,
             border: `1px solid ${secondaryColor}2F`,
             boxShadow: `0 18px 50px ${primaryColor}12`,
           }}
@@ -136,15 +140,15 @@ export default function PhoneView({ business, links, campaign, device, experienc
               <MapPin className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-lg font-black leading-tight" style={{ color: primaryColor }}>Atendimento</h2>
-              <p className="text-[11px] mt-0.5" style={{ color: `${primaryColor}8F` }}>Estamos te esperando!</p>
+              <h2 className="text-lg font-black leading-tight" style={{ color: textColor }}>Atendimento</h2>
+              <p className="text-[11px] mt-0.5" style={{ color: `${textColor}8F` }}>Estamos te esperando!</p>
             </div>
           </div>
 
           <div className="pt-4">
             <div className="flex items-center gap-2 mb-3">
               <Heart className="w-4 h-4" style={{ color: secondaryColor }} />
-              <span className="text-sm font-black" style={{ color: primaryColor }}>Fale conosco</span>
+              <span className="text-sm font-black" style={{ color: textColor }}>Fale conosco</span>
             </div>
 
             <div className="space-y-2.5">
@@ -170,7 +174,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
                       >
                         {getIcon(link.type)}
                       </div>
-                      <div className="text-xs font-black truncate" style={{ color: isWhatsapp ? "#FFFFFF" : primaryColor }}>{link.title}</div>
+                      <div className="text-xs font-black truncate" style={{ color: isWhatsapp ? "#FFFFFF" : textColor }}>{link.title}</div>
                     </div>
                     <ExternalLink className="w-4 h-4 shrink-0" style={{ color: isWhatsapp ? "#FFFFFF" : secondaryColor }} />
                   </button>
@@ -181,14 +185,14 @@ export default function PhoneView({ business, links, campaign, device, experienc
                 <button
                   onClick={() => setShowWifiModal(true)}
                   className="w-full p-3.5 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.985]"
-                  style={{ background: `linear-gradient(180deg,#ffffff 0%, ${secondaryColor}08 100%)`, borderColor: `${secondaryColor}2E` }}
+                  style={{ background: `linear-gradient(180deg,${surfaceColor} 0%, ${secondaryColor}08 100%)`, borderColor: `${secondaryColor}2E` }}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}14` }}>
                       <Wifi className="w-5 h-5" style={{ color: primaryColor }} />
                     </div>
                     <div>
-                      <div className="text-xs font-black" style={{ color: primaryColor }}>Wi-Fi para clientes</div>
+                      <div className="text-xs font-black" style={{ color: textColor }}>Wi-Fi para clientes</div>
                       <div className="text-[10px]" style={{ color: `${primaryColor}80` }}>Veja a rede e copie a senha</div>
                     </div>
                   </div>
@@ -209,7 +213,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
                       <Send className="w-5 h-5" style={{ color: primaryColor }} />
                     </div>
                     <div>
-                      <div className="text-xs font-black" style={{ color: primaryColor }}>Enviar feedback</div>
+                      <div className="text-xs font-black" style={{ color: textColor }}>Enviar feedback</div>
                       <div className="text-[10px]" style={{ color: `${primaryColor}80` }}>Canal privado com o estabelecimento</div>
                     </div>
                   </div>

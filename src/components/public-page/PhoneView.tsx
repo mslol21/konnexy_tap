@@ -129,7 +129,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
       <div className="pointer-events-none absolute top-[38%] left-[-22%] w-[150%] h-28 rotate-[-8deg] rounded-[50%] border" style={{ borderColor: hexToRgba(secondaryColor, 0.28) }} />
       <div className="pointer-events-none absolute top-[41%] left-[-18%] w-[140%] h-32 rotate-[7deg] rounded-[50%] border" style={{ borderColor: hexToRgba(primaryColor, 0.12) }} />
       {/* HERO / CAPA */}
-      <div className="relative h-[224px] w-full overflow-hidden">
+      <div className="relative h-[214px] w-full overflow-hidden">
         <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }} />
         {business.cover_url ? (
           <img
@@ -144,17 +144,16 @@ export default function PhoneView({ business, links, campaign, device, experienc
         <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(0,0,0,.02) 0%, ${primaryColor}16 56%, ${backgroundColor} 100%)` }} />
         <div className="absolute -left-12 top-10 h-44 w-44 rounded-full border" style={{ borderColor: hexToRgba(secondaryColor, 0.34) }} />
         <div className="absolute -right-16 top-24 h-52 w-52 rounded-full border" style={{ borderColor: hexToRgba(secondaryColor, 0.22) }} />
-        <div className="absolute left-[-10%] right-[-10%] bottom-6 h-24 rotate-[-4deg] rounded-[50%] border" style={{ borderColor: hexToRgba(secondaryColor, 0.26), backgroundColor: hexToRgba(secondaryColor, 0.06) }} />
-        <div className="absolute bottom-[-42px] left-[-12%] right-[-12%] h-24 rounded-[50%]" style={{ backgroundColor }} />
+        <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: `linear-gradient(180deg, transparent 0%, ${hexToRgba(backgroundColor, 0.58)} 58%, ${backgroundColor} 100%)` }} />
       </div>
 
       {/* IDENTIDADE */}
-      <div className="relative z-10 -mt-20 px-5 flex flex-col items-center text-center">
+      <div className="relative z-10 -mt-14 px-5 flex flex-col items-center text-center">
         <div
           className="w-[108px] h-[108px] rounded-[32px] bg-white/95 p-1.5 overflow-hidden backdrop-blur-xl"
           style={{
             border: `1px solid ${secondaryColor}55`,
-            boxShadow: `0 18px 42px ${primaryShadow}, 0 0 0 7px ${hexToRgba(backgroundColor, 0.90)}, 0 0 28px ${secondarySoft}`,
+            boxShadow: `0 18px 42px ${primaryShadow}, 0 0 0 5px rgba(255,255,255,.72), 0 0 26px ${secondarySoft}`,
           }}
         >
           {business.logo_url ? (

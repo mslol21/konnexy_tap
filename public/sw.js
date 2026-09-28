@@ -1,5 +1,5 @@
 const CACHE_NAME = "otimiza-static-v1";
-const STATIC_PATHS = ["/manifest.webmanifest", "/brand/icon.png"];
+const STATIC_PATHS = ["/manifest.webmanifest", "/pwa-icon-192", "/pwa-icon-512", "/brand/icon.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

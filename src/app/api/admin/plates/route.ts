@@ -82,6 +82,9 @@ export async function GET() {
 
   const deviceIds = (data ?? []).map((item) => item.id);
   const accessByDevice = new Map<string, number>();
+  const nfcByDevice = new Map<string, number>();
+  const qrByDevice = new Map<string, number>();
+  const directByDevice = new Map<string, number>();
 
   if (deviceIds.length > 0) {
     const { data: events, error: eventsError } = await service

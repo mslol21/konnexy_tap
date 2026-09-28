@@ -142,8 +142,7 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
           <div className="pointer-events-none absolute bottom-[-7rem] left-1/4 h-80 w-80 rounded-full blur-3xl" style={{ backgroundColor: `${secondaryColor}1F` }} />
 
           <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-start justify-center px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-            <div className="w-full max-w-[520px] rounded-[34px] border border-white/70 bg-white/55 p-2.5 sm:p-3 shadow-[0_28px_90px_rgba(70,45,35,0.14)] backdrop-blur-xl">
-              <div className="overflow-hidden rounded-[28px] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.06)]">
+            <div className="w-full max-w-[470px] overflow-hidden rounded-[32px] border border-white/80 bg-white shadow-[0_24px_80px_rgba(70,45,35,0.12)]">
                 <PhoneView
                   business={business}
                   links={filteredLinks}
@@ -152,7 +151,6 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
                   experience={experience ?? null}
                   isMockup={false}
                 />
-              </div>
             </div>
           </div>
         </main>
@@ -178,10 +176,8 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
       >
         <div className="pointer-events-none absolute inset-0 opacity-[0.08] bg-[radial-gradient(#7c6f67_1px,transparent_1px)] [background-size:18px_18px]" />
         <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-start justify-center px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-          <div className="w-full max-w-[520px] rounded-[34px] border border-white/70 bg-white/55 p-2.5 sm:p-3 shadow-[0_28px_90px_rgba(70,45,35,0.14)] backdrop-blur-xl">
-            <div className="overflow-hidden rounded-[28px] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.06)]">
+          <div className="w-full max-w-[470px] overflow-hidden rounded-[32px] border border-white/80 bg-white shadow-[0_24px_80px_rgba(70,45,35,0.12)]">
               <PhoneView business={DEMO_BUSINESS} links={DEMO_LINKS} campaign={DEMO_CAMPAIGN} isMockup={false} />
-            </div>
           </div>
         </div>
       </main>

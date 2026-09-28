@@ -23,6 +23,8 @@ const experienceSchema = z.object({
   wifi_password: z.string().max(128).nullable().optional(),
 });
 
+const dbDateTime = z.string().datetime({ offset: true });
+
 const updateSchema = z.object({
   business_id: z.string().uuid(),
   business: z.object({
@@ -51,12 +53,12 @@ const updateSchema = z.object({
   billing: z.object({
     plate_price: z.coerce.number().min(0).max(999999),
     plate_payment_status: z.enum(platePaymentValues),
-    plate_paid_at: z.string().datetime().nullable().optional(),
+    plate_paid_at: dbDateTime.nullable().optional(),
     subscription_enabled: z.boolean(),
     subscription_plan_id: z.string().max(50).nullable().optional(),
     subscription_price: z.coerce.number().min(0).max(999999).nullable().optional(),
     subscription_status: z.enum(subscriptionValues),
-    last_payment_at: z.string().datetime().nullable().optional(),
+    last_payment_at: dbDateTime.nullable().optional(),
     next_due_date: z.string().nullable().optional(),
     payment_method: z.string().max(80).nullable().optional(),
     notes: z.string().max(1000).nullable().optional(),
@@ -74,7 +76,7 @@ const paymentSchema = z.object({
   kind: z.enum(["plate","subscription","service","other"]),
   description: z.string().max(250).nullable().optional(),
   amount: z.coerce.number().positive().max(999999),
-  paid_at: z.string().datetime().optional(),
+  paid_at: dbDateTime.optional(),
   payment_method: z.string().max(80).nullable().optional(),
   notes: z.string().max(1000).nullable().optional(),
 });
@@ -114,8 +116,10 @@ function instagramUrl(value?: string | null) {
 function mapsUrl(input: { maps_url?: string | null; address?: string | null; city?: string | null; state?: string | null }) {
   const explicit = clean(input.maps_url);
   if (explicit) return httpUrl(explicit);
-  const query = [clean(input.address), clean(input.city), clean(input.state)].filter(Boolean).join(", ");
-  return query ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}` : null;
+  const address = clean(input.address);
+  if (!address) return null;
+  const query = [address, clean(input.city), clean(input.state)].filter(Boolean).join(", ");
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
 function authError(auth: Awaited<ReturnType<typeof requireAdmin>>) {
@@ -190,12 +194,18 @@ async function syncLink(
     if (sameType.length) await service.from("business_links").update({ is_active: false }).eq("business_id", businessId).eq("type", type);
     return;
   }
-  if (!url) throw new Error(`Preencha o destino de "${title}" antes de ativar.`);
+  if (!url) {
+    if (sameType.length) {
+      await service.from("business_links").update({ is_active: false }).eq("business_id", businessId).eq("type", type);
+    }
+    return false;
+  }
   if (sameType[0]) {
     await service.from("business_links").update({ title, url, is_active: true, order_index: orderIndex }).eq("id", sameType[0].id);
   } else {
     await service.from("business_links").insert({ business_id: businessId, title, type, url, icon: type, is_active: true, order_index: orderIndex });
   }
+  return true;
 }
 
 export async function PATCH(request: NextRequest) {
@@ -205,7 +215,14 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const parsed = updateSchema.safeParse(await request.json());
-    if (!parsed.success) return NextResponse.json({ error: "Revise os dados informados." }, { status: 400 });
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      const field = issue?.path?.join(".");
+      return NextResponse.json(
+        { error: field ? `Revise o campo ${field}: ${issue.message}` : "Revise os dados informados.", issues: parsed.error.issues },
+        { status: 400 }
+      );
+    }
 
     const { business_id: businessId, business, experience, billing, device } = parsed.data;
     const google = clean(business.google_review_url);
@@ -230,12 +247,13 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: error instanceof Error ? error.message : "Existe um endereço inválido." }, { status: 400 });
     }
 
-    if (experience.whatsapp_enabled && !whatsapp) return NextResponse.json({ error: "Informe o WhatsApp antes de ativar esse recurso." }, { status: 400 });
-    if (experience.services_enabled && !services) return NextResponse.json({ error: "Informe o link de Serviços / cardápio antes de ativar." }, { status: 400 });
-    if (experience.maps_enabled && !maps) return NextResponse.json({ error: "Informe endereço ou link do Google Maps antes de ativar Localização." }, { status: 400 });
-    if (experience.instagram_enabled && !instagram) return NextResponse.json({ error: "Informe o Instagram antes de ativar." }, { status: 400 });
-    if (experience.website_enabled && !website) return NextResponse.json({ error: "Informe o site antes de ativar." }, { status: 400 });
-    if (experience.wifi_enabled && !clean(experience.wifi_ssid)) return NextResponse.json({ error: "Informe o nome da rede Wi-Fi antes de ativar." }, { status: 400 });
+    const warnings: string[] = [];
+    if (experience.whatsapp_enabled && !whatsapp) warnings.push("WhatsApp está ativado, mas falta o número/link.");
+    if (experience.services_enabled && !services) warnings.push("Serviços / cardápio está ativado, mas falta o link.");
+    if (experience.maps_enabled && !maps) warnings.push("Localização está ativada, mas falta endereço completo ou link do Google Maps.");
+    if (experience.instagram_enabled && !instagram) warnings.push("Instagram está ativado, mas falta o perfil/link.");
+    if (experience.website_enabled && !website) warnings.push("Site está ativado, mas falta a URL.");
+    if (experience.wifi_enabled && !clean(experience.wifi_ssid)) warnings.push("Wi-Fi está ativado, mas falta o nome da rede.");
 
     const service = createServiceClient();
     const { data: currentLinks, error: linksError } = await service.from("business_links").select("id,type").eq("business_id", businessId);
@@ -313,7 +331,7 @@ export async function PATCH(request: NextRequest) {
     await syncLink(service, businessId, links, "instagram", experience.instagram_enabled, "Instagram", instagram, 50);
     await syncLink(service, businessId, links, "website", experience.website_enabled, "Visitar site", website, 60);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, warnings });
   } catch (error) {
     console.error("Erro ao atualizar conta", error);
     return NextResponse.json({ error: error instanceof Error ? error.message : "Não foi possível salvar." }, { status: 500 });

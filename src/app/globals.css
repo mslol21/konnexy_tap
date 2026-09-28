@@ -70,3 +70,21 @@ body {
 .charcoal-shadow {
   box-shadow: 0 10px 30px -10px rgba(24, 28, 33, 0.08);
 }
+
+
+/* Mobile app ergonomics */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  min-width: 320px;
+  overflow-x: hidden;
+}
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+@media (max-width: 640px) {
+  input, select, textarea { font-size: 16px; }
+  button, [role="button"], a { -webkit-tap-highlight-color: transparent; }
+}

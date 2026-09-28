@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, MessageCircle, UtensilsCrossed, MapPin, Instagram, Send, ExternalLink, Tag, CheckCircle2, X, Sparkles, Wifi, Copy, Globe } from "lucide-react";
+import { Star, MessageCircle, UtensilsCrossed, MapPin, Instagram, Send, ExternalLink, Tag, CheckCircle2, X, Sparkles, Wifi, Copy, Globe, Heart } from "lucide-react";
 import { Business, BusinessLink, Campaign, TapDevice } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
@@ -81,7 +81,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
   const secondaryColor = business.secondary_color || "#C78D4E";
 
   return (
-    <div className="w-full max-w-[420px] mx-auto min-h-full relative pb-12" style={{ backgroundColor: "#F8FAFC" }}>
+    <div className="w-full max-w-[420px] mx-auto min-h-full relative pb-12" style={{ background: `linear-gradient(180deg, #ffffff 0%, ${secondaryColor}10 58%, #ffffff 100%)` }}>
       <div className="relative h-36 w-full overflow-hidden" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>
         {business.cover_url ? <img src={business.cover_url} alt="Capa do estabelecimento" className="w-full h-full object-cover opacity-60" /> : <div className="w-full h-full opacity-30 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent opacity-80" />
@@ -96,28 +96,107 @@ export default function PhoneView({ business, links, campaign, device, experienc
         <p className="text-xs text-slate-600 mt-2 max-w-[320px] leading-relaxed">{business.description || "Tudo do nosso negócio em um só toque."}</p>
         {device && <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />Conectado pela placa • {device.location}</div>}
 
-        <div className="w-full mt-5 space-y-2.5">
-          {activeLinks.map((link) => (
-            <button key={link.id} onClick={() => handleLinkAction(link)} className="w-full p-3 rounded-xl flex items-center justify-between border bg-white shadow-sm transition-all text-left active:scale-[0.98]" style={{ borderColor: `${secondaryColor}55` }}>
-              <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}18` }}>{getIcon(link.type)}</div><div className="text-xs font-bold" style={{ color: primaryColor }}>{link.title}</div></div>
-              <ExternalLink className="w-4 h-4" style={{ color: secondaryColor }} />
-            </button>
-          ))}
+        <section
+          className="w-full mt-5 rounded-[28px] p-4 text-left shadow-[0_18px_45px_rgba(0,0,0,0.16)]"
+          style={{
+            background: `linear-gradient(145deg, ${primaryColor} 0%, ${primaryColor}EE 58%, #171717 100%)`,
+            border: `1px solid ${secondaryColor}66`,
+          }}
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${secondaryColor}26`, color: secondaryColor }}>
+              <MapPin className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-white leading-tight">Atendimento</h2>
+              <p className="text-[11px] text-white/70 mt-0.5">Estamos te esperando!</p>
+            </div>
+          </div>
 
-          {wifiEnabled && (
-            <button onClick={() => setShowWifiModal(true)} className="w-full p-3 rounded-xl flex items-center justify-between border bg-white border-slate-200 shadow-sm hover:border-amber-300 transition-all text-left active:scale-[0.98]">
-              <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-xl flex items-center justify-center bg-sky-50"><Wifi className="w-5 h-5 text-sky-700" /></div><div><div className="text-xs font-bold text-slate-900">Wi-Fi para clientes</div><div className="text-[10px] text-slate-500">Veja a rede e copie a senha</div></div></div>
-              <ExternalLink className="w-4 h-4 text-slate-500" />
-            </button>
-          )}
+          <div className="mt-4 border-t pt-4" style={{ borderColor: `${secondaryColor}35` }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Heart className="w-4 h-4" style={{ color: secondaryColor }} />
+              <span className="text-sm font-bold text-white">Fale conosco</span>
+            </div>
 
-          {(experience?.feedback_enabled ?? true) && !activeLinks.some((l) => l.type === "suggestion") && (
-            <button onClick={() => setShowFeedbackModal(true)} className="w-full p-3 rounded-xl flex items-center justify-between border bg-white border-slate-200 shadow-sm hover:border-amber-300 transition-all text-left active:scale-[0.98]">
-              <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100"><Send className="w-5 h-5 text-slate-700" /></div><div><div className="text-xs font-bold text-slate-900">Enviar feedback</div><div className="text-[10px] text-slate-500">Canal privado com o estabelecimento</div></div></div>
-              <ExternalLink className="w-4 h-4 text-slate-500" />
-            </button>
-          )}
-        </div>
+            <div className="space-y-2.5">
+              {activeLinks.map((link) => {
+                const isWhatsapp = link.type === "whatsapp";
+                const isGoogle = link.type === "google_review";
+                return (
+                  <button
+                    key={link.id}
+                    onClick={() => handleLinkAction(link)}
+                    className="w-full p-3 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.98]"
+                    style={{
+                      backgroundColor: isWhatsapp ? "#16A34A" : isGoogle ? `${secondaryColor}20` : "rgba(255,255,255,0.035)",
+                      borderColor: isWhatsapp ? "#22C55E" : `${secondaryColor}55`,
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div
+                        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                        style={{ backgroundColor: isWhatsapp ? "rgba(255,255,255,0.14)" : `${secondaryColor}1F` }}
+                      >
+                        {getIcon(link.type)}
+                      </div>
+                      <div className="text-xs font-bold text-white truncate">{link.title}</div>
+                    </div>
+                    <ExternalLink className="w-4 h-4 shrink-0" style={{ color: isWhatsapp ? "#FFFFFF" : secondaryColor }} />
+                  </button>
+                );
+              })}
+
+              {wifiEnabled && (
+                <button
+                  onClick={() => setShowWifiModal(true)}
+                  className="w-full p-3 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.98]"
+                  style={{ backgroundColor: "rgba(255,255,255,0.035)", borderColor: `${secondaryColor}55` }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}1F` }}>
+                      <Wifi className="w-5 h-5" style={{ color: secondaryColor }} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-white">Wi-Fi para clientes</div>
+                      <div className="text-[10px] text-white/55">Veja a rede e copie a senha</div>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4" style={{ color: secondaryColor }} />
+                </button>
+              )}
+            </div>
+
+            {(experience?.feedback_enabled ?? true) && !activeLinks.some((l) => l.type === "suggestion") && (
+              <div className="mt-4 pt-4 border-t" style={{ borderColor: `${secondaryColor}35` }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <Heart className="w-4 h-4" style={{ color: secondaryColor }} />
+                  <div>
+                    <div className="text-sm font-bold text-white">Sua opinião importa</div>
+                    <div className="text-[10px] text-white/55">Ajude este negócio a melhorar.</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowFeedbackModal(true)}
+                  className="w-full p-3 rounded-2xl flex items-center justify-between border transition-all text-left active:scale-[0.98]"
+                  style={{ backgroundColor: "rgba(255,255,255,0.92)", borderColor: `${secondaryColor}55` }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}1A` }}>
+                      <Send className="w-5 h-5" style={{ color: primaryColor }} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold" style={{ color: primaryColor }}>Enviar feedback</div>
+                      <div className="text-[10px] text-slate-500">Canal privado com o estabelecimento</div>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4" style={{ color: secondaryColor }} />
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
 
         {campaign && campaign.is_active && (
           <div className="w-full mt-5 p-4 rounded-2xl text-white shadow-lg text-left" style={{ background: `linear-gradient(135deg, ${primaryColor}, #111827)`, border: `1px solid ${secondaryColor}55` }}>

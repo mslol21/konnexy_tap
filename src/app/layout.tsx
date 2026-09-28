@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import PwaInstallButton from "@/components/pwa/PwaInstallButton";
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -38,6 +39,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={fontSans.className} suppressHydrationWarning>
       <body className={`${fontSans.className} min-h-screen bg-[#F7F5F2] text-[#20252A] font-sans antialiased selection:bg-[#C78D4E] selection:text-white`}>
         {children}
+        <PwaInstallButton />
       </body>
     </html>
   );

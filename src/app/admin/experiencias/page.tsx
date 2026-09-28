@@ -9,6 +9,7 @@ type Experience = {
   maps_enabled: boolean; wifi_enabled: boolean; feedback_enabled: boolean;
   promotions_enabled: boolean; instagram_enabled: boolean; website_enabled: boolean;
   wifi_ssid?: string | null; wifi_password?: string | null;
+  businesses?: { id:string; name:string; slug:string; category?:string|null; city?:string|null; state?:string|null } | null;
 };
 
 export default function ExperiencesAdminPage() {
@@ -31,7 +32,7 @@ export default function ExperiencesAdminPage() {
     <header className="p-6 rounded-3xl bg-slate-800 border border-slate-700"><div className="flex items-center gap-2 text-gold-400 text-xs font-bold uppercase"><Sparkles className="w-4 h-4"/>Experiência inteligente</div><h1 className="text-2xl font-black text-white mt-2">Recursos das páginas inteligentes</h1><p className="text-xs text-slate-400 mt-1">Ative somente o que fizer sentido para cada cliente. Fidelidade não faz parte desta versão.</p></header>
     {message&&<div className="text-xs text-emerald-300">{message}</div>}
     {items.length===0?<div className="p-8 rounded-2xl bg-slate-800 border border-slate-700 text-sm text-slate-400">Nenhuma experiência cadastrada.</div>:items.map(item=><section key={item.business_id} className="p-5 rounded-2xl bg-slate-800 border border-slate-700">
-      <div className="font-mono text-xs text-gold-400 mb-4">{item.business_id}</div>
+      <div className="mb-4"><div className="text-base font-black text-white">{item.businesses?.name || "Cliente"}</div><div className="text-xs text-slate-400 mt-1">{[item.businesses?.category,item.businesses?.city,item.businesses?.state].filter(Boolean).join(" • ") || "Dados do estabelecimento"} · <span className="font-mono text-gold-400">{item.business_id.slice(0,8)}</span></div></div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">{([
         ["google_enabled","Avaliação Google"],["whatsapp_enabled","WhatsApp"],["services_enabled","Serviços / cardápio"],["maps_enabled","Localização"],["instagram_enabled","Instagram"],["website_enabled","Site"],["wifi_enabled","Wi-Fi"],["feedback_enabled","Feedback privado"],["promotions_enabled","Promoções"]
       ] as [keyof Experience,string][]).map(([key,label])=><label key={key} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"><span>{label}</span><input type="checkbox" checked={Boolean(item[key])} onChange={e=>patch(item.business_id,key,e.target.checked)} className="w-4 h-4"/></label>)}</div>

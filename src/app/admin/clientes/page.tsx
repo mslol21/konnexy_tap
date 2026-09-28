@@ -25,6 +25,7 @@ type Business = {
   address?: string | null; city?: string | null; state?: string | null; postal_code?: string | null;
   maps_url?: string | null; google_review_url?: string | null; website?: string | null;
   services_url?: string | null; services_label?: string | null;
+  logo_url?: string | null; cover_url?: string | null; primary_color?: string | null; secondary_color?: string | null;
   account_status: "lead"|"onboarding"|"active"|"inactive"|"suspended"|"cancelled";
   internal_notes?: string | null; plan_id: string; is_active: boolean;
 };
@@ -208,6 +209,25 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
           <Input label="UF" value={business.state} onChange={(v)=>patchBusiness("state",v.slice(0,2).toUpperCase())} />
           <Input label="CEP" value={business.postal_code} onChange={(v)=>patchBusiness("postal_code",v)} />
           <div className="md:col-span-2"><Input label="Google Maps (opcional se endereço estiver preenchido)" value={business.maps_url} onChange={(v)=>patchBusiness("maps_url",v)} placeholder="https://maps.google.com/..." /></div>
+        </div>
+      </section>
+
+      <section>
+        <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><Sparkles className="w-4 h-4"/>Personalização visual</div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <Input label="URL da logo" value={business.logo_url} onChange={(v)=>patchBusiness("logo_url",v)} placeholder="https://..." />
+          <Input label="URL da imagem de capa" value={business.cover_url} onChange={(v)=>patchBusiness("cover_url",v)} placeholder="https://..." />
+          <Input label="Descrição / slogan" value={business.description} onChange={(v)=>patchBusiness("description",v)} placeholder="Ex: Tudo do nosso negócio em um só toque." />
+          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor principal</span><div className="mt-1 flex gap-2"><input type="color" value={business.primary_color || "#20252A"} onChange={(e)=>patchBusiness("primary_color",e.target.value)} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.primary_color || "#20252A"} onChange={(e)=>patchBusiness("primary_color",e.target.value)} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
+          <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor de destaque</span><div className="mt-1 flex gap-2"><input type="color" value={business.secondary_color || "#C78D4E"} onChange={(e)=>patchBusiness("secondary_color",e.target.value)} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.secondary_color || "#C78D4E"} onChange={(e)=>patchBusiness("secondary_color",e.target.value)} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
+          <div className="sm:col-span-2 xl:col-span-1 rounded-2xl border border-slate-700 bg-slate-950 p-3">
+            <div className="text-[11px] font-bold text-slate-300 mb-2">Prévia das cores</div>
+            <div className="rounded-xl p-3" style={{background: business.primary_color || "#20252A"}}>
+              <div className="text-white text-sm font-black truncate">{business.name}</div>
+              <div className="text-xs mt-1" style={{color: business.secondary_color || "#C78D4E"}}>{business.category}</div>
+              <div className="mt-3 rounded-lg bg-white/95 px-3 py-2 text-xs font-bold" style={{color: business.primary_color || "#20252A", border: `1px solid ${business.secondary_color || "#C78D4E"}`}}>Botão da página inteligente</div>
+            </div>
+          </div>
         </div>
       </section>
 

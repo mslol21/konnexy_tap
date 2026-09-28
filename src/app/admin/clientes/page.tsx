@@ -13,6 +13,7 @@ import {
   RefreshCw,
   Save,
   Smartphone,
+  Sparkles,
   Store,
   Users,
   Wifi,

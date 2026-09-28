@@ -59,6 +59,7 @@ export async function GET(request: NextRequest, { params }: RouteProps) {
       user_agent: (request.headers.get("user-agent") || "").substring(0, 255),
       referrer: (request.headers.get("referer") || "").substring(0, 255),
       session_id: source,
+      source,
     });
     if (error) console.error("Falha ao registrar evento da placa", error.message);
   }

@@ -17,6 +17,9 @@ import {
   Store,
   Users,
   Wifi,
+  Upload,
+  Image as ImageIcon,
+  Trash2,
 } from "lucide-react";
 
 type Business = {
@@ -103,6 +106,66 @@ function Toggle({label,checked,onChange}:{label:string;checked:boolean;onChange:
     <span className="text-sm font-semibold text-white">{label}</span>
     <input type="checkbox" checked={checked} onChange={(e)=>onChange(e.target.checked)} className="h-5 w-5" />
   </label>;
+}
+
+function ImageUpload({
+  businessId,
+  kind,
+  url,
+  onChange,
+}:{
+  businessId:string;
+  kind:"logo"|"cover";
+  url?:string|null;
+  onChange:(url:string)=>void;
+}) {
+  const [uploading,setUploading]=useState(false);
+  const [error,setError]=useState("");
+
+  const upload=async(file:File|null)=>{
+    if(!file)return;
+    setUploading(true); setError("");
+    try{
+      const form=new FormData();
+      form.append("businessId",businessId);
+      form.append("kind",kind);
+      form.append("file",file);
+      const response=await fetch("/api/admin/assets",{method:"POST",body:form});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(typeof data.error==="string"?data.error:"Não foi possível enviar a imagem.");
+      onChange(data.url);
+    }catch(err){
+      setError(err instanceof Error?err.message:"Não foi possível enviar a imagem.");
+    }finally{setUploading(false);}
+  };
+
+  const remove=async()=>{
+    setUploading(true); setError("");
+    try{
+      const response=await fetch("/api/admin/assets",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({businessId,kind})});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(typeof data.error==="string"?data.error:"Não foi possível remover a imagem.");
+      onChange("");
+    }catch(err){
+      setError(err instanceof Error?err.message:"Não foi possível remover a imagem.");
+    }finally{setUploading(false);}
+  };
+
+  return <div className="rounded-2xl border border-slate-700 bg-slate-950 p-3">
+    <div className="flex items-center justify-between gap-3 mb-2">
+      <div className="text-[11px] font-bold text-slate-300">{kind==="logo"?"Logo":"Imagem de capa"}</div>
+      {url&&<button type="button" disabled={uploading} onClick={remove} className="text-[10px] text-rose-300 hover:text-rose-200 flex items-center gap-1"><Trash2 className="w-3.5 h-3.5"/>Remover</button>}
+    </div>
+    <div className={kind==="logo"?"w-24 h-24 rounded-2xl overflow-hidden border border-slate-700 bg-slate-900":"w-full h-28 rounded-2xl overflow-hidden border border-slate-700 bg-slate-900"}>
+      {url?<img src={url} alt={kind==="logo"?"Logo":"Capa"} className="w-full h-full object-cover"/>:<div className="w-full h-full flex items-center justify-center text-slate-600"><ImageIcon className="w-7 h-7"/></div>}
+    </div>
+    <label className="mt-3 min-h-11 px-3 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold text-white flex items-center justify-center gap-2 cursor-pointer hover:border-gold-400">
+      <Upload className="w-4 h-4 text-gold-400"/>{uploading?"Enviando...":url?"Trocar imagem":"Selecionar arquivo"}
+      <input type="file" accept="image/png,image/jpeg,image/webp" disabled={uploading} className="hidden" onChange={(e)=>void upload(e.target.files?.[0]||null)}/>
+    </label>
+    <div className="mt-2 text-[10px] text-slate-500">{kind==="logo"?"PNG, JPG ou WEBP • até 2 MB":"PNG, JPG ou WEBP • até 4 MB"}</div>
+    {error&&<div className="mt-2 text-[10px] text-rose-300">{error}</div>}
+  </div>;
 }
 
 function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
@@ -216,9 +279,13 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
       <section>
         <div className="flex items-center gap-2 text-xs font-black uppercase text-gold-400 mb-3"><Sparkles className="w-4 h-4"/>Personalização visual</div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          <Input label="URL da logo" value={business.logo_url} onChange={(v)=>patchBusiness("logo_url",v)} placeholder="https://..." />
-          <Input label="URL da imagem de capa" value={business.cover_url} onChange={(v)=>patchBusiness("cover_url",v)} placeholder="https://..." />
-          <Input label="Descrição / slogan" value={business.description} onChange={(v)=>patchBusiness("description",v)} placeholder="Ex: Tudo do nosso negócio em um só toque." />
+          <ImageUpload businessId={business.id} kind="logo" url={business.logo_url} onChange={(v)=>patchBusiness("logo_url",v)} />
+          <ImageUpload businessId={business.id} kind="cover" url={business.cover_url} onChange={(v)=>patchBusiness("cover_url",v)} />
+          <div className="space-y-3">
+            <Input label="Descrição / slogan" value={business.description} onChange={(v)=>patchBusiness("description",v)} placeholder="Ex: Tudo do nosso negócio em um só toque." />
+            <Input label="URL da logo (opcional)" value={business.logo_url} onChange={(v)=>patchBusiness("logo_url",v)} placeholder="https://..." />
+            <Input label="URL da capa (opcional)" value={business.cover_url} onChange={(v)=>patchBusiness("cover_url",v)} placeholder="https://..." />
+          </div>
           <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor principal</span><div className="mt-1 flex gap-2"><input type="color" value={business.primary_color || "#20252A"} onChange={(e)=>patchBusiness("primary_color",e.target.value)} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.primary_color || "#20252A"} onChange={(e)=>patchBusiness("primary_color",e.target.value)} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
           <label className="block"><span className="text-[11px] font-bold text-slate-300">Cor de destaque</span><div className="mt-1 flex gap-2"><input type="color" value={business.secondary_color || "#C78D4E"} onChange={(e)=>patchBusiness("secondary_color",e.target.value)} className="h-11 w-14 rounded-xl border border-slate-700 bg-slate-950 p-1" /><input value={business.secondary_color || "#C78D4E"} onChange={(e)=>patchBusiness("secondary_color",e.target.value)} className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white font-mono" /></div></label>
           <div className="sm:col-span-2 xl:col-span-1 rounded-2xl border border-slate-700 bg-slate-950 p-3">

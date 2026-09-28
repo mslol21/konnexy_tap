@@ -123,6 +123,7 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
 
       const primaryColor = business.primary_color || "#20252A";
       const secondaryColor = business.secondary_color || "#C78D4E";
+      const backgroundColor = business.background_color || "#F8FAFC";
 
       return (
         <main
@@ -132,7 +133,7 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
               radial-gradient(circle at 12% 8%, ${secondaryColor}2E 0%, transparent 28%),
               radial-gradient(circle at 88% 28%, ${primaryColor}18 0%, transparent 30%),
               radial-gradient(circle at 20% 90%, ${secondaryColor}24 0%, transparent 28%),
-              linear-gradient(180deg, #fffdfb 0%, #f8f3f1 46%, #f4efec 100%)
+              linear-gradient(180deg, ${backgroundColor} 0%, #ffffff 46%, ${backgroundColor} 100%)
             `,
           }}
         >

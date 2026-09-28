@@ -77,6 +77,11 @@ export interface Business {
   cover_url?: string;
   primary_color: string;
   secondary_color: string;
+  background_color?: string;
+  surface_color?: string;
+  text_color?: string;
+  theme_preset?: string;
+  cover_position?: "top" | "center" | "bottom";
   is_active: boolean;
   plan_id: "free" | "pro";
   created_at: string;

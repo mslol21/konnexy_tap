@@ -77,28 +77,30 @@ export default function PhoneView({ business, links, campaign, device, experienc
 
   const activeLinks = links.filter((l) => l.is_active).sort((a, b) => a.order_index - b.order_index);
   const wifiEnabled = experience?.wifi_enabled && experience?.wifi_ssid;
+  const primaryColor = business.primary_color || "#20252A";
+  const secondaryColor = business.secondary_color || "#C78D4E";
 
   return (
-    <div className="w-full max-w-[420px] mx-auto min-h-full bg-slate-50 relative pb-12">
-      <div className="relative h-36 w-full bg-gradient-to-r from-slate-950 to-slate-800 overflow-hidden">
-        {business.cover_url ? <img src={business.cover_url} alt="Capa do estabelecimento" className="w-full h-full object-cover opacity-60" /> : <div className="w-full h-full opacity-30 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:16px_16px]" />}
+    <div className="w-full max-w-[420px] mx-auto min-h-full relative pb-12" style={{ backgroundColor: "#F8FAFC" }}>
+      <div className="relative h-36 w-full overflow-hidden" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>
+        {business.cover_url ? <img src={business.cover_url} alt="Capa do estabelecimento" className="w-full h-full object-cover opacity-60" /> : <div className="w-full h-full opacity-30 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent opacity-80" />
       </div>
 
       <div className="px-5 -mt-16 relative z-10 flex flex-col items-center text-center">
-        <div className="relative w-24 h-24 rounded-2xl p-1 bg-white shadow-xl border border-slate-100 overflow-hidden mb-3">
-          {business.logo_url ? <img src={business.logo_url} alt={business.name} className="w-full h-full object-cover rounded-xl" /> : <div className="w-full h-full bg-slate-900 text-white flex items-center justify-center font-bold text-2xl rounded-xl">{business.name.substring(0, 2).toUpperCase()}</div>}
+        <div className="relative w-24 h-24 rounded-2xl p-1 bg-white shadow-xl overflow-hidden mb-3" style={{ border: `2px solid ${secondaryColor}` }}>
+          {business.logo_url ? <img src={business.logo_url} alt={business.name} className="w-full h-full object-cover rounded-xl" /> : <div className="w-full h-full text-white flex items-center justify-center font-bold text-2xl rounded-xl" style={{ backgroundColor: primaryColor }}>{business.name.substring(0, 2).toUpperCase()}</div>}
         </div>
         <h1 className="text-xl font-bold text-slate-950">{business.name}</h1>
-        <p className="text-xs font-medium text-amber-700 tracking-wide uppercase mt-0.5">{business.category}</p>
+        <p className="text-xs font-medium tracking-wide uppercase mt-0.5" style={{ color: secondaryColor }}>{business.category}</p>
         <p className="text-xs text-slate-600 mt-2 max-w-[320px] leading-relaxed">{business.description || "Tudo do nosso negócio em um só toque."}</p>
         {device && <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />Conectado pela placa • {device.location}</div>}
 
         <div className="w-full mt-5 space-y-2.5">
           {activeLinks.map((link) => (
-            <button key={link.id} onClick={() => handleLinkAction(link)} className="w-full p-3 rounded-xl flex items-center justify-between border bg-white border-slate-200 shadow-sm hover:border-amber-300 transition-all text-left active:scale-[0.98]">
-              <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100">{getIcon(link.type)}</div><div className="text-xs font-bold text-slate-900">{link.title}</div></div>
-              <ExternalLink className="w-4 h-4 text-slate-500" />
+            <button key={link.id} onClick={() => handleLinkAction(link)} className="w-full p-3 rounded-xl flex items-center justify-between border bg-white shadow-sm transition-all text-left active:scale-[0.98]" style={{ borderColor: `${secondaryColor}55` }}>
+              <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${secondaryColor}18` }}>{getIcon(link.type)}</div><div className="text-xs font-bold" style={{ color: primaryColor }}>{link.title}</div></div>
+              <ExternalLink className="w-4 h-4" style={{ color: secondaryColor }} />
             </button>
           ))}
 
@@ -118,16 +120,16 @@ export default function PhoneView({ business, links, campaign, device, experienc
         </div>
 
         {campaign && campaign.is_active && (
-          <div className="w-full mt-5 p-4 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white border border-amber-400/30 shadow-lg text-left">
-            <div className="text-[10px] text-amber-300 font-bold uppercase flex items-center gap-1"><Tag className="w-3 h-3" /> Oferta especial</div>
+          <div className="w-full mt-5 p-4 rounded-2xl text-white shadow-lg text-left" style={{ background: `linear-gradient(135deg, ${primaryColor}, #111827)`, border: `1px solid ${secondaryColor}55` }}>
+            <div className="text-[10px] font-bold uppercase flex items-center gap-1" style={{ color: secondaryColor }}><Tag className="w-3 h-3" /> Oferta especial</div>
             <div className="text-sm font-bold mt-2">{campaign.title}</div>
             <p className="text-xs text-slate-300 mt-1">{campaign.description}</p>
             <div className="mt-3 flex items-baseline gap-2">{campaign.original_price && <span className="text-xs line-through text-slate-400">{formatCurrency(campaign.original_price)}</span>}<span className="text-lg font-black">{formatCurrency(campaign.current_price)}</span></div>
-            {campaign.button_url && <button onClick={() => !isMockup && window.open(campaign.button_url, "_blank", "noopener,noreferrer")} className="mt-3 w-full py-2 px-3 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5"><Sparkles className="w-3.5 h-3.5" />{campaign.button_text || "Quero aproveitar"}</button>}
+            {campaign.button_url && <button onClick={() => !isMockup && window.open(campaign.button_url, "_blank", "noopener,noreferrer")} className="mt-3 w-full py-2 px-3 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5" style={{ backgroundColor: secondaryColor, color: primaryColor }}><Sparkles className="w-3.5 h-3.5" />{campaign.button_text || "Quero aproveitar"}</button>}
           </div>
         )}
 
-        <div className="mt-8 pt-4 border-t border-slate-200 w-full text-[10px] text-slate-500">Powered by <strong className="text-slate-900">Otimiza Meu Negócio</strong> • Ponto digital inteligente</div>
+        <div className="mt-8 pt-4 border-t border-slate-200 w-full text-[10px] text-slate-500">Powered by <strong style={{ color: primaryColor }}>Otimiza Meu Negócio</strong> • Ponto digital inteligente</div>
       </div>
 
       {showWifiModal && (

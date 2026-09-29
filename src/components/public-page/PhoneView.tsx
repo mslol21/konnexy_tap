@@ -37,9 +37,10 @@ interface PhoneViewProps {
   experience?: ExperienceConfig | null;
   isMockup?: boolean;
   onLinkClick?: (linkType: string, url: string) => void;
+  source?: "nfc" | "qr" | "direct";
 }
 
-export default function PhoneView({ business, links, campaign, device, experience, isMockup = false, onLinkClick }: PhoneViewProps) {
+export default function PhoneView({ business, links, campaign, device, experience, isMockup = false, onLinkClick, source = "direct" }: PhoneViewProps) {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showWifiModal, setShowWifiModal] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
@@ -48,8 +49,25 @@ export default function PhoneView({ business, links, campaign, device, experienc
   const [feedbackError, setFeedbackError] = useState("");
   const [sending, setSending] = useState(false);
 
+  const trackLinkClick = (link: BusinessLink) => {
+    if (isMockup) return;
+    void fetch("/api/events/link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify({
+        businessId: business.id,
+        deviceId: device?.id ?? null,
+        linkId: link.id,
+        linkType: link.type,
+        source,
+      }),
+    }).catch(() => {});
+  };
+
   const handleLinkAction = (link: BusinessLink) => {
     onLinkClick?.(link.type, link.url);
+    trackLinkClick(link);
     if (link.type === "suggestion") { setShowFeedbackModal(true); return; }
     if (!isMockup && link.url && link.url !== "#feedback") window.open(link.url, "_blank", "noopener,noreferrer");
   };

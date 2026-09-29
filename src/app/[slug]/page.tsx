@@ -7,7 +7,7 @@ import type { BusinessLink } from "@/lib/types";
 
 interface SlugPageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ device?: string }>;
+  searchParams: Promise<{ device?: string; src?: string }>;
 }
 
 function normalUrl(value?: string | null) {
@@ -66,7 +66,8 @@ function makeLink(
 
 export default async function SlugPage({ params, searchParams }: SlugPageProps) {
   const { slug } = await params;
-  const { device: deviceId } = await searchParams;
+  const { device: deviceId, src } = await searchParams;
+  const source = src === "nfc" || src === "qr" ? src : "direct";
 
   if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
     try {
@@ -151,6 +152,7 @@ export default async function SlugPage({ params, searchParams }: SlugPageProps) 
                   device={device ?? null}
                   experience={experience ?? null}
                   isMockup={false}
+                  source={source}
                 />
             </div>
           </div>

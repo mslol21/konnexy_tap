@@ -129,7 +129,7 @@ export default function PhoneView({ business, links, campaign, device, experienc
       <div className="pointer-events-none absolute top-[38%] left-[-22%] w-[150%] h-28 rotate-[-8deg] rounded-[50%] border" style={{ borderColor: hexToRgba(secondaryColor, 0.28) }} />
       <div className="pointer-events-none absolute top-[41%] left-[-18%] w-[140%] h-32 rotate-[7deg] rounded-[50%] border" style={{ borderColor: hexToRgba(primaryColor, 0.12) }} />
       {/* HERO / CAPA */}
-      <div className="relative h-[214px] w-full overflow-hidden">
+      <div className="relative h-[214px] w-full overflow-hidden" style={{ borderBottomLeftRadius: "50% 34px", borderBottomRightRadius: "50% 34px", boxShadow: `inset 0 -1px 0 ${hexToRgba(secondaryColor, 0.24)}` }}>
         <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }} />
         {business.cover_url ? (
           <img
@@ -144,13 +144,11 @@ export default function PhoneView({ business, links, campaign, device, experienc
         <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(0,0,0,.02) 0%, ${primaryColor}16 56%, ${backgroundColor} 100%)` }} />
         <div className="absolute -left-12 top-10 h-44 w-44 rounded-full border" style={{ borderColor: hexToRgba(secondaryColor, 0.34) }} />
         <div className="absolute -right-16 top-24 h-52 w-52 rounded-full border" style={{ borderColor: hexToRgba(secondaryColor, 0.22) }} />
-        <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: `linear-gradient(180deg, transparent 0%, ${hexToRgba(backgroundColor, 0.38)} 40%, ${backgroundColor} 100%)` }} />
-        <div className="absolute left-[-12%] right-[-12%] bottom-[-44px] h-24 rounded-[50%]" style={{ background: `linear-gradient(180deg, ${hexToRgba(backgroundColor, 0.96)} 0%, ${backgroundColor} 100%)`, boxShadow: `0 -10px 30px ${hexToRgba(secondaryColor, 0.10)}` }} />
-        <div className="absolute left-[-8%] right-[-8%] bottom-[-34px] h-20 rounded-[50%] border-t" style={{ borderColor: hexToRgba(secondaryColor, 0.28) }} />
+        <div className="absolute inset-x-0 bottom-0 h-20" style={{ background: `linear-gradient(180deg, transparent 0%, ${hexToRgba(backgroundColor, 0.14)} 100%)` }} />
       </div>
 
       {/* IDENTIDADE */}
-      <div className="relative z-10 -mt-16 px-5 flex flex-col items-center text-center">
+      <div className="relative z-10 -mt-14 px-5 flex flex-col items-center text-center">
         <div
           className="w-[108px] h-[108px] rounded-[32px] bg-white/95 p-1.5 overflow-hidden backdrop-blur-xl"
           style={{

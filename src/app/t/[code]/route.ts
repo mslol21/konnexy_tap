@@ -67,7 +67,7 @@ export async function GET(request: NextRequest, { params }: RouteProps) {
   let destination: string;
   if (experienceMode === "smart_page") {
     if (!business?.slug) return NextResponse.redirect(new URL(`/t/${code}/status?reason=invalid_destination`, url), { status: 307 });
-    destination = new URL(`/${business.slug}?device=${encodeURIComponent(device.id)}`, url).toString();
+    destination = new URL(`/${business.slug}?device=${encodeURIComponent(device.id)}&src=${encodeURIComponent(source)}`, url).toString();
   } else {
     const rawDestination = device.destination_url || business?.google_review_url || (process.env.NODE_ENV !== "production" ? DEMO_BUSINESS.google_review_url : null);
     const validation = validateDestinationUrl(rawDestination, device.destination_type || "google_review");

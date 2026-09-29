@@ -20,6 +20,9 @@ import {
   Upload,
   Image as ImageIcon,
   Trash2,
+  UserPlus,
+  Mail,
+  KeyRound,
 } from "lucide-react";
 
 type Business = {
@@ -187,13 +190,37 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
   const [saving,setSaving]=useState(false);
   const [paymentBusy,setPaymentBusy]=useState(false);
   const [message,setMessage]=useState<{kind:"ok"|"error";text:string}|null>(null);
+  const [ownerBusy,setOwnerBusy]=useState(false);
+  const [ownerLoaded,setOwnerLoaded]=useState(false);
+  const [ownerAccess,setOwnerAccess]=useState<{email:string;full_name:string;role:string}|null>(null);
 
   useEffect(()=>{
     setBusiness(account.business);
     setExperience(account.experience ?? defaultExperience(account.business.id));
     setBilling(account.billing ?? defaultBilling(account.business.id));
     setDevice(account.devices[0] ?? null);
+    setOwnerLoaded(false);
+    setOwnerAccess(null);
   },[account]);
+
+  useEffect(()=>{
+    if(ownerLoaded)return;
+    setOwnerLoaded(true);
+    void fetch(`/api/admin/owner-access?businessId=${encodeURIComponent(account.business.id)}`,{cache:"no-store"})
+      .then(async(response)=>{
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok)return;
+        const owner=(Array.isArray(data.members)?data.members:[]).find((member:{role?:string})=>member.role==="owner");
+        if(owner?.profile){
+          setOwnerAccess({
+            email:owner.profile.email || "",
+            full_name:owner.profile.full_name || "",
+            role:owner.role || "owner",
+          });
+        }
+      })
+      .catch(()=>{});
+  },[account.business.id,ownerLoaded]);
 
   const patchBusiness=<K extends keyof Business>(key:K,value:Business[K])=>setBusiness((v)=>({...v,[key]:value}));
   const applyPalette=(palette:(typeof THEME_PALETTES)[number])=>setBusiness((current)=>({
@@ -228,6 +255,37 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
     }catch(error){
       setMessage({kind:"error",text:error instanceof Error?error.message:"Não foi possível salvar."});
     }finally{setSaving(false);}
+  };
+
+  const createOwnerAccess=async()=>{
+    const fullName=(business.contact_name || "").trim();
+    const email=(business.contact_email || "").trim();
+    if(!fullName || !email){
+      setMessage({kind:"error",text:"Preencha o nome e o e-mail do responsável antes de criar o acesso."});
+      return;
+    }
+    setOwnerBusy(true); setMessage(null);
+    try{
+      const response=await fetch("/api/admin/owner-access",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          businessId:business.id,
+          fullName,
+          email,
+          phone:business.contact_phone || null,
+        }),
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(typeof data.error==="string"?data.error:"Não foi possível criar o acesso.");
+      setOwnerAccess({email,full_name:fullName,role:"owner"});
+      setMessage({kind:"ok",text:typeof data.message==="string"?data.message:"Acesso do proprietário configurado."});
+      onSaved();
+    }catch(error){
+      setMessage({kind:"error",text:error instanceof Error?error.message:"Não foi possível criar o acesso."});
+    }finally{
+      setOwnerBusy(false);
+    }
   };
 
   const registerPayment=async(kind:"plate"|"subscription")=>{
@@ -276,6 +334,43 @@ function AccountEditor({account,onSaved}:{account:Account;onSaved:()=>void}) {
             <option value="inactive">Inativo</option><option value="suspended">Suspenso</option><option value="cancelled">Cancelado</option>
           </Select>
           <div className="md:col-span-2"><Input label="Observações internas" value={business.internal_notes} onChange={(v)=>patchBusiness("internal_notes",v)} /></div>
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-slate-700 bg-slate-900/70 p-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 text-xs font-black text-white">
+                <KeyRound className="w-4 h-4 text-gold-400"/>
+                Acesso ao painel do proprietário
+              </div>
+              {ownerAccess ? (
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-emerald-300">
+                    <CheckCircle2 className="w-3.5 h-3.5"/>Acesso vinculado
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-slate-300 min-w-0">
+                    <Mail className="w-3.5 h-3.5 shrink-0"/><span className="truncate">{ownerAccess.email}</span>
+                  </span>
+                </div>
+              ) : (
+                <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
+                  Crie o acesso usando o nome e o e-mail do responsável acima. O proprietário receberá um convite para acessar a Área do Cliente.
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+              {ownerAccess&&<a href="/login" target="_blank" rel="noopener noreferrer" className="rounded-xl border border-slate-600 px-4 py-2.5 text-xs font-bold text-white text-center hover:border-gold-400">Abrir login</a>}
+              <button
+                type="button"
+                onClick={()=>void createOwnerAccess()}
+                disabled={ownerBusy}
+                className="rounded-xl bg-gold-500 px-4 py-2.5 text-xs font-black text-navy-950 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {ownerBusy?<Loader2 className="w-4 h-4 animate-spin"/>:<UserPlus className="w-4 h-4"/>}
+                {ownerAccess?"Vincular / reenviar acesso":"Criar acesso do proprietário"}
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 

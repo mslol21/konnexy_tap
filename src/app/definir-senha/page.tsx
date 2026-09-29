@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle2, Eye, EyeOff, KeyRound, Loader2, Lock } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -11,8 +11,7 @@ type SetupState = "checking" | "ready" | "invalid" | "saving" | "done";
 
 export default function SetPasswordPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const mode = searchParams.get("mode") || "invite";
+  const [mode, setMode] = useState("invite");
 
   const [state, setState] = useState<SetupState>("checking");
   const [password, setPassword] = useState("");
@@ -32,6 +31,9 @@ export default function SetPasswordPage() {
       const supabase = createClient();
 
       try {
+        const currentUrl = new URL(window.location.href);
+        const currentMode = currentUrl.searchParams.get("mode") || "invite";
+        if (mounted) setMode(currentMode);
         const { data: existing } = await supabase.auth.getSession();
         if (existing.session) {
           if (mounted) setState("ready");
@@ -54,7 +56,7 @@ export default function SetPasswordPage() {
           }
         }
 
-        const code = searchParams.get("code");
+        const code = currentUrl.searchParams.get("code");
         if (code) {
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
           if (!exchangeError) {
@@ -73,7 +75,7 @@ export default function SetPasswordPage() {
     return () => {
       mounted = false;
     };
-  }, [searchParams]);
+  }, []);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();

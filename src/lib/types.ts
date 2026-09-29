@@ -41,13 +41,13 @@ export type EventType =
   | "google_click"
   | "whatsapp_click"
   | "instagram_click"
-  | "menu_click"
+  | "services_click"
+  | "website_click"
   | "maps_click"
   | "campaign_click"
-  | "club_signup"
+  | "feedback_open"
   | "suggestion_sent"
-  | "custom_link_click"
-  | "feedback_sent";
+  | "custom_link_click";
 
 export interface Profile {
   id: string;
@@ -183,6 +183,7 @@ export interface TelemetryEvent {
   session_id?: string;
   user_agent?: string;
   referrer?: string;
+  source?: "nfc" | "qr" | "direct";
   created_at: string;
 }
 
@@ -191,7 +192,8 @@ export interface DashboardMetrics {
   googleClicksToday: number;
   whatsappClicksToday: number;
   menuClicksToday: number;
-  clubSignupsToday: number;
+  mapsClicksToday?: number;
+  instagramClicksToday?: number;
   viewsHistory: { date: string; views: number; google: number; whatsapp: number }[];
   conversionRate: number;
 }

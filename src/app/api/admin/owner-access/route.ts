@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
   if (!userId) {
     const appUrl = request.nextUrl.origin.replace(/\/$/, "");
     const { data: invitedUser, error: inviteError } = await service.auth.admin.inviteUserByEmail(normalizedEmail, {
-      redirectTo: `${appUrl}/login`,
+      redirectTo: `${appUrl}/definir-senha?mode=invite`,
       data: { full_name: fullName, phone: phone || null },
     });
 
@@ -107,6 +107,14 @@ export async function POST(request: NextRequest) {
       full_name: fullName,
       phone: phone?.trim() || null,
     }).eq("id", userId);
+
+    const appUrl = request.nextUrl.origin.replace(/\/$/, "");
+    const { error: resetError } = await service.auth.resetPasswordForEmail(normalizedEmail, {
+      redirectTo: `${appUrl}/definir-senha?mode=access`,
+    });
+    if (resetError) {
+      return NextResponse.json({ error: "A conta já existe, mas não foi possível reenviar o link de acesso." }, { status: 400 });
+    }
   }
 
   const { error: memberError } = await service.from("business_members").upsert({
@@ -130,7 +138,7 @@ export async function POST(request: NextRequest) {
     invited,
     user: { id: userId, email: normalizedEmail, full_name: fullName, phone: phone?.trim() || null, role: "owner" },
     message: invited
-      ? "Convite do proprietário enviado. Ele deve abrir o e-mail para definir o acesso."
-      : "Conta existente vinculada como proprietária deste estabelecimento.",
+      ? "Convite enviado. O proprietário deve abrir o e-mail e criar a própria senha."
+      : "Conta vinculada. Um novo link para definir a senha foi enviado por e-mail.",
   }, { status: invited ? 201 : 200 });
 }

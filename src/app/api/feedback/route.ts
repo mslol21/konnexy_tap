@@ -13,9 +13,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Feedback inválido." }, { status: 400 });
     }
 
+    const throttleCookie = `otimiza_feedback_${businessId.slice(0, 8)}`;
+    if (request.cookies.get(throttleCookie)?.value === "1") {
+      return NextResponse.json({ error: "Aguarde um pouco antes de enviar outro feedback." }, { status: 429 });
+    }
+
     const supabase = createServiceClient();
     const { data: business } = await supabase.from("businesses").select("id").eq("id", businessId).eq("is_active", true).maybeSingle();
     if (!business) return NextResponse.json({ error: "Estabelecimento não encontrado." }, { status: 404 });
+
+    if (deviceId) {
+      const { data: device } = await supabase
+        .from("tap_devices")
+        .select("id")
+        .eq("id", deviceId)
+        .eq("business_id", businessId)
+        .eq("status", "active")
+        .maybeSingle();
+      if (!device) return NextResponse.json({ error: "Placa inválida." }, { status: 400 });
+    }
 
     const { error } = await supabase.from("feedbacks").insert({
       business_id: businessId,
@@ -34,7 +50,15 @@ export async function POST(request: NextRequest) {
       referrer: (request.headers.get("referer") || "").substring(0, 255),
     });
 
-    return NextResponse.json({ ok: true }, { status: 201 });
+    const response = NextResponse.json({ ok: true }, { status: 201 });
+    response.cookies.set(throttleCookie, "1", {
+      maxAge: 60,
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+    return response;
   } catch (error) {
     console.error("Falha ao salvar feedback", error);
     return NextResponse.json({ error: "Não foi possível enviar o feedback." }, { status: 500 });

@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
   let invited = false;
 
   if (!userId) {
-    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin).replace(/\/$/, "");
+    const appUrl = request.nextUrl.origin.replace(/\/$/, "");
     const { data: invitedUser, error: inviteError } = await service.auth.admin.inviteUserByEmail(normalizedEmail, {
       redirectTo: `${appUrl}/login`,
       data: { full_name: fullName, phone: phone || null },

@@ -18,7 +18,7 @@ export default function RecoverPasswordPage() {
     try {
       const supabase = createClient();
       await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${window.location.origin}/definir-senha?mode=recovery`,
       });
     } catch {
       // Ignore

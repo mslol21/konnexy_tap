@@ -91,6 +91,7 @@ export async function GET() {
       .from("events")
       .select("device_id,source")
       .in("device_id", deviceIds)
+      .in("event_type", ["page_view", "review_redirect"])
       .limit(10000);
 
     if (!eventsError) {

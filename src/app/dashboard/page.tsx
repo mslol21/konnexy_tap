@@ -8,8 +8,13 @@ import {
   BarChart3,
   Building2,
   AlertCircle,
+  Star,
+  MapPin,
+  Instagram,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+
+const ACCESS_EVENTS = ["page_view", "review_redirect"] as const;
 
 function startOfTodayIso() {
   const now = new Date();
@@ -58,26 +63,25 @@ export default async function MerchantDashboardPage() {
   const [{ data: business }, { data: devices }, { data: recentEvents }, totalResult] = await Promise.all([
     supabase
       .from("businesses")
-      .select("id, name, google_review_url, city, state")
+      .select("id,name,slug,google_review_url,city,state")
       .eq("id", businessId)
       .maybeSingle(),
     supabase
       .from("tap_devices")
-      .select("id, code, name, location, status, active, destination_url, destination_type, created_at")
+      .select("id,code,name,location,status,active,destination_url,destination_type,experience_mode,created_at")
       .eq("business_id", businessId)
       .order("created_at", { ascending: true }),
     supabase
       .from("events")
-      .select("created_at, source")
+      .select("created_at,source,event_type")
       .eq("business_id", businessId)
-      .eq("event_type", "review_redirect")
       .gte("created_at", daysAgoIso(30))
       .order("created_at", { ascending: false }),
     supabase
       .from("events")
       .select("id", { count: "exact", head: true })
       .eq("business_id", businessId)
-      .eq("event_type", "review_redirect"),
+      .in("event_type", [...ACCESS_EVENTS]),
   ]);
 
   if (!business) {
@@ -91,20 +95,32 @@ export default async function MerchantDashboardPage() {
   }
 
   const events = recentEvents ?? [];
+  const accessEvents = events.filter((event) => ACCESS_EVENTS.includes(event.event_type as (typeof ACCESS_EVENTS)[number]));
   const todayStart = new Date(startOfTodayIso()).getTime();
   const sevenDaysStart = new Date(daysAgoIso(7)).getTime();
   const thirtyDaysStart = new Date(daysAgoIso(30)).getTime();
 
-  const today = events.filter((event) => new Date(event.created_at).getTime() >= todayStart).length;
-  const last7Days = events.filter((event) => new Date(event.created_at).getTime() >= sevenDaysStart).length;
-  const last30Days = events.filter((event) => new Date(event.created_at).getTime() >= thirtyDaysStart).length;
+  const today = accessEvents.filter((event) => new Date(event.created_at).getTime() >= todayStart).length;
+  const last7Days = accessEvents.filter((event) => new Date(event.created_at).getTime() >= sevenDaysStart).length;
+  const last30Days = accessEvents.filter((event) => new Date(event.created_at).getTime() >= thirtyDaysStart).length;
   const total = totalResult.count ?? 0;
 
-  const nfc = events.filter((event) => event.source === "nfc").length;
-  const qr = events.filter((event) => event.source === "qr").length;
+  const nfc = accessEvents.filter((event) => event.source === "nfc").length;
+  const qr = accessEvents.filter((event) => event.source === "qr").length;
   const identified = nfc + qr;
   const nfcPercentage = identified > 0 ? Math.round((nfc / identified) * 100) : 0;
   const qrPercentage = identified > 0 ? 100 - nfcPercentage : 0;
+
+  const actionCount = (eventType: string) => events.filter((event) => event.event_type === eventType).length;
+  const googleClicks = actionCount("google_click");
+  const whatsappClicks = actionCount("whatsapp_click");
+  const mapsClicks = actionCount("maps_click");
+  const instagramClicks = actionCount("instagram_click");
+  const otherClicks =
+    actionCount("website_click") +
+    actionCount("services_click") +
+    actionCount("custom_link_click") +
+    actionCount("feedback_open");
 
   const activeDevices = (devices ?? []).filter(
     (device) => (device.status ?? (device.active ? "active" : "inactive")) === "active"
@@ -114,9 +130,27 @@ export default async function MerchantDashboardPage() {
   const configuredWhatsapp = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "").replace(/\D/g, "");
   const requestChangeUrl = configuredWhatsapp && primaryDevice
     ? `https://wa.me/${configuredWhatsapp}?text=${encodeURIComponent(
-        `Olá! Sou do ${business.name} (placa ${primaryDevice.code}) e gostaria de atualizar o link de avaliação.`
+        `Olá! Sou do ${business.name} (placa ${primaryDevice.code}) e gostaria de atualizar meus dados.`
       )}`
     : null;
+
+  const destinationLabel = primaryDevice?.experience_mode === "smart_page"
+    ? `/${business.slug}`
+    : primaryDevice?.destination_url || business.google_review_url || "Aguardando configuração";
+
+  const accessCards = [
+    { label: "Hoje", value: today },
+    { label: "Últimos 7 dias", value: last7Days },
+    { label: "Últimos 30 dias", value: last30Days },
+    { label: "Total", value: total },
+  ];
+
+  const interactionCards = [
+    { label: "Google", value: googleClicks, icon: Star, iconClass: "text-amber-500" },
+    { label: "WhatsApp", value: whatsappClicks, icon: MessageCircle, iconClass: "text-emerald-600" },
+    { label: "Localização", value: mapsClicks, icon: MapPin, iconClass: "text-rose-600" },
+    { label: "Instagram", value: instagramClicks, icon: Instagram, iconClass: "text-pink-600" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -128,7 +162,7 @@ export default async function MerchantDashboardPage() {
           </div>
           <h1 className="text-2xl font-extrabold text-[#20252A] mt-1">{business.name}</h1>
           <p className="text-xs text-[#6D7277] mt-1">
-            Acompanhe os acessos que passaram pela sua placa de avaliações.
+            Acompanhe acessos da placa e interações com sua página inteligente.
           </p>
         </div>
 
@@ -172,9 +206,12 @@ export default async function MerchantDashboardPage() {
           </div>
 
           <div className="mt-5 p-4 bg-[#F7F5F2] border border-[#E8E3DD] rounded-2xl">
-            <div className="text-[11px] font-bold text-[#6D7277] uppercase mb-1">Destino configurado</div>
-            <div className="text-xs font-mono text-[#30363D] break-all">
-              {primaryDevice.destination_url || business.google_review_url || "Aguardando configuração"}
+            <div className="text-[11px] font-bold text-[#6D7277] uppercase mb-1">
+              {primaryDevice.experience_mode === "smart_page" ? "Página inteligente" : "Destino configurado"}
+            </div>
+            <div className="text-xs font-mono text-[#30363D] break-all">{destinationLabel}</div>
+            <div className="text-[11px] text-[#6D7277] mt-2">
+              O endereço gravado na placa permanece o mesmo; os destinos podem ser atualizados pelo sistema.
             </div>
           </div>
         </section>
@@ -188,24 +225,43 @@ export default async function MerchantDashboardPage() {
 
       <section>
         <div className="mb-3">
-          <h2 className="text-sm font-bold text-[#20252A] uppercase tracking-wider">Acessos para avaliação</h2>
-          <p className="text-xs text-[#6D7277]">São acessos ao link; não representam avaliações publicadas.</p>
+          <h2 className="text-sm font-bold text-[#20252A] uppercase tracking-wider">Acessos à placa</h2>
+          <p className="text-xs text-[#6D7277]">São acessos registrados; não representam avaliações publicadas.</p>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {[
-            ["Hoje", today],
-            ["Últimos 7 dias", last7Days],
-            ["Últimos 30 dias", last30Days],
-            ["Total", total],
-          ].map(([label, value]) => (
-            <div key={String(label)} className="bg-white p-5 rounded-2xl border border-[#E8E3DD] shadow-sm">
-              <div className="text-[11px] font-bold text-[#6D7277] uppercase">{label}</div>
-              <div className="text-3xl font-extrabold text-[#20252A] mt-1">{value}</div>
+          {accessCards.map((card) => (
+            <div key={card.label} className="bg-white p-5 rounded-2xl border border-[#E8E3DD] shadow-sm">
+              <div className="text-[11px] font-bold text-[#6D7277] uppercase">{card.label}</div>
+              <div className="text-3xl font-extrabold text-[#20252A] mt-1">{card.value}</div>
               <div className="text-[11px] text-[#6D7277] mt-1">acessos registrados</div>
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="bg-white p-6 rounded-3xl border border-[#E8E3DD] shadow-sm">
+        <div className="flex items-center gap-2 mb-1">
+          <BarChart3 className="w-4 h-4 text-[#C78D4E]" />
+          <h3 className="text-sm font-bold text-[#20252A]">Interações — últimos 30 dias</h3>
+        </div>
+        <p className="text-xs text-[#6D7277] mb-5">
+          Cliques nos botões da página inteligente. Esses números não significam conclusão da ação.
+        </p>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {interactionCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <div key={card.label} className="p-4 rounded-2xl bg-[#F7F5F2] border border-[#E8E3DD]">
+                <Icon className={`w-5 h-5 ${card.iconClass}`} />
+                <div className="text-2xl font-extrabold text-[#20252A] mt-3">{card.value}</div>
+                <div className="text-[11px] font-bold text-[#6D7277] uppercase mt-1">{card.label}</div>
+              </div>
+            );
+          })}
+        </div>
+        {otherClicks > 0 && <p className="text-[11px] text-[#6D7277] mt-4">Outras interações registradas: {otherClicks}</p>}
       </section>
 
       <section className="bg-white p-6 rounded-3xl border border-[#E8E3DD] shadow-sm">

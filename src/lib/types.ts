@@ -41,13 +41,16 @@ export type EventType =
   | "google_click"
   | "whatsapp_click"
   | "instagram_click"
+  | "menu_click"
   | "services_click"
   | "website_click"
   | "maps_click"
   | "campaign_click"
+  | "club_signup"
   | "feedback_open"
   | "suggestion_sent"
-  | "custom_link_click";
+  | "custom_link_click"
+  | "feedback_sent";
 
 export interface Profile {
   id: string;

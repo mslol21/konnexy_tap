@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import {
   AlertCircle,
@@ -444,7 +445,11 @@ export default function AdminPlacasPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2"><a href={selectedUrls.test} target="_blank" rel="noopener noreferrer" className="py-2.5 px-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center justify-center gap-2"><ExternalLink className="w-4 h-4" /> Testar redirecionamento</a><button onClick={() => downloadQrCodePng(selectedPlate)} className="py-2.5 px-4 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 text-xs font-bold flex items-center justify-center gap-2"><Download className="w-4 h-4" /> Baixar QR para produção</button></div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <a href={selectedUrls.test} target="_blank" rel="noopener noreferrer" className="py-2.5 px-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center justify-center gap-2"><ExternalLink className="w-4 h-4" /> Testar</a>
+                <Link href="/admin/clientes" className="py-2.5 px-4 rounded-xl border border-gold-500/40 bg-gold-500/10 text-gold-300 text-xs font-bold flex items-center justify-center gap-2"><Building2 className="w-4 h-4" /> Cliente / acesso</Link>
+                <button onClick={() => downloadQrCodePng(selectedPlate)} className="py-2.5 px-4 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 text-xs font-bold flex items-center justify-center gap-2"><Download className="w-4 h-4" /> Baixar QR</button>
+              </div>
             </div>
           ) : <div className="h-full min-h-[360px] flex flex-col items-center justify-center text-center px-6">{loading ? <Loader2 className="w-8 h-8 text-gold-400 animate-spin" /> : <><QrCode className="w-10 h-10 text-slate-500 mb-3" /><h2 className="text-base font-bold text-white">Nenhuma placa cadastrada</h2><p className="text-xs text-slate-400 mt-1 max-w-sm">Cadastre a primeira placa para começar a operação.</p></>}</div>}
         </section>

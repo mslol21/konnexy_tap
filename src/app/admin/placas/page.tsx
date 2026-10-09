@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import NfcSetup from "@/components/admin/NfcSetup";
 import { QRCodeSVG } from "qrcode.react";
 import {
   AlertCircle,
@@ -444,6 +445,8 @@ export default function AdminPlacasPage() {
                   <div className="p-3 rounded-xl bg-slate-900 border border-slate-700"><div className="text-[10px] uppercase font-bold text-slate-400">Destino Google</div><div className="text-[11px] font-mono text-slate-200 break-all mt-1">{selectedPlate.destination_url || "Não configurado"}</div></div>
                 </div>
               </div>
+
+              <NfcSetup key={selectedUrls.nfc} url={selectedUrls.nfc} />
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <a href={selectedUrls.test} target="_blank" rel="noopener noreferrer" className="py-2.5 px-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center justify-center gap-2"><ExternalLink className="w-4 h-4" /> Testar</a>

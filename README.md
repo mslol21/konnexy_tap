@@ -113,6 +113,14 @@ ON CONFLICT (user_id) DO NOTHING;
 
 ## Rotas principais do MVP
 
+### Gravação NFC pelo painel
+
+Em `/admin/placas`, selecione uma placa cadastrada e use **Gravar NFC** no Chrome para Android, em HTTPS, com NFC ativado e uma tag NDEF gravável. O painel grava um único registro URL com o endereço permanente `/t/CODIGO?src=nfc`. Por padrão, tags que já contêm dados não são sobrescritas; marque a opção de substituir conteúdo somente quando desejar reconfigurá-las.
+
+Depois, use **Conferir tag** e aproxime a tag novamente. O painel compara o conteúdo com o link da placa selecionada; a confirmação de gravação não é uma confirmação do destino ou de avaliação publicada. Use **Testar** para conferir o redirecionamento. Operações podem ser canceladas e expiram após 45 segundos. Mudar de placa ou sair da tela cancela a operação pendente.
+
+A API Web NFC depende do navegador e do hardware. Se indisponível, copie o link NFC e grave como URL usando um aplicativo externo. Não há bloqueio permanente do chip nem armazenamento do número físico da tag: o número lido na conferência, quando disponível, é exibido apenas localmente. O status administrativo da placa permanece independente da gravação.
+
 | Rota | Função |
 | --- | --- |
 | `/` | Landing page comercial |
